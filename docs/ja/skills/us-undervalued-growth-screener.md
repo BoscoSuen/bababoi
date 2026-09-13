@@ -3,7 +3,7 @@ layout: default
 title: "US Undervalued Growth Screener"
 grand_parent: 日本語
 parent: スキルガイド
-nav_order: 72
+nav_order: 73
 lang_peer: /en/skills/us-undervalued-growth-screener/
 permalink: /ja/skills/us-undervalued-growth-screener/
 generated: true

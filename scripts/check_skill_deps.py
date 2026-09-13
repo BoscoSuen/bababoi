@@ -138,6 +138,7 @@ INTEGRATION_TO_DIST = {
 SHARED_FIRST_PARTY: frozenset[str] = frozenset({"scripts"})
 SHARED_MODULE_DISTS: dict[str, tuple[str, ...]] = {
     "scripts.market_data": ("requests",),
+    "scripts.market_calendar": ("pandas-market-calendars",),
 }
 
 # Dynamic-import call shapes that are reported as warnings. Entries are

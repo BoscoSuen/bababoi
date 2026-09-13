@@ -27,7 +27,7 @@ from scripts.market_data.provider import MarketDataProvider, NotAvailable, Provi
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_CACHE_DIR = REPO_ROOT / ".cache" / "market_data"
-API_KEY_ENV = "POLYGON_API_KEY"
+API_KEY_ENV = "POLYGON_API_KEY"  # pragma: allowlist secret
 
 __all__ = [
     "API_KEY_ENV",

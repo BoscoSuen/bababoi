@@ -259,6 +259,7 @@ The table below is **auto-generated** from `skills-index.yaml` by `scripts/gener
 | **Futures Position Sizer** | ❌ Not used | ❌ Not used | ❌ Not used | Pure calculation; consumes contrarian-setup-gate's READY_FOR_PLAN report or explicit direction/entry/stop flags; works offline |
 | **IBD Distribution Day Monitor** | ✅ Required | ❌ Not used | ❌ Not used | Financial Modeling Prep API |
 | **Institutional Flow Tracker** | ✅ Required | ❌ Not used | ❌ Not used | Financial Modeling Prep API |
+| **Intraday Market Monitor** | ❌ Not used | ❌ Not used | ❌ Not used | Polygon.io Stocks Starter (15-min delayed) via scripts/market_data; POLYGON_API_KEY; Summary and narrative posts via DISCORD_WEBHOOK_URL; Narrative via `claude -p` at 10:20 / 15:20 / posture flips |
 | **Kanchi Dividend Review Monitor** | 🟡 Optional (Recommended) | ❌ Not used | ❌ Not used | Dividend / price monitoring via FMP |
 | **Kanchi Dividend SOP** | 🟡 Optional (Recommended) | ❌ Not used | ❌ Not used | US dividend stock data via FMP |
 | **Kanchi Dividend US Tax Accounting** | ❌ Not used | ❌ Not used | ❌ Not used | US tax workflow guidance; pure calculation |

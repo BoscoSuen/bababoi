@@ -10,7 +10,7 @@ permalink: /ja/skill-catalog/
 # スキル一覧
 {: .no_toc }
 
-全74個のClaude Trading Skillsをカテゴリ別に紹介します。各スキルのAPI要件バッジで、利用に必要な外部サービスをすぐに確認できます。
+全75個のClaude Trading Skillsをカテゴリ別に紹介します。各スキルのAPI要件バッジで、利用に必要な外部サービスをすぐに確認できます。
 {: .fs-6 .fw-300 }
 
 > 検索は英語スキル名（"CANSLIM", "VCP", "FinViz"等）での検索を推奨します。日本語の部分一致検索は制限があります。
@@ -74,6 +74,7 @@ permalink: /ja/skill-catalog/
 | `fxmacrodata-calendar` | `standalone` | Fetches official macro calendar data directly for event-risk planning. |
 | `ibd-distribution-day-monitor` | `standalone` | Runs an independent distribution-day risk assessment for QQQ or SPY. |
 | `institutional-flow-tracker` | `standalone` | Produces an independent institutional ownership and flow assessment on demand. |
+| `intraday-market-monitor` | `standalone` | Scheduled hourly job (launchd) that publishes an intraday exposure posture for the trader and for pre-trade-discipline-gate; it is not a step inside a manual workflow manifest yet. |
 | `kanchi-dividend-review-monitor` | `workflow_step` | — |
 | `kanchi-dividend-sop` | `workflow_step` | — |
 | `kanchi-dividend-us-tax-accounting` | `workflow_step` | — |
@@ -152,6 +153,7 @@ permalink: /ja/skill-catalog/
 | **[Market News Analyst]({{ '/ja/skills/market-news-analyst/' | relative_url }})** | WebSearch/WebFetchで過去10日間のニュースを収集。定量的インパクトスコアリングでランキング | <span class="badge badge-free">API不要</span> |
 | **Market Environment Analysis** | グローバルマクロブリーフィング。株式指数、為替、コモディティ、金利、センチメントを網羅 | <span class="badge badge-free">API不要</span> |
 | **[Market Breadth Analyzer]({{ '/ja/skills/market-breadth-analyzer/' | relative_url }})** | TraderMontyの公開CSVデータで6コンポーネントスコアリング（0-100）の市場幅評価 | <span class="badge badge-free">API不要</span> |
+| **[Intraday Market Monitor]({{ '/ja/skills/intraday-market-monitor/' | relative_url }})** | 15分遅延のPolygonデータで毎時実行（launchd）：全銘柄スナップショットの市場幅、SPY/QQQのVWAP・前日レンジ判定、セクター相対強度、時間足確定のウォッチリストシグナル → NEW_ENTRY_ALLOWED / REDUCE_ONLY / CASH_PRIORITY姿勢をDiscord通知（Claudeナラティブ任意） | <span class="badge badge-required">Polygon必須</span> |
 | **Uptrend Analyzer** | 約2,800銘柄・11セクターの上昇トレンド比率を5コンポーネント複合スコアで診断 | <span class="badge badge-free">API不要</span> |
 | **Macro Regime Detector** | クロスアセット比率分析で構造的マクロレジーム転換（1-2年ホライズン）を検出 | <span class="badge badge-free">API不要</span> <span class="badge badge-optional">FMP任意</span> |
 | **[US Market Bubble Detector]({{ '/ja/skills/us-market-bubble-detector/' | relative_url }})** | ミンスキー/キンドルバーガーフレームワークの8指標バブルメーター。ステージ別プレイブック付き | <span class="badge badge-free">API不要</span> |
@@ -330,6 +332,7 @@ permalink: /ja/skill-catalog/
 | Futures Position Sizer | - | - | - |
 | IBD Distribution Day Monitor | 必須 | - | - |
 | Institutional Flow Tracker | 必須 | - | - |
+| Intraday Market Monitor | - | - | - |
 | Kanchi Dividend Review Monitor | 推奨 | - | - |
 | Kanchi Dividend SOP | 推奨 | - | - |
 | Kanchi Dividend US Tax Accounting | - | - | - |

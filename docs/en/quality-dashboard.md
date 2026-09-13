@@ -19,7 +19,7 @@ Snapshot as of: `2026-09-12T00:00:00Z`
 
 | Total | production | beta | Knowledge-only | Executable | With tests | Without tests |
 |---:|---:|---:|---:|---:|---:|---:|
-| 74 | 58 | 16 | 3 | 71 | 71 | 0 |
+| 75 | 58 | 17 | 3 | 72 | 72 | 0 |
 
 ## Test coverage
 
@@ -38,7 +38,7 @@ Snapshot as of: `2026-09-12T00:00:00Z`
 | FMP | 29 |
 | FINVIZ | 4 |
 | ALPACA | 2 |
-| other external provider | 8 |
+| other external provider | 9 |
 | offline (no external data source) | 35 |
 
 ## Beta pipeline
@@ -50,6 +50,7 @@ Snapshot as of: `2026-09-12T00:00:00Z`
 | `drawdown-circuit-breaker` | not yet measured |
 | `futures-position-sizer` | not yet measured |
 | `fxmacrodata-calendar` | not yet measured |
+| `intraday-market-monitor` | not yet measured |
 | `manifoldbt-backtester` | not yet measured |
 | `mt5-robot-tester` | not yet measured |
 | `pre-trade-discipline-gate` | not yet measured |
@@ -95,6 +96,7 @@ Snapshot as of: `2026-09-12T00:00:00Z`
 | **FXMacroData Calendar** (`fxmacrodata-calendar`) | beta | yes | yes | not yet measured |
 | **IBD Distribution Day Monitor** (`ibd-distribution-day-monitor`) | production | yes | yes | not yet measured |
 | **Institutional Flow Tracker** (`institutional-flow-tracker`) | production | yes | yes | not yet measured |
+| **Intraday Market Monitor** (`intraday-market-monitor`) | beta | yes | yes | not yet measured |
 | **Kanchi Dividend Review Monitor** (`kanchi-dividend-review-monitor`) | production | yes | yes | not yet measured |
 | **Kanchi Dividend SOP** (`kanchi-dividend-sop`) | production | yes | yes | not yet measured |
 | **Kanchi Dividend US Tax Accounting** (`kanchi-dividend-us-tax-accounting`) | production | yes | yes | not yet measured |

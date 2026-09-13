@@ -579,6 +579,36 @@
       "timeframe": "research"
     },
     {
+      "category": "market-regime",
+      "difficulty": "intermediate",
+      "display_name": "Intraday Market Monitor",
+      "id": "intraday-market-monitor",
+      "integrations": [
+        {
+          "id": "polygon",
+          "requirement": "required",
+          "type": "market_data"
+        },
+        {
+          "id": "discord_webhook",
+          "requirement": "optional",
+          "type": "web"
+        },
+        {
+          "id": "claude_cli",
+          "requirement": "optional",
+          "type": "local_file"
+        }
+      ],
+      "operational_role": {
+        "rationale": "Scheduled hourly job (launchd) that publishes an intraday exposure posture for the trader and for pre-trade-discipline-gate; it is not a step inside a manual workflow manifest yet.",
+        "type": "standalone"
+      },
+      "status": "beta",
+      "summary": "Hourly, deterministic intraday market read on 15-minute-delayed Polygon data (all-tickers breadth snapshot, SPY/QQQ vs VWAP and prior-day range, sector relative strength, hourly-close watchlist signals) emitting NEW_ENTRY_ALLOWED / REDUCE_ONLY / CASH_PRIORITY with Discord notification and optional Claude narrative.",
+      "timeframe": "daily"
+    },
+    {
       "category": "core-portfolio",
       "difficulty": "beginner",
       "display_name": "Kanchi Dividend Review Monitor",

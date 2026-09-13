@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<!--
+  Intraday Market Monitor — fires at :20 and :50 past every hour (local time).
+  The script converts to ET, exits silently on non-session days and outside the
+  configured slots (09:50, 10:20 … 15:20, 15:50, 16:20 ET), and catches up the
+  latest pending slot after a sleep/wake.
+
+  SETUP: Replace $HOME and $PROJECT_DIR before installing.
+    sed "s|\$HOME|$HOME|g; s|\$PROJECT_DIR|$(pwd)|g" \
+      launchd/com.trade-analysis.intraday-monitor.plist > ~/Library/LaunchAgents/com.trade-analysis.intraday-monitor.plist
+    launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.trade-analysis.intraday-monitor.plist
+    launchctl list | grep intraday-monitor
+  REMOVE:
+    launchctl bootout gui/$(id -u)/com.trade-analysis.intraday-monitor
+-->
+<dict>
+	<key>Label</key>
+	<string>com.trade-analysis.intraday-monitor</string>
+
+	<key>ProgramArguments</key>
+	<array>
+		<string>/bin/bash</string>
+		<string>$PROJECT_DIR/scripts/run_intraday_monitor.sh</string>
+	</array>
+
+	<key>WorkingDirectory</key>
+	<string>$PROJECT_DIR</string>
+
+	<key>StartCalendarInterval</key>
+	<array>
+		<dict>
+			<key>Minute</key>
+			<integer>20</integer>
+		</dict>
+		<dict>
+			<key>Minute</key>
+			<integer>50</integer>
+		</dict>
+	</array>
+
+	<key>EnvironmentVariables</key>
+	<dict>
+		<key>PATH</key>
+		<string>/opt/homebrew/bin:/opt/homebrew/sbin:$HOME/.local/bin:/usr/local/bin:/usr/bin:/bin</string>
+		<key>HOME</key>
+		<string>$HOME</string>
+	</dict>
+
+	<key>StandardOutPath</key>
+	<string>$PROJECT_DIR/logs/launchd_intraday_monitor.log</string>
+
+	<key>StandardErrorPath</key>
+	<string>$PROJECT_DIR/logs/launchd_intraday_monitor_error.log</string>
+
+	<key>RunAtLoad</key>
+	<false/>
+</dict>
+</plist>

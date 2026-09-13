@@ -1,0 +1,7 @@
+# Copy to state/watchlist.yaml (gitignored). Symbols use Polygon notation (BRK.B).
+# Rows may be bare strings or {symbol, note} mappings; notes are echoed nowhere yet.
+symbols:
+  - AAPL
+  - MSFT
+  - symbol: NVDA
+    note: VCP pivot 2026-09-10

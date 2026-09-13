@@ -888,6 +888,39 @@ skills:
   outputs:
   - flow_analysis_report
   workflows: []
+- id: intraday-market-monitor
+  display_name: Intraday Market Monitor
+  category: market-regime
+  status: beta
+  operational_role:
+    type: standalone
+    rationale: Scheduled hourly job (launchd) that publishes an intraday exposure posture
+      for the trader and for pre-trade-discipline-gate; it is not a step inside a manual
+      workflow manifest yet.
+  summary: Hourly, deterministic intraday market read on 15-minute-delayed Polygon data
+    (all-tickers breadth snapshot, SPY/QQQ vs VWAP and prior-day range, sector relative
+    strength, hourly-close watchlist signals) emitting NEW_ENTRY_ALLOWED / REDUCE_ONLY /
+    CASH_PRIORITY with Discord notification and optional Claude narrative.
+  timeframe: daily
+  difficulty: intermediate
+  integrations:
+  - id: polygon
+    type: market_data
+    requirement: required
+    note: Polygon.io Stocks Starter (15-min delayed) via scripts/market_data; POLYGON_API_KEY
+  - id: discord_webhook
+    type: web
+    requirement: optional
+    note: Summary and narrative posts via DISCORD_WEBHOOK_URL
+  - id: claude_cli
+    type: local_file
+    requirement: optional
+    note: Narrative via `claude -p` at 10:20 / 15:20 / posture flips
+  inputs:
+  - exposure_decision
+  outputs:
+  - intraday_posture_report
+  workflows: []
 - id: kanchi-dividend-review-monitor
   display_name: Kanchi Dividend Review Monitor
   category: core-portfolio

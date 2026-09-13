@@ -10,7 +10,7 @@ permalink: /en/skill-catalog/
 # Skill Catalog
 {: .no_toc }
 
-A comprehensive catalog of all 74 Claude Trading Skills organized by category. Badge indicators show API requirements at a glance.
+A comprehensive catalog of all 75 Claude Trading Skills organized by category. Badge indicators show API requirements at a glance.
 {: .fs-6 .fw-300 }
 
 > Use English skill names ("CANSLIM", "VCP", "FinViz", etc.) for best search results on this page.
@@ -74,6 +74,7 @@ A comprehensive catalog of all 74 Claude Trading Skills organized by category. B
 | `fxmacrodata-calendar` | `standalone` | Fetches official macro calendar data directly for event-risk planning. |
 | `ibd-distribution-day-monitor` | `standalone` | Runs an independent distribution-day risk assessment for QQQ or SPY. |
 | `institutional-flow-tracker` | `standalone` | Produces an independent institutional ownership and flow assessment on demand. |
+| `intraday-market-monitor` | `standalone` | Scheduled hourly job (launchd) that publishes an intraday exposure posture for the trader and for pre-trade-discipline-gate; it is not a step inside a manual workflow manifest yet. |
 | `kanchi-dividend-review-monitor` | `workflow_step` | — |
 | `kanchi-dividend-sop` | `workflow_step` | — |
 | `kanchi-dividend-us-tax-accounting` | `workflow_step` | — |
@@ -152,6 +153,7 @@ A comprehensive catalog of all 74 Claude Trading Skills organized by category. B
 | **[Market News Analyst]({{ '/en/skills/market-news-analyst/' | relative_url }})** | Collects and analyzes market-moving news from the past 10 days via WebSearch. Impact scoring: (Price Impact x Breadth) x Forward Significance | <span class="badge badge-free">No API</span> |
 | **Market Environment Analysis** | Comprehensive global macro briefing covering equity indices, FX, commodities, yields, and sentiment with structured reporting templates | <span class="badge badge-free">No API</span> |
 | **[Market Breadth Analyzer]({{ '/en/skills/market-breadth-analyzer/' | relative_url }})** | Quantifies market breadth health using a data-driven 6-component scoring system (0-100) from publicly available CSV data | <span class="badge badge-free">No API</span> |
+| **[Intraday Market Monitor]({{ '/en/skills/intraday-market-monitor/' | relative_url }})** | Hourly launchd job on 15-minute-delayed Polygon data: all-tickers breadth snapshot, SPY/QQQ vs VWAP and prior-day range, sector relative strength, hourly-close watchlist signals → NEW_ENTRY_ALLOWED / REDUCE_ONLY / CASH_PRIORITY posture with Discord post and optional Claude narrative | <span class="badge badge-required">Polygon Required</span> |
 | **Uptrend Analyzer** | Diagnoses breadth health using Uptrend Ratio Dashboard tracking ~2,800 US stocks across 11 sectors. 5-component composite scoring with warning overlays | <span class="badge badge-free">No API</span> |
 | **Macro Regime Detector** | Detects structural macro regime transitions (1-2 year horizon) using 6-component cross-asset ratio analysis (RSP/SPY, yield curve, credit, size factor, sector rotation) | <span class="badge badge-free">No API</span> <span class="badge badge-optional">FMP Optional</span> |
 | **[US Market Bubble Detector]({{ '/en/skills/us-market-bubble-detector/' | relative_url }})** | Data-driven bubble risk assessment using Minsky/Kindleberger framework. Two-phase evaluation: quantitative scoring (0-12) + strict qualitative adjustment (0-3). Five risk phases | <span class="badge badge-free">No API</span> |
@@ -378,5 +380,6 @@ A comprehensive catalog of all 74 Claude Trading Skills organized by category. B
 | Value Dividend Screener | Required | Recommended | -- |
 | VCP Screener | Required | -- | -- |
 | Weekly Performance Digest | -- | -- | -- |
+| Intraday Market Monitor | -- | -- | -- |
 
 "--" means not required. "Required" means the skill cannot run without that provider; "Recommended" means the provider is the preferred path but a fallback exists; "Optional" means it only enhances functionality.
