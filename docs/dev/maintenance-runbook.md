@@ -147,8 +147,11 @@ drift `--check`) then `bash scripts/run_all_tests.sh`.
 
 ## 5. Scheduled self-maintenance jobs
 
-Three shipped `launchd` **templates** under `launchd/` automate repo
-self-maintenance. They are templates (paths use a `$PROJECT_DIR` placeholder);
+Four shipped `launchd` **templates** under `launchd/`: three automate repo
+self-maintenance and one (`intraday-monitor`) is the trading-side hourly job
+(reads `POLYGON_API_KEY` / `DISCORD_WEBHOOK_URL` from the gitignored `.envrc`,
+writes `reports/intraday/` and `state/intraday/`, logs to
+`logs/launchd_intraday_monitor*.log`). They are templates (paths use a `$PROJECT_DIR` placeholder);
 whether they are loaded is **local machine state**, so verify with `launchctl`
 rather than assuming.
 
@@ -157,6 +160,7 @@ rather than assuming.
 | `com.trade-analysis.skill-improvement.plist` | `com.trade-analysis.skill-improvement` | daily 05:00 | `scripts/run_skill_improvement.sh` → `run_skill_improvement_loop.py` |
 | `com.trade-analysis.skill-generation-daily.plist` | `com.trade-analysis.skill-generation-daily` | daily 07:00 | `scripts/run_skill_generation.sh` (daily) → `run_skill_generation_pipeline.py` |
 | `com.trade-analysis.skill-generation-weekly.plist` | `com.trade-analysis.skill-generation-weekly` | Saturday 06:00 | `scripts/run_skill_generation.sh` (weekly: mine + score) |
+| `com.trade-analysis.intraday-monitor.plist` | `com.trade-analysis.intraday-monitor` | every hour at :20 and :50 (local); the script maps to ET slots 09:50 … 16:20 and exits on non-session days | `scripts/run_intraday_monitor.sh` → `skills/intraday-market-monitor/scripts/intraday_monitor.py run --auto-slot` |
 
 For a concise explanation of what each mode reads and writes, including why
 `--dry-run` is not filesystem-read-only, see the
@@ -260,7 +264,11 @@ python3 scripts/package_skills.py --skill <skill-name>
 ```
 
 The packager excludes `tests/`, `__pycache__/`, Python bytecode, and `.DS_Store`
-files from distributable archives. The `skill-docs-drift` hook's `files:`
+files from distributable archives. Since the Polygon migration (2026-09) the
+archives of skills that import `scripts/market_data` via `_repo_bootstrap.py`
+are **not standalone**: they need the repository checkout (or
+`TRADING_SKILLS_REPO_ROOT`) at runtime. They are still regenerated so the
+`changed-package-drift` gate stays meaningful. The `skill-docs-drift` hook's `files:`
 includes `skill-packages/*.skill`, so a stale archive that feeds a
 generator-owned page surfaces as drift. Repackage, `git add` the `.skill`, and
 re-run `pre-commit run --all-files`.

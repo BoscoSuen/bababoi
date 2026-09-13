@@ -394,11 +394,13 @@ Several skills require API keys for data access:
 | **Options Strategy Advisor** | 🟡 Optional | ❌ Not used | ❌ Not used | FMP for stock data; theoretical pricing works without |
 | **Portfolio Manager** | ❌ Not used | ❌ Not used | ✅ Required | Real-time holdings via Alpaca MCP |
 | **CANSLIM Stock Screener** | ✅ Required | ❌ Not used | ❌ Not used | Phase 3.1 (7 components, multi-period RS); free tier sufficient for 35 stocks; Finviz web scraping for institutional data |
-| **VCP Screener** | ✅ Required | ❌ Not used | ❌ Not used | Stage 2 + VCP pattern screening; free tier sufficient |
+| **VCP Screener** | ❌ Not used | ❌ Not used | ❌ Not used | Polygon (`POLYGON_API_KEY`) via `scripts/market_data`; Stage 2 + VCP pattern screening |
 | **Parabolic Short Trade Planner** | ✅ Required | ❌ Not used | ✅ Phase 3 / 🟡 Phase 2 | FMP for Phase 1 screener; Alpaca required for Phase 3 intraday bars (paper feed OK), optional for Phase 2 borrow checks. No SDK — `requests` direct |
-| **FTD Detector** | ✅ Required | ❌ Not used | ❌ Not used | Index price data for rally/FTD detection |
-| **IBD Distribution Day Monitor** | ✅ Required | ❌ Not used | ❌ Not used | Daily QQQ/SPY OHLCV for Distribution Day detection |
-| **Macro Regime Detector** | 🟡 Optional | ❌ Not used | ❌ Not used | Keyless yfinance ETF history; optional FMP market and Treasury data |
+| **FTD Detector** | ❌ Not used | ❌ Not used | ❌ Not used | Polygon (`POLYGON_API_KEY`); SPY/QQQ proxies for rally/FTD detection |
+| **IBD Distribution Day Monitor** | ❌ Not used | ❌ Not used | ❌ Not used | Polygon (`POLYGON_API_KEY`); daily QQQ/SPY OHLCV for Distribution Day detection |
+| **Macro Regime Detector** | ❌ Not used | ❌ Not used | ❌ Not used | Polygon (`POLYGON_API_KEY`); cross-asset ETF history and Treasury yields |
+| **Intraday Market Monitor** | ❌ Not used | ❌ Not used | ❌ Not used | Polygon (`POLYGON_API_KEY`, Stocks Starter) hourly breadth/sector/posture; optional `DISCORD_WEBHOOK_URL` and `claude -p` narrative |
+| **Market Top Detector** | ❌ Not used | ❌ Not used | ❌ Not used | Polygon (`POLYGON_API_KEY`); VIX via yfinance; TraderMonty breadth CSV |
 | **Market Breadth Analyzer** | ❌ Not used | ❌ Not used | ❌ Not used | Uses free GitHub CSV data |
 | **Uptrend Analyzer** | ❌ Not used | ❌ Not used | ❌ Not used | Uses free GitHub CSV data |
 | **Sector Analyst** | ❌ Not used | ❌ Not used | ❌ Not used | Uses free GitHub CSV data; optional chart images |
@@ -409,14 +411,20 @@ Several skills require API keys for data access:
 | **Edge Strategy Reviewer** | ❌ Not used | ❌ Not used | ❌ Not used | Deterministic scoring on local YAML drafts |
 | **Edge Pipeline Orchestrator** | ❌ Not used | ❌ Not used | ❌ Not used | Orchestrates local edge skills via subprocess |
 | **Edge Signal Aggregator** | ❌ Not used | ❌ Not used | ❌ Not used | Aggregates local edge-skill JSON/YAML outputs into weighted ranked signals |
-| **Trader Memory Core** | 🟡 Optional | ❌ Not used | ❌ Not used | FMP only for MAE/MFE in postmortem; core features work offline |
+| **Trader Memory Core** | ❌ Not used | ❌ Not used | ❌ Not used | Polygon only for MAE/MFE (`postmortem --with-prices`); core features work offline |
 | **Exposure Coach** | 🟡 Optional | ❌ Not used | ❌ Not used | FMP only when institutional-flow-tracker data is included |
-| **Signal Postmortem** | 🟡 Optional | ❌ Not used | ❌ Not used | FMP for fetching realized returns; manual price entry also supported |
+| **Signal Postmortem** | ❌ Not used | ❌ Not used | ❌ Not used | Polygon (optional) for realized returns; manual price entry also supported |
 | Dual-Axis Skill Reviewer | ❌ Not used | ❌ Not used | ❌ Not used | Deterministic scoring + optional LLM review |
 
 ### API Setup
 
-**Financial Modeling Prep (FMP) API:**
+**Polygon.io (regime / swing / memory skills):**
+- Stocks Starter plan or higher (15-minute delayed; no indices or options)
+- Sign up: https://polygon.io/
+- Set environment variable: `export POLYGON_API_KEY=your_key_here`
+- Shared client: `scripts/market_data/` (cache under `.cache/market_data/`, `--provider fixture` replay)
+
+**Financial Modeling Prep (FMP) API (remaining legacy skills):**
 - Free tier: 250 requests/day (sufficient for most use cases)
 - Sign up: https://financialmodelingprep.com/developer/docs
 - Set environment variable: `export FMP_API_KEY=your_key_here`

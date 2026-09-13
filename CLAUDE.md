@@ -311,7 +311,29 @@ The table below is **auto-generated** from `skills-index.yaml` by `scripts/gener
 
 #### API Key Setup
 
-**Financial Modeling Prep (FMP) API:**
+**Polygon.io (primary market-data provider for migrated skills):**
+```bash
+# Stocks Starter plan (15-minute delayed, unlimited calls, no indices/options)
+export POLYGON_API_KEY=your_key_here
+
+# Skills read it through the shared layer scripts/market_data/ (PolygonProvider +
+# on-disk cache under .cache/market_data/). Every migrated CLI also accepts
+# --api-key and `--provider fixture --fixture-dir DIR` for offline replay.
+# Migrated skills: intraday-market-monitor, ftd-detector, ibd-distribution-day-monitor,
+# macro-regime-detector, market-top-detector, vcp-screener, technical-analyst,
+# signal-postmortem, trader-memory-core (MAE/MFE via `postmortem --with-prices`).
+# ^GSPC/^IXIC are served by SPY/QQQ proxies; ^VIX/^VIX3M come from yfinance.
+```
+
+**Discord webhook (intraday-market-monitor notifications, optional):**
+```bash
+export DISCORD_WEBHOOK_URL=https://discord.com/api/webhooks/...
+python3 skills/intraday-market-monitor/scripts/intraday_monitor.py discord-test
+```
+
+Put both in the gitignored `.envrc`; `scripts/run_intraday_monitor.sh` sources it for launchd.
+
+**Financial Modeling Prep (FMP) API (frozen legacy skills only):**
 ```bash
 # Set environment variable (preferred method)
 export FMP_API_KEY=your_key_here

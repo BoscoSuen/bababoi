@@ -123,6 +123,7 @@ FMP / FINVIZ / Alpaca の有料サブスクをまだ持っていない場合は�
 
 これはリサーチ・ジャーナリング・リスクレビューを支援するアシスタントであり、**自動売買システムではありません**。
 発注を行わず、シグナル配信サービスでもなく、隠れた定期ジョブも実行しません。
+
 **最終的な意思決定は常に人間が行います**。
 
 ## 主要スキル領域
@@ -351,7 +352,11 @@ Core + Satellite の主導線は上記の「おすすめの始め方」にまと
 
 いくつかのスキルはデータアクセスのためにAPIキーが必要です：
 
-- **経済カレンダー取得**、**決算カレンダー**、**CANSLIM株式スクリーナー**、**VCPスクリーナー**、**FTD検出器**、**マクロレジーム検出器**、**IBD Distribution Day Monitor**: [Financial Modeling Prep (FMP) API](https://financialmodelingprep.com)キーが必要
+- **Intraday Market Monitor**、**VCPスクリーナー**、**FTD検出器**、**マクロレジーム検出器**、**IBD Distribution Day Monitor**、**Market Top Detector**、**テクニカルアナリスト（価格フォールバック）**: [Polygon.io](https://polygon.io/)（Stocks Starter 以上、15分遅延）キーが必要
+  - 環境変数を設定: `export POLYGON_API_KEY=your_key_here`（gitignore済みの `.envrc` に記載）
+  - 共有クライアント: `scripts/market_data/`（`.cache/market_data/` にキャッシュ、`--provider fixture --fixture-dir DIR` でオフライン再生）
+  - Intraday Market Monitor の通知には任意で `DISCORD_WEBHOOK_URL`
+- **経済カレンダー取得**、**決算カレンダー**、**CANSLIM株式スクリーナー**: [Financial Modeling Prep (FMP) API](https://financialmodelingprep.com)キーが必要
   - 無料ティア: 250リクエスト/日（ほとんどのスキルに十分）
   - 環境変数を設定: `export FMP_API_KEY=your_key_here`
   - または、プロンプト時にコマンドライン引数でキーを提供
@@ -364,9 +369,9 @@ Core + Satellite の主導線は上記の「おすすめの始め方」にまと
 - **エッジ戦略レビュアー** (`edge-strategy-reviewer`): APIキー不要（ローカルYAMLドラフトの決定論的スコアリング）
 - **エッジパイプラインオーケストレータ** (`edge-pipeline-orchestrator`): APIキー不要（ローカルエッジスキルをsubprocess経由でオーケストレーション）
 - **エッジシグナルアグリゲータ** (`edge-signal-aggregator`): APIキー不要（ローカルJSON/YAML出力を統合し重み付けランキングを生成）
-- **Trader Memory Core** (`trader-memory-core`): 🟡 オプション — FMPはポストモーテムのMAE/MFEのみ使用。コア機能はオフラインで動作
+- **Trader Memory Core** (`trader-memory-core`): 🟡 オプション — Polygonは `postmortem --with-prices` のMAE/MFEのみ使用。コア機能はオフラインで動作
 - **エクスポージャーコーチ** (`exposure-coach`): 🟡 オプション — FMPはinstitutional-flow-trackerデータ利用時のみ必要
-- **シグナルポストモーテム** (`signal-postmortem`): 🟡 オプション — FMPは実現リターン取得用。手動価格入力にも対応
+- **シグナルポストモーテム** (`signal-postmortem`): 🟡 オプション — Polygonは実現リターン取得用。手動価格入力にも対応
 
 ## 参考リンク
 - Claude Skillsローンチ概要: https://www.anthropic.com/news/skills
