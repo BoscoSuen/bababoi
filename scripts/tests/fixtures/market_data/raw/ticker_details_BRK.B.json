@@ -1,0 +1,39 @@
+{
+ "results": {
+  "active": true,
+  "address": {
+   "address1": "3555 FARNAM STREET",
+   "city": "OMAHA",
+   "postal_code": "68131",
+   "state": "NE"
+  },
+  "branding": {
+   "icon_url": "https://api.polygon.io/v1/reference/company-branding/YmVya3NoaXJlaGF0aGF3YXkuY29t/images/2026-09-01_icon.png",
+   "logo_url": "https://api.polygon.io/v1/reference/company-branding/YmVya3NoaXJlaGF0aGF3YXkuY29t/images/2026-09-01_logo.svg"
+  },
+  "cik": "0001067983",
+  "composite_figi": "BBG000DWG505",
+  "currency_name": "usd",
+  "description": "Berkshire Hathaway is a holding company with a wide array of subsidiaries engaged in diverse activities. The firm's core business segment is insurance, run primarily through Geico, Berkshire Hathaway Reinsurance Group, and Berkshire Hathaway Primary Group. Berkshire has used the excess cash thrown off from its operations to acquire Burlington Northern Santa Fe (railroad), Berkshire Hathaway Energy (utilities and energy distributors), and the companies that make up its manufacturing, service, and retailing operations (which include Precision Castparts, Lubrizol, Clayton Homes, Marmon, and IMC/ISCAR). The conglomerate is unique in that it is run on a completely decentralized basis. Berkshire generated close to $371.4 billion in operating revenue in during 2025.",
+  "homepage_url": "https://www.berkshirehathaway.com",
+  "list_date": "1996-05-09",
+  "locale": "us",
+  "market": "stocks",
+  "market_cap": 1092554057563.78,
+  "name": "BERKSHIRE HATHAWAY Class B",
+  "phone_number": "(402) 346-1400",
+  "primary_exchange": "XNYS",
+  "round_lot": 40,
+  "share_class_figi": "BBG001S90346",
+  "share_class_shares_outstanding": 1408035161,
+  "sic_code": "6331",
+  "sic_description": "FIRE, MARINE & CASUALTY INSURANCE",
+  "ticker": "BRK.B",
+  "ticker_root": "BRK",
+  "ticker_suffix": "B",
+  "total_employees": 387800,
+  "type": "CS",
+  "weighted_shares_outstanding": 2140709794
+ },
+ "status": "OK"
+}

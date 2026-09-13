@@ -21,6 +21,7 @@ _SKILLS_MARKER = f"{Path.cwd()}/skills/"
 # Only these are evicted; unique names (e.g. analyze_single_stock) are kept.
 _CONFLICTING_BASENAMES = frozenset(
     {
+        "_repo_bootstrap",  # migrated skills (identical shim, still evict per skill)
         "calculators",  # 8 skills
         "fmp_client",  # 7 skills
         "helpers",  # 5 skills (test helpers)

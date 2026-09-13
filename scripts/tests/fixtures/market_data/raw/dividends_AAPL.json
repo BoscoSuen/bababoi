@@ -1,0 +1,125 @@
+{
+ "results": [
+  {
+   "cash_amount": 0.27,
+   "currency": "USD",
+   "declaration_date": "2026-07-30",
+   "dividend_type": "CD",
+   "ex_dividend_date": "2026-08-10",
+   "frequency": 4,
+   "id": "E1e778b36bcedb4d1589a970be52c16294ad4bc89c8627d56a3b970f6cf2a6e10",
+   "pay_date": "2026-08-13",
+   "record_date": "2026-08-10",
+   "ticker": "AAPL"
+  },
+  {
+   "cash_amount": 0.27,
+   "currency": "USD",
+   "declaration_date": "2026-04-30",
+   "dividend_type": "CD",
+   "ex_dividend_date": "2026-05-11",
+   "frequency": 4,
+   "id": "E9fd05fa01d55de07885332c97a263e93ac4bf03c742faef9b4f18544b34e928f",
+   "pay_date": "2026-05-14",
+   "record_date": "2026-05-11",
+   "ticker": "AAPL"
+  },
+  {
+   "cash_amount": 0.26,
+   "currency": "USD",
+   "declaration_date": "2026-01-29",
+   "dividend_type": "CD",
+   "ex_dividend_date": "2026-02-09",
+   "frequency": 4,
+   "id": "Ea9c1921173ef4be798ca05a1f7015b4ae452bfcf7d641a3a63c1fd852f1eaf05",
+   "pay_date": "2026-02-12",
+   "record_date": "2026-02-09",
+   "ticker": "AAPL"
+  },
+  {
+   "cash_amount": 0.26,
+   "currency": "USD",
+   "declaration_date": "2025-10-30",
+   "dividend_type": "CD",
+   "ex_dividend_date": "2025-11-10",
+   "frequency": 4,
+   "id": "E46d7ebeffba0ae65cff4eb03497ce2a27de1fba5a67b5cda1ca0a8b6eedf5c8c",
+   "pay_date": "2025-11-13",
+   "record_date": "2025-11-10",
+   "ticker": "AAPL"
+  },
+  {
+   "cash_amount": 0.26,
+   "currency": "USD",
+   "declaration_date": "2025-07-31",
+   "dividend_type": "CD",
+   "ex_dividend_date": "2025-08-11",
+   "frequency": 4,
+   "id": "Ed2c9da60abda1e3f0e99a43f6465863c137b671e1f5cd3f833d1fcb4f4eb27fe",
+   "pay_date": "2025-08-14",
+   "record_date": "2025-08-11",
+   "ticker": "AAPL"
+  },
+  {
+   "cash_amount": 0.26,
+   "currency": "USD",
+   "declaration_date": "2025-05-01",
+   "dividend_type": "CD",
+   "ex_dividend_date": "2025-05-12",
+   "frequency": 4,
+   "id": "E508c0a63699951e57b51c4cf746a7f3b4101c39232372228d68585046c0b4a67",
+   "pay_date": "2025-05-15",
+   "record_date": "2025-05-12",
+   "ticker": "AAPL"
+  },
+  {
+   "cash_amount": 0.25,
+   "currency": "USD",
+   "declaration_date": "2025-01-30",
+   "dividend_type": "CD",
+   "ex_dividend_date": "2025-02-10",
+   "frequency": 4,
+   "id": "Ecc0fc5473a63ec503030d7aff356e1c4f467301d08791ac000e10ef831b58a71",
+   "pay_date": "2025-02-13",
+   "record_date": "2025-02-10",
+   "ticker": "AAPL"
+  },
+  {
+   "cash_amount": 0.25,
+   "currency": "USD",
+   "declaration_date": "2024-10-31",
+   "dividend_type": "CD",
+   "ex_dividend_date": "2024-11-08",
+   "frequency": 4,
+   "id": "E416a068758f85277196150c3eb73a3331d04698856c141e883ad95710dd0b189",
+   "pay_date": "2024-11-14",
+   "record_date": "2024-11-11",
+   "ticker": "AAPL"
+  },
+  {
+   "cash_amount": 0.25,
+   "currency": "USD",
+   "declaration_date": "2024-08-01",
+   "dividend_type": "CD",
+   "ex_dividend_date": "2024-08-12",
+   "frequency": 4,
+   "id": "E47fd49ef418c51f7d2415b66030f735adaccf72d85f6b86eea12f96aa1d1c535",
+   "pay_date": "2024-08-15",
+   "record_date": "2024-08-12",
+   "ticker": "AAPL"
+  },
+  {
+   "cash_amount": 0.25,
+   "currency": "USD",
+   "declaration_date": "2024-05-02",
+   "dividend_type": "CD",
+   "ex_dividend_date": "2024-05-10",
+   "frequency": 4,
+   "id": "E495b1d61b65ddc1eb3abd60eaacf33c1313433df83f5fd63f1971612ff684f79",
+   "pay_date": "2024-05-16",
+   "record_date": "2024-05-13",
+   "ticker": "AAPL"
+  }
+ ],
+ "status": "OK"
+}

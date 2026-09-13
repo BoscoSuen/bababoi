@@ -1,0 +1,251 @@
+{
+ "schema_version": 1,
+ "provider": "polygon",
+ "endpoint": "polygon-snapshot-tickers",
+ "path": "/v2/snapshot/locale/us/markets/stocks/tickers",
+ "query": {
+  "tickers": "SPY,QQQ"
+ },
+ "contract_version": 1,
+ "recorded_on": "2026-09-13",
+ "recording": "live Stocks Starter response rows (request_id/next_url stripped); consumed via scripts/market_data/polygon.py",
+ "owners": [
+  "vcp-screener",
+  "ftd-detector",
+  "market-top-detector",
+  "macro-regime-detector",
+  "ibd-distribution-day-monitor",
+  "trader-memory-core",
+  "signal-postmortem",
+  "technical-analyst"
+ ],
+ "tier_notes": "Starter: 15-min delayed; rows carry no lastTrade/lastQuote",
+ "required_fields": {
+  "ticker": {
+   "types": [
+    "str"
+   ],
+   "nullable": false
+  },
+  "day": {
+   "types": [
+    "dict"
+   ],
+   "nullable": false
+  },
+  "prevDay": {
+   "types": [
+    "dict"
+   ],
+   "nullable": false
+  },
+  "todaysChangePerc": {
+   "types": [
+    "int",
+    "float"
+   ],
+   "nullable": true
+  },
+  "updated": {
+   "types": [
+    "int"
+   ],
+   "nullable": true
+  }
+ },
+ "optional_fields": [
+  "min",
+  "todaysChange",
+  "fmv",
+  "lastTrade",
+  "lastQuote"
+ ],
+ "legacy_aliases": {},
+ "known_gaps": [],
+ "non_empty": {
+  "min_rows": 1,
+  "reason": "filtered snapshot must return the requested tickers"
+ },
+ "fixture": [
+  {
+   "day": {
+    "c": 187.67,
+    "dv": "6533820.552084",
+    "h": 188.64,
+    "l": 186.88,
+    "o": 187.35,
+    "v": 6533820.0,
+    "vw": 187.8971
+   },
+   "min": {
+    "av": 6533820,
+    "c": 187.66,
+    "dav": "6533820.552084",
+    "dv": "200.0",
+    "h": 187.66,
+    "l": 187.66,
+    "n": 1,
+    "o": 187.66,
+    "t": 1789171140000,
+    "v": 200,
+    "vw": 187.66
+   },
+   "prevDay": {
+    "c": 185.22,
+    "h": 186.52,
+    "l": 184.565,
+    "o": 185.24,
+    "v": 5571344.149704,
+    "vw": 185.5244
+   },
+   "ticker": "XLK",
+   "todaysChange": 2.4499999999999886,
+   "todaysChangePerc": 1.3227513227513166,
+   "updated": 1789171200000000000
+  },
+  {
+   "day": {
+    "c": 65.14,
+    "dv": "30546108.431613",
+    "h": 65.725,
+    "l": 64.71,
+    "o": 64.89,
+    "v": 30546108.0,
+    "vw": 65.1049
+   },
+   "min": {
+    "av": 30546108,
+    "c": 65.2,
+    "dav": "30546108.431613",
+    "dv": "900.0",
+    "h": 65.2,
+    "l": 65.2,
+    "n": 1,
+    "o": 65.2,
+    "t": 1789171140000,
+    "v": 900,
+    "vw": 65.2
+   },
+   "prevDay": {
+    "c": 64.93,
+    "h": 66.17,
+    "l": 64.34,
+    "o": 66.14,
+    "v": 37212595.839292,
+    "vw": 65.0373
+   },
+   "ticker": "XLE",
+   "todaysChange": 0.20999999999999375,
+   "todaysChangePerc": 0.3234252271677094,
+   "updated": 1789171200000000000
+  },
+  {
+   "day": {
+    "c": 165.36,
+    "dv": "6502828.152879",
+    "h": 167.13,
+    "l": 165.11,
+    "o": 166.83,
+    "v": 6502828.0,
+    "vw": 165.6972
+   },
+   "min": {
+    "av": 6502508,
+    "c": 165.36,
+    "dav": "6502508.737788",
+    "dv": "2635.0",
+    "h": 165.36,
+    "l": 165.36,
+    "n": 1,
+    "o": 165.36,
+    "t": 1789166940000,
+    "v": 2635,
+    "vw": 165.36
+   },
+   "prevDay": {
+    "c": 165.66,
+    "h": 167.075,
+    "l": 165.58,
+    "o": 166.5,
+    "v": 7935205.230922,
+    "vw": 166.0144
+   },
+   "ticker": "XLV",
+   "todaysChange": -0.29999999999998295,
+   "todaysChangePerc": -0.18109380659180427,
+   "updated": 1789171200010199909
+  },
+  {
+   "day": {
+    "c": 80.87,
+    "dv": "32454352.157252",
+    "h": 81.475,
+    "l": 80.81,
+    "o": 81.3,
+    "v": 32454352.0,
+    "vw": 81.0805
+   },
+   "min": {
+    "av": 32454352,
+    "c": 80.93,
+    "dav": "32454352.157252",
+    "dv": "341.0",
+    "h": 80.93,
+    "l": 80.925,
+    "n": 5,
+    "o": 80.9285,
+    "t": 1789171140000,
+    "v": 341,
+    "vw": 80.9279
+   },
+   "prevDay": {
+    "c": 80.78,
+    "h": 81.36,
+    "l": 80.665,
+    "o": 80.995,
+    "v": 60481495.55023,
+    "vw": 80.9272
+   },
+   "ticker": "TLT",
+   "todaysChange": 0.15000000000000568,
+   "todaysChangePerc": 0.185689527110678,
+   "updated": 1789171200000000000
+  },
+  {
+   "day": {
+    "c": 50.95,
+    "dv": "8969602.124250",
+    "h": 51.21,
+    "l": 50.87,
+    "o": 51.19,
+    "v": 8969602.0,
+    "vw": 51.0082
+   },
+   "min": {
+    "av": 8936979,
+    "c": 50.97,
+    "dav": "8936979.614281",
+    "dv": "8881.0",
+    "h": 50.97,
+    "l": 50.97,
+    "n": 3,
+    "o": 50.97,
+    "t": 1789157160000,
+    "v": 8881,
+    "vw": 50.9514
+   },
+   "prevDay": {
+    "c": 50.76,
+    "h": 51.05,
+    "l": 50.58,
+    "o": 50.76,
+    "v": 9652458.454067,
+    "vw": 50.7506
+   },
+   "ticker": "XLB",
+   "todaysChange": 0.19000000000000483,
+   "todaysChangePerc": 0.37431048069346895,
+   "updated": 1789171200140973517
+  }
+ ]
+}

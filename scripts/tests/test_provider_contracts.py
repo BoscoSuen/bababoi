@@ -28,10 +28,6 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPO_ROOT))
 
 from scripts import check_provider_contracts  # noqa: E402
-
-# Frozen legacy FMP clients (generator removed). Migrated skills no longer ship
-# a vendored fmp_client.py and are covered by scripts/tests/test_market_data_*.py.
-HIST_RETURN_LIST = {"earnings-trade-analyzer": True}
 from scripts.provider_contracts import (  # noqa: E402
     ContractLoadError,
     load_contracts,
@@ -40,7 +36,13 @@ from scripts.provider_contracts import (  # noqa: E402
     validate_rows,
 )
 
+# Frozen legacy FMP clients (generator removed). Migrated skills no longer ship
+# a vendored fmp_client.py and are covered by scripts/tests/test_market_data_*.py.
+HIST_RETURN_LIST = {"earnings-trade-analyzer": True}
+
 CONTRACTS = load_contracts(REPO_ROOT)
+# The live canary probes FMP contracts only (see cmd_canary).
+FMP_CONTRACTS = {k: v for k, v in CONTRACTS.items() if v.provider == "fmp"}
 
 
 def _skill_ids() -> list[str]:
@@ -56,13 +58,23 @@ SKILL_IDS = _skill_ids()
 # ---------------------------------------------------------------------------
 
 
-def test_four_contracts_are_present():
+def test_expected_contracts_are_present():
     assert set(CONTRACTS) == {
+        # frozen FMP contracts
         "profile",
         "quote",
         "historical-price-eod-full",
         "earnings-calendar",
+        # Polygon (scripts/market_data)
+        "polygon-aggs-day",
+        "polygon-snapshot-tickers",
+        "polygon-dividends",
     }
+
+
+def test_polygon_contracts_declare_provider():
+    for name in ("polygon-aggs-day", "polygon-snapshot-tickers", "polygon-dividends"):
+        assert CONTRACTS[name].provider == "polygon"
 
 
 @pytest.mark.parametrize("name", sorted(CONTRACTS))
@@ -506,7 +518,7 @@ def test_canary_success_writes_report_and_never_leaks_the_key(tmp_path, monkeypa
     for entry in report["contracts"].values():
         assert entry["ok"] is True
     assert report["ok"] is True
-    assert report["budget"] == {"max": len(CONTRACTS), "used": len(CONTRACTS)}
+    assert report["budget"] == {"max": len(FMP_CONTRACTS), "used": len(FMP_CONTRACTS)}
     assert "FAKEKEY123" not in report_path.read_text(encoding="utf-8")
 
 
@@ -533,7 +545,7 @@ def test_canary_detects_anomalies_and_exits_1(tmp_path, monkeypatch):
     codes = [a["code"] for a in report["contracts"]["profile"]["anomalies"]]
     assert any(c.startswith("canonical_absent_legacy_present:mktCap->marketCap") for c in codes)
     assert report["ok"] is False
-    assert report["budget"] == {"max": len(CONTRACTS), "used": len(CONTRACTS)}
+    assert report["budget"] == {"max": len(FMP_CONTRACTS), "used": len(FMP_CONTRACTS)}
     assert "FAKEKEY123" not in report_path.read_text(encoding="utf-8")
 
 
@@ -575,7 +587,7 @@ def test_canary_default_max_calls_is_number_of_loaded_contracts(tmp_path, monkey
     assert exit_code == 0
     assert report_path.exists()
     report = json.loads(report_path.read_text(encoding="utf-8"))
-    assert report["budget"] == {"max": len(CONTRACTS), "used": len(CONTRACTS)}
+    assert report["budget"] == {"max": len(FMP_CONTRACTS), "used": len(FMP_CONTRACTS)}
 
 
 def test_build_requests_fetch_redacts_apikey_from_exception_message(monkeypatch):

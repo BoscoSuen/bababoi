@@ -1,0 +1,131 @@
+{
+ "schema_version": 1,
+ "provider": "polygon",
+ "endpoint": "polygon-aggs-day",
+ "path": "/v2/aggs/ticker/{ticker}/range/1/day/{from}/{to}",
+ "query": {
+  "adjusted": "true",
+  "sort": "asc",
+  "limit": 50000
+ },
+ "contract_version": 1,
+ "recorded_on": "2026-09-13",
+ "recording": "live Stocks Starter response rows (request_id/next_url stripped); consumed via scripts/market_data/polygon.py",
+ "owners": [
+  "vcp-screener",
+  "ftd-detector",
+  "market-top-detector",
+  "macro-regime-detector",
+  "ibd-distribution-day-monitor",
+  "trader-memory-core",
+  "signal-postmortem",
+  "technical-analyst"
+ ],
+ "tier_notes": "adjusted=true is split-adjusted only; dividends applied by scripts/market_data/adjust.py; v may be float",
+ "required_fields": {
+  "t": {
+   "types": [
+    "int"
+   ],
+   "nullable": false
+  },
+  "o": {
+   "types": [
+    "int",
+    "float"
+   ],
+   "nullable": false
+  },
+  "h": {
+   "types": [
+    "int",
+    "float"
+   ],
+   "nullable": false
+  },
+  "l": {
+   "types": [
+    "int",
+    "float"
+   ],
+   "nullable": false
+  },
+  "c": {
+   "types": [
+    "int",
+    "float"
+   ],
+   "nullable": false
+  },
+  "v": {
+   "types": [
+    "int",
+    "float"
+   ],
+   "nullable": false
+  }
+ },
+ "optional_fields": [
+  "vw",
+  "n",
+  "otc"
+ ],
+ "legacy_aliases": {},
+ "known_gaps": [],
+ "non_empty": {
+  "min_rows": 1,
+  "reason": "SPY daily aggregates must never be empty"
+ },
+ "fixture": [
+  {
+   "c": 770.19,
+   "h": 772.87,
+   "l": 769,
+   "n": 488173,
+   "o": 772.01,
+   "t": 1788494400000,
+   "v": 34054199.254436,
+   "vw": 770.6795
+  },
+  {
+   "c": 765.96,
+   "h": 769.7,
+   "l": 765.14,
+   "n": 569646,
+   "o": 769.07,
+   "t": 1788840000000,
+   "v": 44746095.499117,
+   "vw": 766.9539
+  },
+  {
+   "c": 762.4,
+   "h": 764.47,
+   "l": 760.94,
+   "n": 470202,
+   "o": 764.08,
+   "t": 1788926400000,
+   "v": 32812411.192008,
+   "vw": 763.0404
+  },
+  {
+   "c": 757.83,
+   "h": 760.11,
+   "l": 756.64,
+   "n": 562682,
+   "o": 758.03,
+   "t": 1789012800000,
+   "v": 42740375.331215,
+   "vw": 758.8553
+  },
+  {
+   "c": 764.29,
+   "h": 766.38,
+   "l": 763.6,
+   "n": 510661,
+   "o": 764.72,
+   "t": 1789099200000,
+   "v": 45512741.313339,
+   "vw": 763.7524
+  }
+ ]
+}

@@ -157,6 +157,12 @@ def cmd_canary(args: argparse.Namespace) -> int:
             "ERROR: no provider contracts found under config/provider-contracts/", file=sys.stderr
         )
         return 1
+    # The live canary is FMP-only (query-param auth + FMP host). Polygon
+    # contracts are exercised offline by scripts/tests/test_market_data_*.py.
+    contracts = {k: v for k, v in contracts.items() if v.provider == "fmp"}
+    if not contracts:
+        print("SKIPPED: no fmp contracts to probe", file=sys.stderr)
+        return 0
 
     # Default budget is exactly the number of loaded contracts (one call per
     # contract, no slack) — only an explicit --max-calls lower than that

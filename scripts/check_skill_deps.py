@@ -130,6 +130,16 @@ INTEGRATION_TO_DIST = {
     "yfinance": "yfinance",
 }
 
+# Repo-root shared packages a skill may import after the ``_repo_bootstrap``
+# sys.path insert. ``scripts`` is first-party for every skill; importing a
+# shared module implies the runtime distributions it needs, which the skill
+# must still declare in its own requirements.txt (the packaged ZIP is no
+# longer standalone, but the clean-room smoke installs from that manifest).
+SHARED_FIRST_PARTY: frozenset[str] = frozenset({"scripts"})
+SHARED_MODULE_DISTS: dict[str, tuple[str, ...]] = {
+    "scripts.market_data": ("requests",),
+}
+
 # Dynamic-import call shapes that are reported as warnings. Entries are
 # "<enclosing-function>:<call>(<literal-arg-or-?>)" so an allowlisted probe
 # never silences an unrelated dynamic import elsewhere.
@@ -190,6 +200,7 @@ class _ImportVisitor(ast.NodeVisitor):
     def __init__(self, first_party: set[str]) -> None:
         self.first_party = first_party
         self.third_party: set[str] = set()
+        self.shared: set[str] = set()
         self.modes: dict[str, list[bool]] = {}
         self.dynamic: set[str] = set()
         self._func_stack: list[str] = []
@@ -204,14 +215,14 @@ class _ImportVisitor(ast.NodeVisitor):
 
     def visit_Import(self, node: ast.Import) -> None:
         for alias in node.names:
-            self._record(alias.name.split(".")[0], node)
+            self._record(alias.name.split(".")[0], node, alias.name)
         self.generic_visit(node)
 
     def visit_ImportFrom(self, node: ast.ImportFrom) -> None:
         if node.level or not node.module:
             self.generic_visit(node)
             return
-        self._record(node.module.split(".")[0], node)
+        self._record(node.module.split(".")[0], node, node.module)
         self.generic_visit(node)
 
     def visit_Call(self, node: ast.Call) -> None:
@@ -223,7 +234,10 @@ class _ImportVisitor(ast.NodeVisitor):
             self.dynamic.add(f"{context}import_module({_call_first_arg(node) or '?'})")
         self.generic_visit(node)
 
-    def _record(self, top: str, node: ast.AST) -> None:
+    def _record(self, top: str, node: ast.AST, dotted: str = "") -> None:
+        if top in SHARED_FIRST_PARTY:
+            self.shared.add(dotted or top)
+            return
         if top in STDLIB_39 or top in self.first_party:
             return
         if top not in IMPORT_TO_DIST:
@@ -234,10 +248,12 @@ class _ImportVisitor(ast.NodeVisitor):
         self.modes.setdefault(top, []).append(_in_fallback_try(node, self._tree))
 
 
-def scan_skill_imports(skill_dir: Path) -> tuple[set[str], set[str], dict[str, bool]]:
+def scan_skill_imports(
+    skill_dir: Path,
+) -> tuple[set[str], set[str], dict[str, bool], set[str]]:
     """AST-scan packaged scripts (excluding tests/).
 
-    Returns (imports, dynamic_imports, fallback_imports). ``imports``
+    Returns (imports, dynamic_imports, fallback_imports, shared_imports). ``imports``
     holds third-party top-level names, plus ``!<name>`` sentinels for
     non-stdlib, non-first-party names absent from IMPORT_TO_DIST — those
     are fail-closed (extend the map instead of passing silently).
@@ -250,6 +266,7 @@ def scan_skill_imports(skill_dir: Path) -> tuple[set[str], set[str], dict[str, b
     scripts_dir = skill_dir / "scripts"
     first_party = _first_party_modules(scripts_dir)
     third_party: set[str] = set()
+    shared: set[str] = set()
     dynamic: set[str] = set()
     modes: dict[str, list[bool]] = {}
 
@@ -264,12 +281,13 @@ def scan_skill_imports(skill_dir: Path) -> tuple[set[str], set[str], dict[str, b
         visitor._tree = tree
         visitor.visit(tree)
         third_party |= visitor.third_party
+        shared |= visitor.shared
         dynamic |= visitor.dynamic
         for name, flags in visitor.modes.items():
             modes.setdefault(name, []).extend(flags)
 
     fallback = {name: (bool(flags) and all(flags)) for name, flags in modes.items()}
-    return third_party, dynamic, fallback
+    return third_party, dynamic, fallback, shared
 
 
 def _in_fallback_try(node: ast.AST, tree: ast.AST) -> bool:
@@ -401,7 +419,7 @@ def check_skill(
         report.ok = False
         report.errors.append(error)
 
-    third_party, dynamic, fallback = scan_skill_imports(skill_dir)
+    third_party, dynamic, fallback, shared = scan_skill_imports(skill_dir)
     for token in sorted(third_party):
         if token.startswith("!"):
             report.ok = False
@@ -413,6 +431,9 @@ def check_skill(
     imported_dists = {IMPORT_TO_DIST[top] for top in third_party}
     for extra, _reason in EXTRA_DIST_REQUIRED.get(skill_id, {}).items():
         imported_dists.add(extra)
+    for module, dists in SHARED_MODULE_DISTS.items():
+        if any(name == module or name.startswith(module + ".") for name in shared):
+            imported_dists.update(dists)
 
     declared = {entry.dist.lower(): entry for entry in entries.values()}
 

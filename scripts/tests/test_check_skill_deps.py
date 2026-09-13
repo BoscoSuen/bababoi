@@ -281,3 +281,66 @@ def test_smoke_verifies_packaged_manifest(tmp_path: Path) -> None:
 def test_smoke_rejects_unsafe_skill_id() -> None:
     assert deps.run_smoke("../evil", REPO_ROOT) == 1
     assert deps.run_smoke("", REPO_ROOT) == 1
+
+
+# --- shared repo-root packages (scripts/market_data) -----------------------
+
+_BOOTSTRAP_IMPORT = (
+    "import sys\n"
+    "from scripts.market_data.legacy import PolygonCompatClient\n"
+    "def main():\n    return PolygonCompatClient\n"
+)
+
+
+def test_shared_scripts_import_is_not_third_party(tmp_path: Path) -> None:
+    root = _make_tmp_root(
+        tmp_path,
+        "demo",
+        {
+            "scripts/run.py": _BOOTSTRAP_IMPORT,
+            "requirements.txt": "requests>=2.31.0\n",
+        },
+    )
+    report = deps.check_skill("demo", root, {})
+    assert not any("unmapped third-party import" in e for e in report.errors)
+    assert report.ok, report.errors
+
+
+def test_shared_market_data_import_implies_requests_required(tmp_path: Path) -> None:
+    root = _make_tmp_root(
+        tmp_path,
+        "demo",
+        {"scripts/run.py": _BOOTSTRAP_IMPORT, "requirements.txt": "# stdlib-only\n"},
+    )
+    report = deps.check_skill("demo", root, {})
+    assert not report.ok
+    assert any("undeclared third-party import: requests" in e for e in report.errors)
+
+
+def test_shared_import_keeps_requests_entry_fresh(tmp_path: Path) -> None:
+    # The skill itself never imports requests; the shared package does.
+    root = _make_tmp_root(
+        tmp_path,
+        "demo",
+        {
+            "scripts/run.py": "from scripts.market_data import get_provider\n",
+            "requirements.txt": "requests>=2.31.0\n",
+        },
+    )
+    report = deps.check_skill("demo", root, {})
+    assert report.ok, report.errors
+    assert not any("stale entry" in e for e in report.errors)
+
+
+def test_unrelated_shared_import_does_not_imply_requests(tmp_path: Path) -> None:
+    root = _make_tmp_root(
+        tmp_path,
+        "demo",
+        {
+            "scripts/run.py": "from scripts.provider_contracts import redact_url\n",
+            "requirements.txt": "requests>=2.31.0\n",
+        },
+    )
+    report = deps.check_skill("demo", root, {})
+    assert not report.ok
+    assert any("stale entry" in e for e in report.errors)

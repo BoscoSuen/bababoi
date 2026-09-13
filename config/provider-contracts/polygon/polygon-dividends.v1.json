@@ -1,0 +1,96 @@
+{
+ "schema_version": 1,
+ "provider": "polygon",
+ "endpoint": "polygon-dividends",
+ "path": "/v3/reference/dividends",
+ "query": {
+  "ticker": "AAPL",
+  "limit": 1000,
+  "sort": "ex_dividend_date",
+  "order": "asc"
+ },
+ "contract_version": 1,
+ "recorded_on": "2026-09-13",
+ "recording": "live Stocks Starter response rows (request_id/next_url stripped); consumed via scripts/market_data/polygon.py",
+ "owners": [
+  "vcp-screener",
+  "market-top-detector",
+  "macro-regime-detector",
+  "trader-memory-core"
+ ],
+ "tier_notes": "all tiers",
+ "required_fields": {
+  "ticker": {
+   "types": [
+    "str"
+   ],
+   "nullable": false
+  },
+  "ex_dividend_date": {
+   "types": [
+    "str"
+   ],
+   "nullable": false
+  },
+  "cash_amount": {
+   "types": [
+    "int",
+    "float"
+   ],
+   "nullable": false
+  }
+ },
+ "optional_fields": [
+  "pay_date",
+  "record_date",
+  "declaration_date",
+  "frequency",
+  "dividend_type",
+  "currency",
+  "id"
+ ],
+ "legacy_aliases": {},
+ "known_gaps": [],
+ "non_empty": {
+  "min_rows": 1,
+  "reason": "AAPL pays quarterly; window query must not be empty"
+ },
+ "fixture": [
+  {
+   "cash_amount": 0.27,
+   "currency": "USD",
+   "declaration_date": "2026-07-30",
+   "dividend_type": "CD",
+   "ex_dividend_date": "2026-08-10",
+   "frequency": 4,
+   "id": "E1e778b36bcedb4d1589a970be52c16294ad4bc89c8627d56a3b970f6cf2a6e10",
+   "pay_date": "2026-08-13",
+   "record_date": "2026-08-10",
+   "ticker": "AAPL"
+  },
+  {
+   "cash_amount": 0.27,
+   "currency": "USD",
+   "declaration_date": "2026-04-30",
+   "dividend_type": "CD",
+   "ex_dividend_date": "2026-05-11",
+   "frequency": 4,
+   "id": "E9fd05fa01d55de07885332c97a263e93ac4bf03c742faef9b4f18544b34e928f",
+   "pay_date": "2026-05-14",
+   "record_date": "2026-05-11",
+   "ticker": "AAPL"
+  },
+  {
+   "cash_amount": 0.26,
+   "currency": "USD",
+   "declaration_date": "2026-01-29",
+   "dividend_type": "CD",
+   "ex_dividend_date": "2026-02-09",
+   "frequency": 4,
+   "id": "Ea9c1921173ef4be798ca05a1f7015b4ae452bfcf7d641a3a63c1fd852f1eaf05",
+   "pay_date": "2026-02-12",
+   "record_date": "2026-02-09",
+   "ticker": "AAPL"
+  }
+ ]
+}
