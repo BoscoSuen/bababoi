@@ -28,14 +28,17 @@ def daily_history(symbol: str, days: int = 260) -> list[dict] | None:
     rows: list[dict] = []
     for idx, row in hist.iterrows():
         try:
+            close = float(row["Close"])
+            if close != close or close <= 0:  # NaN / empty session row
+                continue
             rows.append(
                 {
                     "date": idx.strftime("%Y-%m-%d"),
                     "open": float(row["Open"]),
                     "high": float(row["High"]),
                     "low": float(row["Low"]),
-                    "close": float(row["Close"]),
-                    "adjClose": float(row["Close"]),
+                    "close": close,
+                    "adjClose": close,
                     "volume": int(row.get("Volume", 0) or 0),
                     "vwap": None,
                 }

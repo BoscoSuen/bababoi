@@ -1,8 +1,8 @@
 """Packaged-dependency contract for macro-regime-detector (issue #330).
 
-Covers the #311 regression: a standalone install without ``yfinance``
-must fail with an actionable message (exit 2 naming requirements.txt),
-never with a silent all-zero report.
+Covers the #311 regression shape: a broken install (missing ``requests``) or a
+missing ``POLYGON_API_KEY`` must fail with an actionable exit 2, never with a
+silent all-zero report.
 """
 
 import os
@@ -28,13 +28,13 @@ def test_missing_package_exits_actionable(tmp_path, monkeypatch, capsys):
         ["macro_regime_detector.py", "--output-dir", str(tmp_path)],
     )
     with (
-        patch.object(macro_regime_detector, "missing_required_packages", return_value=["yfinance"]),
+        patch.object(macro_regime_detector, "missing_required_packages", return_value=["requests"]),
         pytest.raises(SystemExit) as exc_info,
     ):
         macro_regime_detector.main()
     assert exc_info.value.code == 2
     err = capsys.readouterr().err
-    assert "yfinance" in err
+    assert "requests" in err
     assert "requirements.txt" in err
     assert not list(tmp_path.rglob("macro_regime_*.json"))
 
@@ -55,14 +55,11 @@ def test_help_exits_zero():
     assert completed.returncode == 0
 
 
-def test_broken_yfinance_install_exits_actionable(tmp_path):
-    """A shadow yfinance.py raising ImportError exits 2 (issue #311 shape)."""
-    stub_dir = tmp_path / "stubs"
-    stub_dir.mkdir()
-    (stub_dir / "yfinance.py").write_text('raise ImportError("no yfinance")\n', encoding="utf-8")
+def test_missing_polygon_key_exits_actionable(tmp_path):
+    """No POLYGON_API_KEY and no --api-key → exit 2 naming the variable."""
     env = dict(os.environ)
+    env.pop("POLYGON_API_KEY", None)
     env.pop("FMP_API_KEY", None)
-    env["PYTHONPATH"] = str(stub_dir) + os.pathsep + env.get("PYTHONPATH", "")
     completed = subprocess.run(
         [
             sys.executable,
@@ -76,26 +73,31 @@ def test_broken_yfinance_install_exits_actionable(tmp_path):
         env=env,
     )
     assert completed.returncode == 2
-    assert "requirements.txt" in completed.stderr
+    assert "POLYGON_API_KEY" in completed.stderr
+    assert (
+        not list((tmp_path / "reports").rglob("*.json"))
+        if (tmp_path / "reports").exists()
+        else True
+    )
 
 
-def test_packaged_skill_declares_yfinance():
-    """The committed .skill ships requirements.txt including yfinance."""
+def test_packaged_skill_declares_requests():
+    """The committed .skill ships requirements.txt including requests."""
     archive = REPO_ROOT / "skill-packages" / "macro-regime-detector.skill"
     assert archive.is_file(), "packaged archive must be committed in this repo"
     with zipfile.ZipFile(archive) as bundle:
         name = "macro-regime-detector/requirements.txt"
         assert name in bundle.namelist()
         text = bundle.read(name).decode("utf-8")
-    assert "yfinance" in text
+    assert "requests" in text
 
 
 def test_missing_requests_exits_actionable_before_import(tmp_path):
     """Blocking requests still yields exit 2 (not an import traceback).
 
-    fmp_client imports requests at module top level; the guarded
-    ``from fmp_client import FMPClient`` in macro_regime_detector defers
-    that failure to the startup probe. --help must also survive it.
+    scripts/market_data imports requests lazily, so the module imports even
+    when requests is blocked and the startup probe reports exit 2 with an
+    actionable message. --help must also survive it.
     """
     preamble = (
         "import sys; sys.modules['requests'] = None; "

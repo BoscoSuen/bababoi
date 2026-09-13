@@ -10,8 +10,9 @@ indexes:
 lookback_days: 80
 
 data:
-  provider: fmp           # v1: FMP only. yfinance / alpaca / polygon are out of scope.
-  api_key: null           # Set via CLI --api-key or FMP_API_KEY env var.
+  provider: polygon       # Polygon.io via scripts/market_data (fixture replay with fixture_dir)
+  api_key: null           # Set via CLI --api-key or POLYGON_API_KEY env var.
+  fixture_dir: null       # Optional cache-layout directory for offline replay
   allow_cached_data: false
 
 distribution_day_rule:

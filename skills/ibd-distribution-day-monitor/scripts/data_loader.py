@@ -1,4 +1,4 @@
-"""FMP wrapper + OHLCV quality validation.
+"""Market-data wrapper + OHLCV quality validation (Polygon via scripts/market_data).
 
 Returns most-recent-first list[dict] (no pandas). Records data quality
 issues as audit_flags / skipped_sessions for the report layer.
@@ -10,10 +10,10 @@ from typing import Any
 
 
 def normalize_history(payload: Any) -> list[dict]:
-    """Coerce FMP payload variants into a flat most-recent-first list[dict].
+    """Coerce provider payload variants into a flat most-recent-first list[dict].
 
-    - dict with "historical" key (v3 shape): return payload["historical"]
-    - list (stable EOD flat list, after normalizer): return as-is
+    - dict with "historical" key (legacy FMP v3 / PolygonCompatClient shape)
+    - list (flat most-recent-first rows): return as-is
     - None or unrecognized shape: return []
     """
     if payload is None:
@@ -59,10 +59,10 @@ def fetch_ohlcv(
     symbol: str,
     days: int,
 ) -> tuple[list[dict], dict]:
-    """Fetch most-recent-first OHLCV for `symbol` via the provided FMP client.
+    """Fetch most-recent-first OHLCV for `symbol` via the provided market-data client.
 
     Returns (history, audit) where audit has:
-        - data_source: "fmp"
+        - data_source: provider name (e.g. "polygon", "fixture")
         - symbol: str
         - days_requested: int
         - sessions_loaded: int
@@ -70,7 +70,7 @@ def fetch_ohlcv(
         - skipped_sessions: list[dict]
     """
     audit: dict = {
-        "data_source": "fmp",
+        "data_source": _data_source(client),
         "symbol": symbol,
         "days_requested": days,
         "sessions_loaded": 0,
@@ -92,8 +92,30 @@ def fetch_ohlcv(
     return history, audit
 
 
-def build_fmp_client(api_key: str | None = None, max_api_calls: int = 200):
-    """Lazy import to avoid pulling requests in unit tests that mock the client."""
-    from fmp_client import FMPClient
+def _data_source(client: Any) -> str:
+    getter = getattr(client, "get_data_mode", None)
+    try:
+        value = getter() if callable(getter) else None
+    except Exception:
+        value = None
+    return value if isinstance(value, str) and value else "polygon"
 
-    return FMPClient(api_key=api_key, max_api_calls=max_api_calls)
+
+def build_market_data_client(
+    api_key: str | None = None,
+    max_api_calls: int = 200,
+    *,
+    fixture_dir: str | None = None,
+):
+    """Lazy import so unit tests that mock the client never touch scripts/market_data."""
+    import _repo_bootstrap  # noqa: F401
+
+    from scripts.market_data.legacy import PolygonCompatClient
+
+    if fixture_dir:
+        return PolygonCompatClient(fixture_dir=fixture_dir, max_api_calls=max_api_calls)
+    return PolygonCompatClient(api_key=api_key, max_api_calls=max_api_calls)
+
+
+# Backwards-compatible alias for callers written against the FMP-era name.
+build_fmp_client = build_market_data_client

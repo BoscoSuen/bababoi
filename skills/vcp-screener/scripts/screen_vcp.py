@@ -29,6 +29,7 @@ from typing import Optional
 # Add parent directory to path for imports
 sys.path.insert(0, os.path.dirname(__file__))
 
+import _repo_bootstrap  # noqa: F401  (repo root → scripts.market_data)
 from calculators.execution_state import compute_execution_state
 from calculators.pattern_classifier import classify_pattern
 from calculators.pivot_proximity_calculator import calculate_pivot_proximity
@@ -39,9 +40,10 @@ from calculators.relative_strength_calculator import (
 from calculators.trend_template_calculator import calculate_trend_template
 from calculators.vcp_pattern_calculator import calculate_vcp_pattern
 from calculators.volume_pattern_calculator import calculate_volume_pattern
-from fmp_client import FMPClient
 from report_generator import generate_json_report, generate_markdown_report
 from scorer import calculate_composite_score
+
+from scripts.market_data.legacy import PolygonCompatClient as MarketDataClient
 
 # Historical scan window default (~5 years in trading days). Used by
 # argparse `const=` so bare `--history` keeps the prior default behavior.
@@ -54,7 +56,16 @@ def parse_arguments():
     )
 
     parser.add_argument(
-        "--api-key", help="FMP API key (defaults to FMP_API_KEY environment variable)"
+        "--api-key", help="Polygon API key (defaults to POLYGON_API_KEY environment variable)"
+    )
+    parser.add_argument(
+        "--provider",
+        choices=["polygon", "fixture"],
+        default="polygon",
+        help="polygon (live, cached) or fixture (offline replay of a cache directory)",
+    )
+    parser.add_argument(
+        "--fixture-dir", default=None, help="cache-layout dir for --provider fixture"
     )
     parser.add_argument(
         "--max-candidates",
@@ -270,9 +281,9 @@ def pre_filter_stock(quote: dict) -> tuple:
     price = quote.get("price", 0)
     year_high = quote.get("yearHigh", 0)
     year_low = quote.get("yearLow", 0)
-    # FMP's /stable quote dropped the v3-only `avgVolume` field, so fall back to
-    # the session `volume` as a liquidity floor; without this the < 200k check
-    # rejects 100% of the universe. (v3 `avgVolume` still wins when present.)
+    # `avgVolume` (260-day mean from the compat client) wins when present; fall
+    # back to the session `volume` as a liquidity floor so a provider that omits
+    # it never rejects 100% of the universe.
     avg_volume = quote.get("avgVolume") or quote.get("volume", 0)
 
     if price <= 10:
@@ -570,7 +581,7 @@ def run_historical(args, client) -> None:
         sys.exit(1)
 
     # Required bars = scan window (args.history) + lookback at the oldest
-    # offset + outcome window. A 60-bar buffer protects against FMP returning
+    # offset + outcome window. A 60-bar buffer protects against the provider returning
     # fewer bars than requested due to holidays/halts/recent listings.
     scan_days = args.history
     required_days = scan_days + args.lookback_days + args.outcome_days
@@ -594,7 +605,7 @@ def run_historical(args, client) -> None:
     print(f"OK ({len(historical)} ticker bars, {len(sp500_history)} SPY bars)")
     if len(historical) < required_days:
         print(
-            f"  WARN: requested ~{required_days} bars but FMP returned "
+            f"  WARN: requested ~{required_days} bars but the provider returned "
             f"{len(historical)}; oldest part of the scan window will be truncated."
         )
 
@@ -672,10 +683,14 @@ def main():
     print("=" * 70)
     print()
 
-    # Initialize FMP client
+    # Initialize market-data client (Polygon via scripts/market_data). marketCap
+    # is needed by the pre-filter, so ticker details are joined into quotes.
     try:
-        client = FMPClient(api_key=args.api_key)
-        print("FMP API client initialized")
+        if args.provider == "fixture":
+            client = MarketDataClient(fixture_dir=args.fixture_dir, include_market_cap=True)
+        else:
+            client = MarketDataClient(api_key=args.api_key, include_market_cap=True)
+        print(f"Market data client initialized ({client.get_data_mode()})")
     except ValueError as e:
         print(f"ERROR: {e}", file=sys.stderr)
         sys.exit(1)

@@ -158,7 +158,7 @@ permalink: /ja/skill-catalog/
 | **Macro Regime Detector** | クロスアセット比率分析で構造的マクロレジーム転換（1-2年ホライズン）を検出 | <span class="badge badge-free">API不要</span> <span class="badge badge-optional">FMP任意</span> |
 | **[US Market Bubble Detector]({{ '/ja/skills/us-market-bubble-detector/' | relative_url }})** | ミンスキー/キンドルバーガーフレームワークの8指標バブルメーター。ステージ別プレイブック付き | <span class="badge badge-free">API不要</span> |
 | **Market Top Detector** | O'NeilのDistribution Days、MinerviniのLeading Stock劣化、Defensive Rotationで天井確率を検出 | <span class="badge badge-free">API不要</span> |
-| **[IBD Distribution Day Monitor]({{ '/ja/skills/ibd-distribution-day-monitor/' | relative_url }})** | QQQ/SPYのIBD式Distribution Dayを日次検出。25セッション失効・5%上昇無効化を追跡し、d5/d15/d25クラスタからNORMAL/CAUTION/HIGH/SEVERE判定とTQQQ/QQQエクスポージャ推奨を生成 | <span class="badge badge-api">FMP必須</span> |
+| **[IBD Distribution Day Monitor]({{ '/ja/skills/ibd-distribution-day-monitor/' | relative_url }})** | QQQ/SPYのIBD式Distribution Dayを日次検出。25セッション失効・5%上昇無効化を追跡し、d5/d15/d25クラスタからNORMAL/CAUTION/HIGH/SEVERE判定とTQQQ/QQQエクスポージャ推奨を生成 | <span class="badge badge-api">Polygon必須</span> |
 | **[Downtrend Duration Analyzer]({{ '/ja/skills/downtrend-duration-analyzer/' | relative_url }})** | 過去の下落トレンド期間（ピーク→トラフ）を分析し、セクター・時価総額別のインタラクティブヒストグラムを生成 | <span class="badge badge-api">FMP必須</span> |
 | **[COT Contrarian Detector]({{ '/ja/skills/cot-contrarian-detector/' | relative_url }})** | COT Indexにより65のCFTC先物市場における大口投機筋の偏ったポジションを検出。ジェイソン・シャピロ式逆張り手法のステップ1 | <span class="badge badge-api">FMP必須</span> |
 | **[News Reaction Failure Analyzer]({{ '/ja/skills/news-reaction-failure-analyzer/' | relative_url }})** | モンテカルロ検証済みのドリフト有意性検定により、偏った市場が好材料に反応しなかったかを判定。ジェイソン・シャピロ式逆張り手法のステップ2 | <span class="badge badge-api">FMP必須</span> |
@@ -189,7 +189,7 @@ permalink: /ja/skill-catalog/
 | スキル | 説明 | API要件 |
 |--------|------|---------|
 | **Portfolio Manager** | Alpaca MCP Serverでリアルタイム保有データを取得。資産配分、リスク指標、HOLD/ADD/TRIM/SELL推奨を生成 | <span class="badge badge-api">Alpaca必須</span> |
-| **[Trader Memory Core]({{ '/ja/skills/trader-memory-core/' | relative_url }})** | 投資仮説のライフサイクルを永続追跡。スクリーナー出力をIDEAとして登録し、ENTRY_READY→ACTIVE→CLOSEDのステート遷移、ポジションサイジング付与、レビュースケジュール、MAE/MFE付きポストモーテム生成をサポート | <span class="badge badge-optional">FMP任意</span> |
+| **[Trader Memory Core]({{ '/ja/skills/trader-memory-core/' | relative_url }})** | 投資仮説のライフサイクルを永続追跡。スクリーナー出力をIDEAとして登録し、ENTRY_READY→ACTIVE→CLOSEDのステート遷移、ポジションサイジング付与、レビュースケジュール、MAE/MFE付きポストモーテム生成をサポート | <span class="badge badge-optional">Polygon任意</span> |
 | **[Trade Performance Coach]({{ '/ja/skills/trade-performance-coach/' | relative_url }})** | クローズドトレード・部分クローズ・月次集計をプロセス／リスク／執行／行動パターン／レビュー品質の5軸でレビューし、OK/WARN/REVIEW_REQUIRED/RULE_VIOLATION/COOL_DOWN の verdict と次セッション運用ルール、人間判断ゲートを生成するポストトレードコーチ。Beta。 | <span class="badge badge-free">API不要</span> |
 | **[Drawdown Circuit Breaker]({{ '/ja/skills/drawdown-circuit-breaker/' | relative_url }})** | trader-memory-coreの状態を読み、実現損益・連敗・週次/月次ドローダウンから TRADING_ALLOWED / COOLDOWN / HALTED を返す口座レベルの新規リスクゲート | <span class="badge badge-free">API不要</span> |
 | **[Weekly Performance Digest]({{ '/ja/skills/weekly-performance-digest/' | relative_url }})** | クローズドトレードから週次パフォーマンスサマリを生成。勝率・期待値・プロフィットファクター・Rマルチプル・MAE/MFE と、ソーススキル／エグジット理由／テシスタイプ／セクター／メカニズム別の勝敗パターン分析を出力。ローカル計算のみ | <span class="badge badge-free">API不要</span> |
@@ -227,7 +227,7 @@ permalink: /ja/skill-catalog/
 | **Edge Strategy Reviewer** | 戦略ドラフトを8基準（C1-C8）で評価。PASS/REVISE/REJECT判定とエクスポート適格性を決定 | <span class="badge badge-free">API不要</span> |
 | **Edge Pipeline Orchestrator** | エッジ研究パイプライン全体をエンドツーエンドでオーケストレーション。レビュー→修正フィードバックループ付き | <span class="badge badge-free">API不要</span> |
 | **Edge Signal Aggregator** | edge-candidate-agent、theme-detector、sector-analyst、institutional-flow-trackerの出力を重み付け・重複排除・矛盾処理して確信度順ダッシュボードを生成 | <span class="badge badge-free">API不要</span> |
-| **[Signal Postmortem]({{ '/ja/skills/signal-postmortem/' | relative_url }})** | エッジパイプラインやスクリーナーのシグナル結果を記録・分析。TRUE_POSITIVE/FALSE_POSITIVE/REGIME_MISMATCH分類、edge-signal-aggregatorへのウェイトフィードバック、スキル改善バックログ生成 | <span class="badge badge-optional">FMP任意</span> |
+| **[Signal Postmortem]({{ '/ja/skills/signal-postmortem/' | relative_url }})** | エッジパイプラインやスクリーナーのシグナル結果を記録・分析。TRUE_POSITIVE/FALSE_POSITIVE/REGIME_MISMATCH分類、edge-signal-aggregatorへのウェイトフィードバック、スキル改善バックログ生成 | <span class="badge badge-optional">Polygon任意</span> |
 | **[Residual Edge Analyzer]({{ '/ja/skills/residual-edge-analyzer/' | relative_url }})** | 戦略のリターン系列を、宣言したベースライン・エクスポージャーと残差エッジに分解。HAC推定を用いたOLSアトリビューション、ローリング安定性、代替ベースライン感応度、レジーム別内訳を出力し、市場・モメンタム・セクターへの連動を超えた独自アルファの有無を判定 | <span class="badge badge-free">API不要</span> |
 
 ---
@@ -328,15 +328,15 @@ permalink: /ja/skill-catalog/
 | Edge Strategy Reviewer | - | - | - |
 | Exposure Coach | - | - | - |
 | Finviz Screener | - | 任意 | - |
-| FTD Detector | 必須 | - | - |
+| FTD Detector | - | - | - |
 | Futures Position Sizer | - | - | - |
-| IBD Distribution Day Monitor | 必須 | - | - |
+| IBD Distribution Day Monitor | - | - | - |
 | Institutional Flow Tracker | 必須 | - | - |
 | Intraday Market Monitor | - | - | - |
 | Kanchi Dividend Review Monitor | 推奨 | - | - |
 | Kanchi Dividend SOP | 推奨 | - | - |
 | Kanchi Dividend US Tax Accounting | - | - | - |
-| Macro Regime Detector | 任意 | - | - |
+| Macro Regime Detector | - | - | - |
 | manifoldbt Backtester | - | - | - |
 | Market Breadth Analyzer | - | - | - |
 | Market Environment Analysis | - | - | - |
@@ -365,18 +365,18 @@ permalink: /ja/skill-catalog/
 | Stockbee Momentum Burst Screener | 必須 | - | - |
 | Stockbee Setup Fluency Trainer | 任意 | - | - |
 | Strategy Pivot Designer | - | - | - |
-| Technical Analyst | 任意 | - | - |
+| Technical Analyst | - | - | - |
 | Theme Detector | 任意 | 推奨 | - |
 | Trade Hypothesis Ideator | - | - | - |
 | Trade Performance Coach | - | - | - |
-| Trader Memory Core | 任意 | - | - |
+| Trader Memory Core | - | - | - |
 | Trading Skills Navigator | - | - | - |
 | Uptrend Analyzer | - | - | - |
 | US Market Bubble Detector | - | - | - |
 | US Stock Analysis | - | - | - |
 | US Undervalued Growth Screener | 推奨 | - | - |
 | Value Dividend Screener | 必須 | 推奨 | - |
-| VCP Screener | 必須 | - | - |
+| VCP Screener | - | - | - |
 | Weekly Performance Digest | - | - | - |
 
 「-」は不要を意味します。「必須」はそのプロバイダーなしでは実行できないこと、「推奨」は代替手段があるものの優先される経路であること、「任意」は機能強化にのみ使用することを意味します。

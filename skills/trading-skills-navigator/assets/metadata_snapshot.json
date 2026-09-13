@@ -486,7 +486,7 @@
       "id": "ftd-detector",
       "integrations": [
         {
-          "id": "fmp",
+          "id": "polygon",
           "requirement": "required",
           "type": "market_data"
         }
@@ -545,7 +545,7 @@
       "id": "ibd-distribution-day-monitor",
       "integrations": [
         {
-          "id": "fmp",
+          "id": "polygon",
           "requirement": "required",
           "type": "market_data"
         }
@@ -672,13 +672,8 @@
       "id": "macro-regime-detector",
       "integrations": [
         {
-          "id": "yfinance",
+          "id": "polygon",
           "requirement": "required",
-          "type": "market_data"
-        },
-        {
-          "id": "fmp",
-          "requirement": "optional",
           "type": "market_data"
         }
       ],
@@ -781,6 +776,11 @@
       "display_name": "Market Top Detector",
       "id": "market-top-detector",
       "integrations": [
+        {
+          "id": "polygon",
+          "requirement": "required",
+          "type": "market_data"
+        },
         {
           "id": "public_csv",
           "requirement": "required",
@@ -1050,6 +1050,11 @@
           "id": "local_calculation",
           "requirement": "not_required",
           "type": "calculation"
+        },
+        {
+          "id": "polygon",
+          "requirement": "optional",
+          "type": "market_data"
         }
       ],
       "operational_role": {
@@ -1327,7 +1332,7 @@
           "type": "image"
         },
         {
-          "id": "fmp",
+          "id": "polygon",
           "requirement": "optional",
           "type": "market_data"
         }
@@ -1408,7 +1413,7 @@
       "id": "trader-memory-core",
       "integrations": [
         {
-          "id": "fmp",
+          "id": "polygon",
           "requirement": "optional",
           "type": "market_data"
         }
@@ -1575,7 +1580,7 @@
       "id": "vcp-screener",
       "integrations": [
         {
-          "id": "fmp",
+          "id": "polygon",
           "requirement": "required",
           "type": "market_data"
         }

@@ -7,7 +7,11 @@ using William O'Neil's methodology with dual-index tracking.
 
 Usage:
     python3 ftd_detector.py --api-key YOUR_KEY
-    python3 ftd_detector.py  # uses FMP_API_KEY env var
+    python3 ftd_detector.py  # uses POLYGON_API_KEY env var
+    python3 ftd_detector.py --provider fixture --fixture-dir .cache/market_data  # offline replay
+
+Data: Polygon.io via the shared scripts/market_data layer. ``^GSPC`` is served by
+the SPY proxy (recorded under metadata.symbol_proxies).
 
 Output:
     - JSON: ftd_detector_YYYY-MM-DD_HHMMSS.json
@@ -22,10 +26,12 @@ from datetime import datetime
 # Add parent directory to path for imports
 sys.path.insert(0, os.path.dirname(__file__))
 
-from fmp_client import FMPClient
+import _repo_bootstrap  # noqa: F401  (repo root → scripts.market_data)
 from post_ftd_monitor import assess_post_ftd_health
 from rally_tracker import get_market_state
 from report_generator import generate_json_report, generate_markdown_report
+
+from scripts.market_data.legacy import PolygonCompatClient as MarketDataClient
 
 
 def parse_arguments():
@@ -33,7 +39,16 @@ def parse_arguments():
         description="FTD Detector - Follow-Through Day Bottom Confirmation"
     )
     parser.add_argument(
-        "--api-key", help="FMP API key (defaults to FMP_API_KEY environment variable)"
+        "--api-key", help="Polygon API key (defaults to POLYGON_API_KEY environment variable)"
+    )
+    parser.add_argument(
+        "--provider",
+        choices=["polygon", "fixture"],
+        default="polygon",
+        help="polygon (live, cached) or fixture (offline replay of a cache directory)",
+    )
+    parser.add_argument(
+        "--fixture-dir", default=None, help="cache-layout dir for --provider fixture"
     )
     parser.add_argument(
         "--output-dir",
@@ -52,10 +67,13 @@ def main():
     print("=" * 70)
     print()
 
-    # Initialize FMP client
+    # Initialize market-data client (Polygon via scripts/market_data)
     try:
-        client = FMPClient(api_key=args.api_key)
-        print("FMP API client initialized")
+        if args.provider == "fixture":
+            client = MarketDataClient(fixture_dir=args.fixture_dir)
+        else:
+            client = MarketDataClient(api_key=args.api_key)
+        print(f"Market data client initialized ({client.get_data_mode()})")
     except ValueError as e:
         print(f"ERROR: {e}", file=sys.stderr)
         sys.exit(1)
@@ -192,6 +210,8 @@ def main():
         "metadata": {
             "generated_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
             "api_calls": client.get_api_stats(),
+            "data_source": client.get_data_mode(),
+            "symbol_proxies": client.get_api_stats().get("symbol_proxies", {}),
             "index_prices": {
                 "sp500": sp500_quote.get("price", 0)
                 if sp500_quote

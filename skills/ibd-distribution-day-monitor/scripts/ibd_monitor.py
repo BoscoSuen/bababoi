@@ -3,7 +3,7 @@
 
 Workflow:
   1. Resolve config (default.yaml under config/, optional --config override).
-  2. Fetch OHLCV for each symbol via FMP.
+  2. Fetch OHLCV for each symbol via Polygon (scripts/market_data).
   3. Rebase via prepare_effective_history (as_of normalization).
   4. Detect, enrich, count active DDs (d5/d15/d25).
   5. Compute MA filters (21EMA / 50SMA) -> market_below_ma flag.
@@ -11,7 +11,7 @@ Workflow:
   7. Generate portfolio action for the configured instrument.
   8. Write JSON + Markdown reports to --output-dir.
 
-API key resolution order: --api-key > config.data.api_key > $FMP_API_KEY.
+API key resolution order: --api-key > config.data.api_key > $POLYGON_API_KEY.
 """
 
 from __future__ import annotations
@@ -30,7 +30,7 @@ import yaml  # type: ignore
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 
-from data_loader import build_fmp_client, fetch_ohlcv  # noqa: E402
+from data_loader import build_market_data_client, fetch_ohlcv  # noqa: E402
 from distribution_day_tracker import (  # noqa: E402
     count_active_in_window,
     detect_distribution_days,
@@ -58,7 +58,10 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     p.add_argument("--base-trailing-stop", type=int, default=None)
     p.add_argument("--as-of", default=None, help="YYYY-MM-DD; default = latest session")
     p.add_argument("--config", default=None)
-    p.add_argument("--api-key", default=None)
+    p.add_argument("--api-key", default=None, help="Polygon API key (default: POLYGON_API_KEY)")
+    p.add_argument(
+        "--fixture-dir", default=None, help="offline replay from a recorded cache directory"
+    )
     p.add_argument("--output-dir", default="reports/")
     return p.parse_args(argv)
 
@@ -72,16 +75,16 @@ def load_config(path: str | None) -> dict:
 
 
 def resolve_api_key(cli_key: str | None, config: dict) -> str:
-    """API key precedence: CLI > config.data.api_key > $FMP_API_KEY."""
+    """API key precedence: CLI > config.data.api_key > $POLYGON_API_KEY."""
     if cli_key:
         return cli_key
     cfg_key = ((config.get("data") or {}).get("api_key")) or None
     if cfg_key:
         return cfg_key
-    env_key = os.getenv("FMP_API_KEY")
+    env_key = os.getenv("POLYGON_API_KEY")
     if env_key:
         return env_key
-    raise ValueError("FMP API key required. Pass --api-key or set FMP_API_KEY env var.")
+    raise ValueError("Polygon API key required. Pass --api-key or set POLYGON_API_KEY env var.")
 
 
 def _build_rule(config: dict) -> DistributionDayRule:
@@ -343,9 +346,15 @@ def main(argv: list[str] | None = None) -> int:
             {"symbol": s, "benchmark_name": f"{s} proxy"} for s in config["symbols_override"]
         ]
 
-    # FMP client
-    api_key = resolve_api_key(args.api_key, config)
-    client = build_fmp_client(api_key=api_key)
+    # Market-data client (Polygon via scripts/market_data; fixture replay when configured)
+    fixture_dir = getattr(args, "fixture_dir", None) or (
+        (config.get("data") or {}).get("fixture_dir")
+    )
+    if fixture_dir:
+        client = build_market_data_client(fixture_dir=fixture_dir)
+    else:
+        api_key = resolve_api_key(args.api_key, config)
+        client = build_market_data_client(api_key=api_key)
 
     rule = _build_rule(config)
     thresholds = _build_thresholds(config)
@@ -403,7 +412,7 @@ def main(argv: list[str] | None = None) -> int:
 
     generated_at = datetime.now(timezone.utc).isoformat(timespec="seconds")
     aggregate_audit = {
-        "data_source": "fmp",
+        "data_source": client.get_data_mode() if hasattr(client, "get_data_mode") else "polygon",
         "rule_version": RULE_VERSION,
         "as_of_resolved": as_of_resolved,
         "lookback_days": lookback,

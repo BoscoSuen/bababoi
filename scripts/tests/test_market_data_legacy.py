@@ -136,3 +136,11 @@ def test_api_stats_shape(client):
     stats = client.get_api_stats()
     assert {"cache_entries", "api_calls_made", "rate_limit_reached", "provider"} <= set(stats)
     assert stats["provider"] == "polygon" and client.get_data_mode() == "polygon"
+
+
+def test_vix_term_structure_rejects_nan_quote(client, monkeypatch):
+    def fake_quote(symbol):
+        return {"^VIX": {"price": 18.0}, "^VIX3M": {"price": float("nan")}}[symbol]
+
+    monkeypatch.setattr(legacy.PolygonCompatClient, "_yf_quote", staticmethod(fake_quote))
+    assert client.get_vix_term_structure() is None

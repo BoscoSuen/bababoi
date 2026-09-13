@@ -253,22 +253,22 @@ The table below is **auto-generated** from `skills-index.yaml` by `scripts/gener
 | **Edge Strategy Designer** | ❌ Not used | ❌ Not used | ❌ Not used | Converts edge concepts into strategy drafts |
 | **Edge Strategy Reviewer** | ❌ Not used | ❌ Not used | ❌ Not used | Deterministic scoring on local YAML drafts |
 | **Exposure Coach** | ❌ Not used | ❌ Not used | ❌ Not used | Synthesizes signals from other skills; pure calculation |
-| **FTD Detector** | ✅ Required | ❌ Not used | ❌ Not used | Daily QQQ/SPY OHLCV via FMP |
+| **FTD Detector** | ❌ Not used | ❌ Not used | ❌ Not used | Daily SPY (^GSPC proxy) / QQQ OHLCV via Polygon (scripts/market_data); POLYGON_API_KEY |
 | **FXMacroData Calendar** | ❌ Not used | ❌ Not used | ❌ Not used | FXMacroData REST API; public USD calendar rows work without a key |
 | **Finviz Screener** | ❌ Not used | 🟡 Optional | ❌ Not used | FINVIZ Elite API |
 | **Futures Position Sizer** | ❌ Not used | ❌ Not used | ❌ Not used | Pure calculation; consumes contrarian-setup-gate's READY_FOR_PLAN report or explicit direction/entry/stop flags; works offline |
-| **IBD Distribution Day Monitor** | ✅ Required | ❌ Not used | ❌ Not used | Financial Modeling Prep API |
+| **IBD Distribution Day Monitor** | ❌ Not used | ❌ Not used | ❌ Not used | Daily QQQ/SPY OHLCV via Polygon (scripts/market_data); POLYGON_API_KEY |
 | **Institutional Flow Tracker** | ✅ Required | ❌ Not used | ❌ Not used | Financial Modeling Prep API |
 | **Intraday Market Monitor** | ❌ Not used | ❌ Not used | ❌ Not used | Polygon.io Stocks Starter (15-min delayed) via scripts/market_data; POLYGON_API_KEY; Summary and narrative posts via DISCORD_WEBHOOK_URL; Narrative via `claude -p` at 10:20 / 15:20 / posture flips |
 | **Kanchi Dividend Review Monitor** | 🟡 Optional (Recommended) | ❌ Not used | ❌ Not used | Dividend / price monitoring via FMP |
 | **Kanchi Dividend SOP** | 🟡 Optional (Recommended) | ❌ Not used | ❌ Not used | US dividend stock data via FMP |
 | **Kanchi Dividend US Tax Accounting** | ❌ Not used | ❌ Not used | ❌ Not used | US tax workflow guidance; pure calculation |
 | **MT5 Robot Tester** | ❌ Not used | ❌ Not used | ❌ Not used | Local Windows MT5 terminal, EA and set files, and broker tick data; no API key; Offline report parsing, gates, metrics, checkpoints, and learning aggregation |
-| **Macro Regime Detector** | 🟡 Optional | ❌ Not used | ❌ Not used | Optional FMP market and Treasury data; unavailable ETF history falls back to yfinance |
+| **Macro Regime Detector** | ❌ Not used | ❌ Not used | ❌ Not used | Cross-asset ETF history and Treasury yields via Polygon (scripts/market_data); POLYGON_API_KEY |
 | **Market Breadth Analyzer** | ❌ Not used | ❌ Not used | ❌ Not used | TraderMonty public CSV; no API key required |
 | **Market Environment Analysis** | ❌ Not used | ❌ Not used | ❌ Not used | Global market data via WebSearch / WebFetch; Optional chart image inputs for technical interpretation |
 | **Market News Analyst** | ❌ Not used | ❌ Not used | ❌ Not used | Web search / fetch |
-| **Market Top Detector** | ❌ Not used | ❌ Not used | ❌ Not used | Public market data CSVs; no API key required |
+| **Market Top Detector** | ❌ Not used | ❌ Not used | ❌ Not used | Index/ETF quotes and history via Polygon (^GSPC→SPY proxy; VIX via yfinance); POLYGON_API_KEY; Public market data CSVs; no API key required |
 | **News Reaction Failure Analyzer** | ✅ Required | ❌ Not used | ❌ Not used | Historical EOD price data; per-symbol coverage varies (ETF proxy fallback documented) |
 | **Options Strategy Advisor** | 🟡 Optional | ❌ Not used | ❌ Not used | Financial Modeling Prep API |
 | **PEAD Screener** | ✅ Required | ❌ Not used | ❌ Not used | Financial Modeling Prep API |
@@ -280,7 +280,7 @@ The table below is **auto-generated** from `skills-index.yaml` by `scripts/gener
 | **Residual Edge Analyzer** | ❌ Not used | ❌ Not used | ❌ Not used | Analyzes aligned local CSV and JSON inputs; works offline |
 | **Scenario Analyzer** | ❌ Not used | ❌ Not used | ❌ Not used | Headline / news search via WebSearch |
 | **Sector Analyst** | ❌ Not used | ❌ Not used | ❌ Not used | Chart screenshot input |
-| **Signal Postmortem** | ❌ Not used | ❌ Not used | ❌ Not used | Postmortem framework; pure calculation |
+| **Signal Postmortem** | ❌ Not used | ❌ Not used | ❌ Not used | Postmortem framework; pure calculation; Optional daily closes for realized returns via Polygon (scripts/market_data); POLYGON_API_KEY |
 | **Skill Designer** | ❌ Not used | ❌ Not used | ❌ Not used | Generates skill scaffolding from idea specs |
 | **Skill Idea Miner** | ❌ Not used | ❌ Not used | ❌ Not used | Mines session logs for skill ideas |
 | **Skill Integration Tester** | ❌ Not used | ❌ Not used | ❌ Not used | Validates multi-skill workflow contracts |
@@ -291,17 +291,17 @@ The table below is **auto-generated** from `skills-index.yaml` by `scripts/gener
 | **Stockbee Momentum Burst Screener** | ✅ Required | ❌ Not used | ❌ Not used | Live US universe and daily OHLCV via Financial Modeling Prep |
 | **Stockbee Setup Fluency Trainer** | 🟡 Optional | ❌ Not used | ❌ Not used | Financial Modeling Prep daily OHLCV for automatic outcome updates when local prices are unavailable |
 | **Strategy Pivot Designer** | ❌ Not used | ❌ Not used | ❌ Not used | Pivot proposal generator; pure calculation |
-| **Technical Analyst** | 🟡 Optional | ❌ Not used | ❌ Not used | Optional weekly OHLCV fallback for contrarian confirmation (Shapiro step 3) |
+| **Technical Analyst** | ❌ Not used | ❌ Not used | ❌ Not used | Chart screenshot input; Optional weekly OHLCV via Polygon ETF proxies for contrarian confirmation (Shapiro step 3); POLYGON_API_KEY |
 | **Theme Detector** | 🟡 Optional | 🟡 Optional (Recommended) | ❌ Not used | Financial Modeling Prep API |
 | **Trade Hypothesis Ideator** | ❌ Not used | ❌ Not used | ❌ Not used | Hypothesis generation from journal/data inputs; pure calculation |
 | **Trade Performance Coach** | ❌ Not used | ❌ Not used | ❌ Not used | Works from local trader-memory / postmortem / journal records; no network or paid API required |
-| **Trader Memory Core** | 🟡 Optional | ❌ Not used | ❌ Not used | Financial Modeling Prep API |
+| **Trader Memory Core** | ❌ Not used | ❌ Not used | ❌ Not used | Optional daily closes for MAE/MFE in postmortems via Polygon (scripts/market_data); POLYGON_API_KEY |
 | **Trading Skills Navigator** | ❌ Not used | ❌ Not used | ❌ Not used | Reads local skills-index.yaml + workflows/*.yaml (or bundled snapshot); no network |
 | **US Market Bubble Detector** | ❌ Not used | ❌ Not used | ❌ Not used | User provides indicators |
 | **US Stock Analysis** | ❌ Not used | ❌ Not used | ❌ Not used | User provides data |
 | **US Undervalued Growth Screener** | 🟡 Optional (Recommended) | ❌ Not used | ❌ Not used | Claude Code-native direct REST path using FMP_API_KEY. Bulk responses are cached and written to local artifacts; only compact screening results are returned to the model. Plan-gated bulk endpoints use bounded per-symbol fallbacks. |
 | **Uptrend Analyzer** | ❌ Not used | ❌ Not used | ❌ Not used | Monty Uptrend Ratio Dashboard CSV; no API key required |
-| **VCP Screener** | ✅ Required | ❌ Not used | ❌ Not used | S&P 500 OHLCV via FMP |
+| **VCP Screener** | ❌ Not used | ❌ Not used | ❌ Not used | S&P 500 quotes/OHLCV via Polygon (scripts/market_data; public CSV constituents); POLYGON_API_KEY |
 | **Value Dividend Screener** | ✅ Required | 🟡 Optional (Recommended) | ❌ Not used | Financial Modeling Prep API |
 | **Weekly Performance Digest** | ❌ Not used | ❌ Not used | ❌ Not used | Pure calculation; works offline |
 | **manifoldbt Backtester** | ❌ Not used | ❌ Not used | ❌ Not used | pip install manifoldbt; free tier covers this skill, no API key; CSV or Parquet with timestamp, open, high, low, close, volume |

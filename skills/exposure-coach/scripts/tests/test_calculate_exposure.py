@@ -838,3 +838,54 @@ class TestIntegration:
         assert result["composite_score"] == 47.5
         assert result["exposure_ceiling_pct"] == 46
         assert result["bias"] == "NEUTRAL"
+
+
+# --- intraday-market-monitor tilt --------------------------------------------
+
+
+def test_extract_intraday_score_reads_posture_score():
+    from calculate_exposure import extract_intraday_score
+
+    assert extract_intraday_score({"posture": {"score": 63.4}}) == 63
+    assert extract_intraday_score({"score": 120}) == 100
+    assert extract_intraday_score({"posture": {"score": "n/a"}}) is None
+    assert extract_intraday_score(None) is None
+
+
+def test_blend_intraday_is_noop_when_absent_and_tilts_when_present():
+    from calculate_exposure import INTRADAY_WEIGHT, blend_intraday
+
+    assert blend_intraday(50.0, None) == 50.0
+    assert blend_intraday(50.0, 100) == 50.0 * (1 - INTRADAY_WEIGHT) + 100 * INTRADAY_WEIGHT
+
+
+def test_cli_intraday_flag_adds_component_and_provided(tmp_path, monkeypatch):
+    import json
+    import sys
+
+    import calculate_exposure
+
+    intraday = tmp_path / "latest.json"
+    intraday.write_text(json.dumps({"posture": {"score": 80}}), encoding="utf-8")
+    breadth = tmp_path / "breadth.json"
+    breadth.write_text(json.dumps({"breadth_score": 40}), encoding="utf-8")
+    out = tmp_path / "out"
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "calculate_exposure.py",
+            "--breadth",
+            str(breadth),
+            "--intraday",
+            str(intraday),
+            "--output-dir",
+            str(out),
+            "--json-only",
+        ],
+    )
+    calculate_exposure.main()
+    report = json.loads(next(out.glob("exposure_posture_*.json")).read_text(encoding="utf-8"))
+    assert "intraday" in report["inputs_provided"]
+    assert report["component_scores"]["intraday_score"] == 80
+    assert "intraday" not in report["inputs_missing"]

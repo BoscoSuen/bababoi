@@ -6,13 +6,13 @@ Integrates O'Neil (Distribution Days), Minervini (Leading Stock Deterioration),
 and Monty (Defensive Sector Rotation) approaches to detect market top probability.
 
 Usage:
-    # With FMP API (recommended):
+    # With Polygon API (POLYGON_API_KEY):
     python3 market_top_detector.py --api-key YOUR_KEY \\
         --breadth-200dma 62.26 --breadth-50dma 55.0 \\
         --put-call 0.67 --vix-term contango
 
     # Using environment variable:
-    export FMP_API_KEY=YOUR_KEY
+    export POLYGON_API_KEY=YOUR_KEY
     python3 market_top_detector.py --breadth-200dma 62.26
 
     # Minimal (VIX from API, rest from CLI):
@@ -36,6 +36,7 @@ from zoneinfo import ZoneInfo
 # Add parent directory to path for imports
 sys.path.insert(0, os.path.dirname(__file__))
 
+import _repo_bootstrap  # noqa: E402, F401  (repo root → scripts.market_data)
 from breadth_csv_client import fetch_breadth_200dma
 from calculators.breadth_calculator import calculate_breadth_divergence
 from calculators.defensive_rotation_calculator import (
@@ -52,11 +53,12 @@ from calculators.leading_stock_calculator import (
     select_dynamic_basket,
 )
 from calculators.sentiment_calculator import calculate_sentiment
-from fmp_client import FMPClient
 from historical_comparator import compare_to_historical
 from report_generator import generate_json_report, generate_markdown_report
 from scenario_engine import generate_scenarios
 from scorer import calculate_composite_score, detect_follow_through_day
+
+from scripts.market_data.legacy import PolygonCompatClient as MarketDataClient  # noqa: E402
 
 
 def _iso_date(value: str) -> date:
@@ -76,7 +78,16 @@ def parse_arguments(argv: Optional[list[str]] = None):
 
     # API key
     parser.add_argument(
-        "--api-key", help="FMP API key (defaults to FMP_API_KEY environment variable)"
+        "--api-key", help="Polygon API key (defaults to POLYGON_API_KEY environment variable)"
+    )
+    parser.add_argument(
+        "--provider",
+        choices=["polygon", "fixture"],
+        default="polygon",
+        help="polygon (live, cached) or fixture (offline replay of a cache directory)",
+    )
+    parser.add_argument(
+        "--fixture-dir", default=None, help="cache-layout dir for --provider fixture"
     )
 
     # WebSearch-sourced data (provided by Claude before script execution)
@@ -368,10 +379,14 @@ def main(argv: Optional[list[str]] = None):
     print("=" * 70)
     print()
 
-    # Initialize FMP client
+    # Initialize market-data client (Polygon via scripts/market_data; ^GSPC → SPY
+    # proxy, ^VIX/^VIX3M via yfinance).
     try:
-        client = FMPClient(api_key=args.api_key)
-        print("FMP API client initialized")
+        if args.provider == "fixture":
+            client = MarketDataClient(fixture_dir=args.fixture_dir)
+        else:
+            client = MarketDataClient(api_key=args.api_key)
+        print(f"Market data client initialized ({client.get_data_mode()})")
     except ValueError as e:
         print(f"ERROR: {e}", file=sys.stderr)
         sys.exit(1)
@@ -660,7 +675,9 @@ def main(argv: Optional[list[str]] = None):
         "metadata": {
             "generated_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
             "as_of_date": as_of_date.isoformat(),
-            "data_mode": "FMP API + CLI inputs",
+            "data_mode": f"{client.get_data_mode()} + CLI inputs",
+            "data_source": client.get_data_mode(),
+            "symbol_proxies": client.get_api_stats().get("symbol_proxies", {}),
             "api_calls": client.get_api_stats(),
             "cli_inputs": {
                 "breadth_200dma": effective_breadth_200dma,

@@ -7,14 +7,14 @@ evidence of a reversal in a market already flagged as crowded (steps 1-2:
 cot-contrarian-detector, news-reaction-failure-analyzer). This is a
 data-driven FALLBACK to the technical-analyst skill's primary chart-image
 workflow -- it consumes a COT symbol (mapped) or plain ticker, fetches
-weekly-resampled OHLC from FMP with a documented fallback chain, and
+weekly-resampled OHLC from Polygon (scripts/market_data) with a documented fallback chain, and
 produces a fail-closed CONFIRMED / NOT_CONFIRMED / INSUFFICIENT_DATA
 verdict using the deterministic detectors implemented in
 weekly_price_action.py (weekly key reversal, failed extreme, failed
 breakout, continuation veto) plus fractal swing levels for a stop
 reference.
 
-Data source notes (verified live against the FMP stable API, 2026-07):
+Data source notes (chain verified against FMP 2026-07; Polygon Stocks Starter serves ETFs/equities only, so futures/FX entries are skipped and ETF proxies used):
   - `stable/historical-price-eod/full` returns OHLC (date/open/high/low/
     close/volume) -- confirmed for GCUSD, ESUSD, BTCUSD, GBPUSD, and ETF
     proxies QQQ/IEF/UUP. NQUSD returns 402 on this key (same tier
@@ -28,7 +28,7 @@ Data source notes (verified live against the FMP stable API, 2026-07):
     defensively.
   - Unlike news-reaction-failure-analyzer, --symbol here is not restricted
     to COT futures symbols: if it isn't a mapped COT symbol,
-    PRICE_SOURCE_CHAINS falls through to treating it as a plain FMP price
+    PRICE_SOURCE_CHAINS falls through to treating it as a plain provider price
     ticker directly (e.g. an equity or ETF symbol) -- this skill covers
     stocks, indices, crypto, and forex, not only COT-tracked futures.
 
@@ -48,16 +48,11 @@ import json
 import os
 import re
 import sys
-import time
 from datetime import date, datetime, timedelta
 from pathlib import Path
 from typing import Any
 
-try:
-    import requests
-except ImportError:  # pragma: no cover - environment guard
-    requests = None
-
+import _repo_bootstrap  # noqa: F401  (repo root → scripts.market_data)
 from weekly_price_action import (
     EXTREME_LOOKBACK_WEEKS_DEFAULT,
     MIN_WEEKS_DEFAULT,
@@ -67,10 +62,15 @@ from weekly_price_action import (
     run_weekly_price_action,
 )
 
+from scripts.market_data import get_provider
+from scripts.market_data.provider import NotAvailable, ProviderError
+
 SKILL_NAME = "technical-analyst"
 SCHEMA_VERSION = "1.0"
 
-STABLE_EOD_URL = "https://financialmodelingprep.com/stable/historical-price-eod/full"
+# Polygon Stocks Starter serves equities/ETFs only: futures and spot-FX chain
+# entries are skipped without a call and the ETF proxy (if any) is used.
+UNSUPPORTED_KINDS = frozenset({"futures", "fx"})
 
 MAX_DETECTOR_AGE_DAYS_DEFAULT = 10
 
@@ -89,13 +89,13 @@ WEEKS_FETCH_BUFFER = 10
 # {cot_symbol: [(price_symbol, kind, invert), ...]} -- tried in order; a
 # source fails on HTTP error OR rows == 0; first success wins.
 PRICE_SOURCE_CHAINS: dict[str, list[tuple[str, str, bool]]] = {
-    "ES": [("ESUSD", "futures", False)],
+    "ES": [("ESUSD", "futures", False), ("SPY", "etf", False)],
     "NQ": [("NQUSD", "futures", False), ("QQQ", "etf", False)],
     "YM": [("YMUSD", "futures", False), ("DIA", "etf", False)],
     "QR": [("RTYUSD", "futures", False), ("IWM", "etf", False)],
     "VX": [("VXUSD", "futures", False)],  # 200/0 rows on this key -> no_price_source
-    "GC": [("GCUSD", "futures", False)],
-    "SI": [("SIUSD", "futures", False)],
+    "GC": [("GCUSD", "futures", False), ("GLD", "etf", False)],
+    "SI": [("SIUSD", "futures", False), ("SLV", "etf", False)],
     "HG": [("HGUSD", "futures", False), ("CPER", "etf", False)],
     "PL": [("PLUSD", "futures", False), ("PPLT", "etf", False)],
     "PA": [("PAUSD", "futures", False), ("PALL", "etf", False)],
@@ -109,19 +109,19 @@ PRICE_SOURCE_CHAINS: dict[str, list[tuple[str, str, bool]]] = {
     "ZB": [("ZBUSD", "futures", False), ("TLT", "etf", False)],
     "ZQ": [("ZQUSD", "futures", False)],  # no proxy -> no_price_source
     "DX": [("DXUSD", "futures", False), ("UUP", "etf", False)],
-    "B6": [("GBPUSD", "futures", False)],
-    "E6": [("EURUSD", "futures", False)],
-    "J6": [("JPYUSD", "futures", False)],
-    "S6": [("CHFUSD", "futures", False)],
-    "D6": [("CADUSD", "futures", False)],
-    "A6": [("AUDUSD", "futures", False)],
-    "N6": [("NZDUSD", "futures", False)],
-    "BT": [("BTCUSD", "futures", False)],
-    "ZC": [("ZCUSD", "futures", False)],
-    "ZS": [("ZSUSD", "futures", False)],
+    "B6": [("GBPUSD", "fx", False), ("FXB", "etf", False)],
+    "E6": [("EURUSD", "fx", False), ("FXE", "etf", False)],
+    "J6": [("JPYUSD", "fx", False), ("FXY", "etf", False)],
+    "S6": [("CHFUSD", "fx", False), ("FXF", "etf", False)],
+    "D6": [("CADUSD", "fx", False), ("FXC", "etf", False)],
+    "A6": [("AUDUSD", "fx", False), ("FXA", "etf", False)],
+    "N6": [("NZDUSD", "fx", False)],  # no liquid ETF proxy -> no_price_source
+    "BT": [("BTCUSD", "futures", False), ("IBIT", "etf", False)],
+    "ZC": [("ZCUSD", "futures", False), ("CORN", "etf", False)],
+    "ZS": [("ZSUSD", "futures", False), ("SOYB", "etf", False)],
     "ZM": [("ZMUSD", "futures", False)],
     "ZL": [("ZLUSD", "futures", False)],
-    "ZW": [("ZWUSD", "futures", False)],
+    "ZW": [("ZWUSD", "futures", False), ("WEAT", "etf", False)],
 }
 
 
@@ -142,7 +142,7 @@ _APIKEY_PATTERNS = (
 
 
 def _redact(text: str | None, secret: str | None = None) -> str | None:
-    """Redact the FMP API key from an error/exception string."""
+    """Redact the provider API key from an error/exception string."""
     if not text:
         return text
     if secret:
@@ -153,88 +153,75 @@ def _redact(text: str | None, secret: str | None = None) -> str | None:
 
 
 def get_api_key(cli_key: str | None) -> str | None:
-    """Resolve the FMP API key: --api-key argument takes priority over env."""
+    """Resolve the Polygon API key: --api-key argument takes priority over env."""
     if cli_key:
         return cli_key
-    api_key = os.environ.get("FMP_API_KEY")
+    api_key = os.environ.get("POLYGON_API_KEY")
     if not api_key:
-        print("Warning: FMP_API_KEY environment variable not set", file=sys.stderr)
+        print("Warning: POLYGON_API_KEY environment variable not set", file=sys.stderr)
     return api_key
 
 
-def _request_with_backoff(
-    session: requests.Session,
-    url: str,
-    params: dict[str, Any],
-    max_retries: int = 4,
-    base_delay: float = 1.0,
-) -> tuple[Any, str | None]:
-    """GET JSON with exponential backoff retry on 429 / 5xx. Non-retryable
-    4xx (401/402/403/404/...) fail immediately -- a 402 is expected/routine
-    here (advances the fallback chain), not something to retry."""
-    secret = params.get("apikey") if isinstance(params, dict) else None
-    delay = base_delay
-    error = "unknown error"
-    for attempt in range(max_retries + 1):
-        try:
-            response = session.get(url, params=params, timeout=30)
-        except requests.exceptions.RequestException as exc:
-            error = _redact(f"request exception: {exc}", secret=secret)
-        else:
-            if response.status_code == 200:
-                try:
-                    return response.json(), None
-                except ValueError as exc:
-                    error = _redact(f"invalid JSON response: {exc}", secret=secret)
-            elif response.status_code == 429 or response.status_code >= 500:
-                error = f"HTTP {response.status_code}"
-            else:
-                return None, _redact(
-                    f"HTTP {response.status_code}: {response.text[:200]}", secret=secret
-                )
-
-        if attempt < max_retries:
-            print(
-                f"WARN: {error}; retrying in {delay:.1f}s (attempt {attempt + 1}/{max_retries})",
-                file=sys.stderr,
-            )
-            time.sleep(delay)
-            delay *= 2
-    return None, error
-
-
 class PriceClient:
-    """Thin client for FMP's stable full-OHLC EOD price endpoint with rate limiting."""
+    """Daily OHLCV via the shared Polygon provider (``scripts/market_data``).
 
-    def __init__(self, api_key: str, sleep_seconds: float = 0.25):
-        if requests is None:
-            print(
-                "ERROR: requests library not found. Install with: pip install requests",
-                file=sys.stderr,
-            )
-            sys.exit(1)
+    ``get_eod_rows`` keeps the FMP-era contract: ``(rows, None)`` on success
+    (rows may be an EMPTY list, a distinct documented failure mode) or
+    ``(None, error)`` on a provider failure, with the key redacted from
+    ``error``. ``provider`` is injectable for tests (anything with
+    ``daily_bars(symbol, start, end)``).
+    """
+
+    def __init__(
+        self,
+        api_key: str | None,
+        sleep_seconds: float = 0.25,
+        *,
+        provider: Any = None,
+        fixture_dir: str | None = None,
+    ):
         self.api_key = api_key
         self.sleep_seconds = sleep_seconds
-        self.session = requests.Session()
-        self.last_call_time = 0.0
         self.api_calls_made = 0
+        if provider is None:
+            provider = (
+                get_provider("fixture", fixture_dir=fixture_dir)
+                if fixture_dir
+                else get_provider("polygon", api_key=api_key)
+            )
+        self.provider = provider
 
     def get_eod_rows(
         self, symbol: str, from_date: str, to_date: str
     ) -> tuple[list[dict[str, Any]] | None, str | None]:
-        """Fetch daily OHLCV rows for one symbol. Returns (rows, None) on
-        success -- rows may be an EMPTY list (a distinct, documented failure
-        mode) -- or (None, error) on an HTTP/transport failure."""
-        elapsed = time.time() - self.last_call_time
-        if elapsed < self.sleep_seconds:
-            time.sleep(self.sleep_seconds - elapsed)
-        params = {"symbol": symbol, "from": from_date, "to": to_date, "apikey": self.api_key}
-        data, error = _request_with_backoff(self.session, STABLE_EOD_URL, params)
-        self.last_call_time = time.time()
-        self.api_calls_made += 1
-        if error:
+        try:
+            bars = self.provider.daily_bars(
+                symbol, date.fromisoformat(from_date), date.fromisoformat(to_date)
+            )
+        except NotAvailable as exc:
+            return None, _redact(f"unsupported_by_provider: {exc}", self.api_key)
+        except ProviderError as exc:
+            error = _redact(str(exc), self.api_key)
+            print(f"Warning: price fetch failed for {symbol}: {error}", file=sys.stderr)
             return None, error
-        return data if isinstance(data, list) else [], None
+        except Exception as exc:  # defensive: never leak the key via a traceback string
+            error = _redact(f"{type(exc).__name__}: {exc}", self.api_key)
+            print(f"Warning: price fetch failed for {symbol}: {error}", file=sys.stderr)
+            return None, error
+        self.api_calls_made += 1
+        rows = [
+            {
+                "symbol": symbol,
+                "date": b["date"],
+                "open": b["open"],
+                "high": b["high"],
+                "low": b["low"],
+                "close": b["close"],
+                "volume": b["volume"],
+            }
+            for b in bars
+        ]
+        return rows, None
 
 
 def fetch_price_series(
@@ -260,6 +247,11 @@ def fetch_price_series(
     """
     attempts: list[dict[str, Any]] = []
     for price_symbol, kind, invert in chain:
+        if kind in UNSUPPORTED_KINDS:
+            attempts.append(
+                {"price_symbol": price_symbol, "kind": kind, "status": "unsupported_by_provider"}
+            )
+            continue
         rows, error = client.get_eod_rows(price_symbol, from_date, to_date)
         if error:
             attempts.append(
@@ -570,7 +562,12 @@ def parse_arguments() -> argparse.Namespace:
     parser.add_argument("--output-dir", default="reports/")
     parser.add_argument("--format", choices=["json", "md", "both"], default="both")
     parser.add_argument(
-        "--api-key", help="FMP API key (overrides FMP_API_KEY environment variable)"
+        "--api-key", help="Polygon API key (overrides POLYGON_API_KEY environment variable)"
+    )
+    parser.add_argument(
+        "--fixture-dir",
+        default=None,
+        help="offline replay from a recorded scripts/market_data cache directory (no key needed)",
     )
     parser.add_argument("--sleep-seconds", type=float, default=0.25)
     return parser.parse_args()
@@ -683,9 +680,12 @@ def main() -> None:
         sys.exit(0)
 
     # --- Price data (fallback chain) ------------------------------------
-    api_key = get_api_key(args.api_key)
-    if not api_key:
-        print("Error: FMP API key is required. Set FMP_API_KEY or use --api-key.", file=sys.stderr)
+    api_key = get_api_key(args.api_key) if not args.fixture_dir else None
+    if not api_key and not args.fixture_dir:
+        print(
+            "Error: Polygon API key is required. Set POLYGON_API_KEY or use --api-key.",
+            file=sys.stderr,
+        )
         sys.exit(1)
 
     if args.price_symbol:
@@ -693,7 +693,9 @@ def main() -> None:
     else:
         chain = PRICE_SOURCE_CHAINS.get(symbol, [(symbol, "direct", False)])
 
-    client = PriceClient(api_key=api_key, sleep_seconds=args.sleep_seconds)
+    client = PriceClient(
+        api_key=api_key, sleep_seconds=args.sleep_seconds, fixture_dir=args.fixture_dir
+    )
     as_of_date = datetime.strptime(args.as_of, "%Y-%m-%d").date()
     weeks_needed = (
         max(args.extreme_lookback_weeks, args.min_weeks)

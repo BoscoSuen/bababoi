@@ -36,11 +36,11 @@ def test_output_dir_created_when_missing(tmp_path, monkeypatch):
     }
     mock_client.get_treasury_rates.return_value = None
     mock_client.get_api_stats.return_value = {"api_calls_made": 0, "cache_entries": 0}
-    mock_client.get_data_mode.return_value = "yfinance_only"
+    mock_client.get_data_mode.return_value = "polygon"
 
     with (
         patch("macro_regime_detector.missing_required_packages", return_value=[]),
-        patch("macro_regime_detector.FMPClient", return_value=mock_client),
+        patch("macro_regime_detector.MarketDataClient", return_value=mock_client),
         patch("macro_regime_detector.calculate_concentration", return_value=_fake_comp),
         patch("macro_regime_detector.calculate_yield_curve", return_value=_fake_comp),
         patch("macro_regime_detector.calculate_credit_conditions", return_value=_fake_comp),
@@ -52,8 +52,8 @@ def test_output_dir_created_when_missing(tmp_path, monkeypatch):
 
     assert new_dir.exists()
     report = json.loads(next(new_dir.glob("macro_regime_*.json")).read_text(encoding="utf-8"))
-    assert report["metadata"]["data_source"] == "yfinance"
-    assert report["metadata"]["data_mode"] == "yfinance_only"
+    assert report["metadata"]["data_source"] == "polygon"
+    assert report["metadata"]["data_mode"] == "polygon"
 
 
 def test_zero_available_components_fail_closed_without_reports(tmp_path, monkeypatch, capsys):
@@ -71,7 +71,7 @@ def test_zero_available_components_fail_closed_without_reports(tmp_path, monkeyp
     )
     mock_client.get_treasury_rates.return_value = None
     mock_client.get_api_stats.return_value = {"api_calls_made": 1, "cache_entries": 1}
-    mock_client.get_data_mode.return_value = "fmp_with_yfinance_fallback"
+    mock_client.get_data_mode.return_value = "polygon"
     unavailable = {
         "score": 0,
         "signal": "INSUFFICIENT DATA: unavailable",
@@ -81,7 +81,7 @@ def test_zero_available_components_fail_closed_without_reports(tmp_path, monkeyp
 
     with (
         patch("macro_regime_detector.missing_required_packages", return_value=[]),
-        patch("macro_regime_detector.FMPClient", return_value=mock_client),
+        patch("macro_regime_detector.MarketDataClient", return_value=mock_client),
         patch("macro_regime_detector.calculate_concentration", return_value=unavailable),
         patch("macro_regime_detector.calculate_yield_curve", return_value=unavailable),
         patch("macro_regime_detector.calculate_credit_conditions", return_value=unavailable),

@@ -26,10 +26,11 @@ Detect structural macro regime transitions using monthly-frequency cross-asset r
    python3 -m pip install -r skills/macro-regime-detector/requirements.txt
    uv run python3 skills/macro-regime-detector/scripts/macro_regime_detector.py --output-dir reports/
    ```
-   This fetches 600 days of data for 9 ETFs. With an FMP key, the client tries
-   FMP first and fetches Treasury rates (~10 API calls total), then falls back
-   to yfinance for unavailable ETF history. Without an FMP key, it runs in
-   yfinance-only mode and uses SHY/TLT as the yield-curve fallback.
+   This fetches 600 days of data for 9 ETFs plus Treasury yields from Polygon.io
+   (`scripts/market_data`, `POLYGON_API_KEY` required). Responses are cached
+   under `.cache/market_data/`; `--provider fixture --fixture-dir DIR` replays a
+   recorded cache offline. If Treasury yields are unavailable the yield-curve
+   component falls back to the SHY/TLT ratio.
 
    The detector fails closed and writes no report when none of its six
    components has usable data. Do not treat a missing report or non-zero exit
@@ -41,9 +42,8 @@ Detect structural macro regime transitions using monthly-frequency cross-asset r
 
 ## Prerequisites
 
-- **Python dependencies** (required): install `requirements.txt`, including yfinance and requests
-- **FMP API Key** (optional): set `FMP_API_KEY` or pass `--api-key` to use FMP and Treasury data before the yfinance/SHY-TLT fallbacks
-- The FMP free tier may not serve every ETF; unavailable symbols automatically use yfinance
+- **Python dependencies** (required): install `requirements.txt` (requests)
+- **Polygon API Key** (required): set `POLYGON_API_KEY` or pass `--api-key`; a missing key exits 2
 
 ## 6 Components
 
@@ -89,7 +89,7 @@ Detect structural macro regime transitions using monthly-frequency cross-asset r
 python3 macro_regime_detector.py [options]
 
 Options:
-  --api-key KEY       FMP API key (default: $FMP_API_KEY)
+  --api-key KEY       Polygon API key (default: $POLYGON_API_KEY)
   --output-dir DIR    Output directory (default: current directory)
   --days N            Days of history to fetch (default: 600)
 ```

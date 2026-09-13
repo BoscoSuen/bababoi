@@ -13,6 +13,7 @@ This class keeps those signatures and shapes so the skill bodies stay intact.
 
 from __future__ import annotations
 
+import math
 import sys
 from datetime import date
 from typing import Any
@@ -198,9 +199,12 @@ class PolygonCompatClient:
     def get_vix_term_structure(self) -> dict | None:
         vix = self._yf_quote("^VIX")
         vix3m = self._yf_quote("^VIX3M")
-        if not vix or not vix3m or not vix3m.get("price"):
+        if not vix or not vix3m:
             return None
-        ratio = vix["price"] / vix3m["price"]
+        v, v3 = vix.get("price"), vix3m.get("price")
+        if not _finite_positive(v) or not _finite_positive(v3):
+            return None
+        ratio = v / v3
         if ratio < 0.85:
             classification = "steep_contango"
         elif ratio < 0.95:
@@ -263,6 +267,13 @@ def _polygon_key(symbol: str) -> str:
         return to_polygon(symbol)[0]
     except (NotAvailable, ValueError):
         return symbol.upper()
+
+
+def _finite_positive(x) -> bool:
+    try:
+        return x is not None and math.isfinite(float(x)) and float(x) > 0
+    except (TypeError, ValueError):
+        return False
 
 
 def _sma(bars: list[dict], n: int) -> float | None:

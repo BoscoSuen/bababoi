@@ -23,7 +23,7 @@ Do NOT use this skill to:
 - Symbols (default: QQQ, SPY) and lookback (default 80 trading sessions).
 - Optional `--as-of YYYY-MM-DD` for backtesting against a historical session.
 - Strategy context: instrument (TQQQ or QQQ), current exposure %, base trailing stop %.
-- FMP API key via `--api-key`, `config.data.api_key`, or `FMP_API_KEY` env var (in that priority order).
+- Polygon API key via `--api-key`, `config.data.api_key`, or `POLYGON_API_KEY` env var (in that priority order); `config.data.fixture_dir` replays a recorded cache offline.
 
 ## Core Rules
 A Distribution Day is detected when:
@@ -61,7 +61,7 @@ When both QQQ and SPY are loaded, QQQ-weighted overall logic applies (TQQQ-aware
 QQQ uses a less aggressive policy (HIGH=75%, SEVERE=50%) since it lacks 3x leverage.
 
 ## Workflow
-1. Load OHLCV for the configured symbols via FMP (`get_historical_prices`).
+1. Load OHLCV for the configured symbols via Polygon (`scripts/market_data`, `get_historical_prices`).
 2. Validate data quality; record skipped sessions in audit.
 3. Rebase via `prepare_effective_history` so `effective_history[0]` is the evaluation session.
 4. Detect raw Distribution Days; enrich with `high_since`, invalidation event, and status.
@@ -96,7 +96,7 @@ python3 skills/ibd-distribution-day-monitor/scripts/ibd_monitor.py \
 ```
 
 ## API Requirements
-FMP API key required. Free tier (250 calls/day) is sufficient for daily QQQ + SPY runs.
+Polygon API key required (Stocks Starter or higher; not call-limited). Responses are cached under `.cache/market_data/`.
 
 ## Related Skills
 - `ftd-detector`: Bottom confirmation via Follow-Through Days (counterpart of this top-side signal).

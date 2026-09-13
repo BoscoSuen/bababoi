@@ -258,6 +258,27 @@ def extract_ftd_score(data: Optional[dict]) -> Optional[int]:
     return None
 
 
+INTRADAY_WEIGHT = 0.15
+
+
+def extract_intraday_score(data: Optional[dict]) -> Optional[int]:
+    """intraday-market-monitor JSON: ``posture.score`` (0-100), else top-level ``score``."""
+    if not data:
+        return None
+    posture = data.get("posture")
+    value = posture.get("score") if isinstance(posture, dict) else data.get("score")
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        return None
+    return int(round(max(0.0, min(100.0, float(value)))))
+
+
+def blend_intraday(composite: float, intraday_score: Optional[int]) -> float:
+    """Tilt the daily composite toward the latest hourly posture (no-op when absent)."""
+    if intraday_score is None:
+        return composite
+    return composite * (1 - INTRADAY_WEIGHT) + intraday_score * INTRADAY_WEIGHT
+
+
 def extract_theme_score(data: Optional[dict]) -> Optional[int]:
     """Extract theme strength score."""
     if data is None:
@@ -612,6 +633,11 @@ def main():
         "--institutional", type=Path, help="Path to institutional-flow-tracker JSON"
     )
     parser.add_argument(
+        "--intraday",
+        type=Path,
+        help="Path to intraday-market-monitor JSON (reports/intraday/latest.json); optional tilt",
+    )
+    parser.add_argument(
         "--output-dir",
         type=Path,
         default=Path("reports"),
@@ -630,6 +656,7 @@ def main():
     theme_data = load_json_file(args.theme)
     sector_data = load_json_file(args.sector)
     institutional_data = load_json_file(args.institutional)
+    intraday_data = load_json_file(args.intraday)
 
     # Extract scores
     scores: dict[str, Optional[int]] = {
@@ -645,6 +672,11 @@ def main():
 
     # Calculate composite
     composite, provided, missing = calculate_composite_score(scores)
+    intraday_score = extract_intraday_score(intraday_data)
+    if intraday_score is not None:
+        composite = blend_intraday(composite, intraday_score)
+        scores["intraday"] = intraday_score
+        provided = [*provided, "intraday"]
 
     # Determine outputs
     exposure_ceiling = determine_exposure_ceiling(composite)

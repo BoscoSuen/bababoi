@@ -612,8 +612,8 @@ class TestHistoricalReport:
 # ===========================================================================
 
 
-class _StubFMPClient:
-    """Minimal FMPClient stand-in for end-to-end testing of run_historical.
+class _StubMarketDataClient:
+    """Minimal market-data client stand-in for end-to-end testing of run_historical.
     Returns the synthetic histories supplied at construction time and tracks
     api stats."""
 
@@ -649,7 +649,7 @@ class TestRunHistoricalE2E:
         # a real call with synthetic data.
         hist = _make_prices(1500, start=100, daily_change=0.0005)
         spy = _make_prices(1500, start=400, daily_change=0.0003)
-        client = _StubFMPClient(hist, spy)
+        client = _StubMarketDataClient(hist, spy)
 
         args = types.SimpleNamespace(
             ticker="TEST",

@@ -18,9 +18,11 @@ Screen S&P 500 stocks for Mark Minervini's Volatility Contraction Pattern (VCP),
 
 ## Prerequisites
 
-- FMP API key (set `FMP_API_KEY` environment variable or pass `--api-key`)
-- Free tier (250 calls/day) is sufficient for default screening (top 100 candidates)
-- Paid tier recommended for full S&P 500 screening (`--full-sp500`)
+- Polygon API key (set `POLYGON_API_KEY` environment variable or pass `--api-key`); data
+  flows through the shared `scripts/market_data` layer with an on-disk cache
+- Polygon Stocks Starter is not call-limited; a full S&P 500 screen (`--full-sp500`) makes
+  one snapshot call plus one cached history call per symbol
+- `--provider fixture --fixture-dir DIR` replays a recorded cache offline
 
 ## Workflow
 
@@ -85,7 +87,7 @@ Mode-specific flags:
 | `--outcome-days` | 60 | 5-252 | Forward window evaluated per detection |
 
 Notes:
-- Two FMP API calls per scan (ticker + SPY history), not 100+ like the
+- Two history calls per scan (ticker + SPY), not 100+ like the
   cross-sectional pipeline.
 - `marketCap` and absolute RS percentile reflect the ticker in isolation,
   not against the live screening universe — use this report for pattern
@@ -169,4 +171,4 @@ For each top candidate, present:
 
 - `references/vcp_methodology.md` - VCP theory and Trend Template explanation
 - `references/scoring_system.md` - Scoring thresholds and component weights
-- `references/fmp_api_endpoints.md` - API endpoints and rate limits
+- `scripts/market_data/` (repo root) - Polygon provider, cache, symbol proxies (`references/fmp_api_endpoints.md` documents the retired FMP mapping)

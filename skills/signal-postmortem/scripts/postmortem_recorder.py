@@ -10,66 +10,44 @@ import argparse
 import json
 import os
 import sys
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 from pathlib import Path
 from typing import Optional
 
+
 # For FMP API calls
-try:
-    import requests
-
-    HAS_REQUESTS = True
-except ImportError:
-    HAS_REQUESTS = False
-
-
 def get_fmp_api_key() -> Optional[str]:
-    """Get FMP API key from environment or return None."""
-    return os.environ.get("FMP_API_KEY")
+    """Backwards-compatible name: resolve the Polygon API key (POLYGON_API_KEY) or None."""
+    return get_polygon_api_key()
+
+
+def get_polygon_api_key() -> Optional[str]:
+    return os.environ.get("POLYGON_API_KEY")
 
 
 def fetch_price_data(ticker: str, start_date: str, end_date: str, api_key: str) -> dict:
-    """
-    Fetch historical price data from FMP API (stable with v3 fallback).
+    """Fetch daily closes from Polygon via the shared ``scripts/market_data`` layer.
 
-    Returns dict mapping date string to close price.
+    Returns dict mapping date string to close price ({} on any failure).
     """
-    if not HAS_REQUESTS:
+    try:
+        import _repo_bootstrap  # noqa: F401  (repo root → scripts.market_data)
+
+        from scripts.market_data import get_provider
+    except ImportError as exc:  # pragma: no cover - misconfigured checkout
+        print(
+            f"Warning: market-data layer unavailable ({exc}); skipping price fetch", file=sys.stderr
+        )
         return {}
-
-    endpoints = [
-        ("https://financialmodelingprep.com/stable/historical-price-eod/full", True),
-        ("https://financialmodelingprep.com/api/v3/historical-price-full", False),
-    ]
-    for base_url, is_stable in endpoints:
-        try:
-            if is_stable:
-                url = base_url
-                params = {"symbol": ticker, "from": start_date, "to": end_date, "apikey": api_key}
-            else:
-                url = f"{base_url}/{ticker}"
-                params = {"from": start_date, "to": end_date, "apikey": api_key}
-            resp = requests.get(url, params=params, timeout=30)
-            if resp.status_code != 200:
-                continue
-            data = resp.json()
-            historical = None
-            if isinstance(data, dict) and "historical" in data:
-                historical = data["historical"]
-            elif isinstance(data, dict) and "historicalStockList" in data:
-                for entry in data["historicalStockList"]:
-                    if entry.get("symbol", "").replace("-", ".") == ticker.replace("-", "."):
-                        historical = entry.get("historical", [])
-                        break
-            if historical is not None:
-                return {item["date"]: item["close"] for item in historical}
-        except Exception:  # nosec B112 - intentional fallback to next FMP endpoint
-            continue
-
-    print(
-        f"Warning: Failed to fetch price data for {ticker}: all endpoints failed", file=sys.stderr
-    )
-    return {}
+    try:
+        provider = get_provider("polygon", api_key=api_key)
+        bars = provider.daily_bars(
+            ticker, date.fromisoformat(start_date), date.fromisoformat(end_date)
+        )
+    except Exception as exc:
+        print(f"Warning: Failed to fetch price data for {ticker}: {exc}", file=sys.stderr)
+        return {}
+    return {b["date"]: b["close"] for b in bars}
 
 
 def calculate_return(entry_price: float, exit_price: float) -> float:

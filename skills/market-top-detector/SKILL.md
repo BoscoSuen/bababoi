@@ -36,12 +36,12 @@ Unlike the Bubble Detector (macro/multi-month evaluation), this skill focuses on
 ## Prerequisites
 
 **Required:**
-- **FMP API Key:** Set `$FMP_API_KEY` environment variable or pass `--api-key`. Free tier sufficient (~33 API calls per execution).
+- **Polygon API Key:** Set `$POLYGON_API_KEY` or pass `--api-key` (`scripts/market_data`; responses cached; `--provider fixture --fixture-dir DIR` for offline replay). `^GSPC` is served by the SPY proxy; VIX/VIX3M come from yfinance.
 - **WebSearch Access:** Required to collect S&P 500 breadth (50DMA %) and CBOE Put/Call ratio data.
 
 **Optional:**
 - **Margin Debt Data:** Enhances sentiment scoring but typically 1-2 months lagged.
-- **VIX Term Structure:** Auto-detected from FMP API if VIX3M quote available; manual override via `--vix-term`.
+- **VIX Term Structure:** Auto-detected from yfinance VIX/VIX3M quotes when available; manual override via `--vix-term`.
 
 **Data Freshness:** All manually collected data should be from the most recent 3 business days for accurate analysis.
 
@@ -90,7 +90,7 @@ Before running the Python script, collect the following data using WebSearch.
    Values: steep_contango / contango / flat / backwardation
    Primary search: "VIX VIX3M ratio term structure today"
    Fallback: "VIX futures term structure contango backwardation"
-   Note: Auto-detected from FMP API if VIX3M quote available.
+   Note: Auto-detected from yfinance VIX/VIX3M quotes when available.
    CLI --vix-term overrides auto-detection.
 
 5. [OPTIONAL] Margin Debt YoY %
@@ -105,7 +105,7 @@ Run the script with collected data as CLI arguments:
 
 ```bash
 python3 skills/market-top-detector/scripts/market_top_detector.py \
-  --api-key $FMP_API_KEY \
+  --api-key $POLYGON_API_KEY \
   --breadth-50dma [VALUE] --breadth-50dma-date [YYYY-MM-DD] \
   --put-call [VALUE] --put-call-date [YYYY-MM-DD] \
   --vix-term [steep_contango|contango|flat|backwardation] \
@@ -118,7 +118,7 @@ python3 skills/market-top-detector/scripts/market_top_detector.py \
 ```
 
 The script will:
-1. Fetch S&P 500, QQQ, VIX quotes and history from FMP API
+1. Fetch S&P 500 (SPY proxy), QQQ quotes and history from Polygon; VIX from yfinance
 2. Fetch Leading ETF (ARKK, WCLD, IGV, XBI, SOXX, SMH, KWEB, TAN) data
 3. Fetch Sector ETF (XLU, XLP, XLV, VNQ, XLK, XLC, XLY) data
 4. Calculate all 6 components
@@ -142,12 +142,12 @@ Present the generated Markdown report to the user, highlighting:
 
 | # | Component | Weight | Data Source | Key Signal |
 |---|-----------|--------|-------------|------------|
-| 1 | Distribution Day Count | **25%** | FMP API | Institutional selling in last 25 trading days |
-| 2 | Leading Stock Health | **20%** | FMP API | Growth ETF basket deterioration |
-| 3 | Defensive Sector Rotation | **15%** | FMP API | Defensive vs Growth relative performance |
+| 1 | Distribution Day Count | **25%** | Polygon | Institutional selling in last 25 trading days |
+| 2 | Leading Stock Health | **20%** | Polygon | Growth ETF basket deterioration |
+| 3 | Defensive Sector Rotation | **15%** | Polygon | Defensive vs Growth relative performance |
 | 4 | Market Breadth Divergence | **15%** | Auto (CSV) + WebSearch | 200DMA (auto) / 50DMA (WebSearch) breadth vs index level |
-| 5 | Index Technical Condition | **15%** | FMP API | MA structure, failed rallies, lower highs |
-| 6 | Sentiment & Speculation | **10%** | FMP + WebSearch | VIX, Put/Call, term structure |
+| 5 | Index Technical Condition | **15%** | Polygon | MA structure, failed rallies, lower highs |
+| 6 | Sentiment & Speculation | **10%** | yfinance (VIX) + WebSearch | VIX, Put/Call, term structure |
 
 ## Risk Zone Mapping
 

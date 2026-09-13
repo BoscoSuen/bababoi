@@ -24,7 +24,7 @@ Phase 1 supports single-ticker theses: dividend_income, growth_momentum, mean_re
 - Python 3.10+
 - `pyyaml` (already in project dependencies)
 - `jsonschema` (already in `pyproject.toml`; required by `thesis_store.py` and every command that imports it, including `thesis_ingest.py` and `thesis_review.py`)
-- FMP API key (optional, only for MAE/MFE calculation in postmortem)
+- Polygon API key (optional, only for MAE/MFE calculation in postmortem via `--with-prices`)
 
 ### How to invoke the CLI
 
@@ -301,7 +301,7 @@ python3 skills/trader-memory-core/scripts/trader_memory_cli.py review \
   --state-dir state/theses/ postmortem th_aapl_div_20260314_a3f1
 ```
 
-Generate a structured postmortem in `state/journal/`. If FMP API key is available, includes MAE/MFE (Maximum Adverse/Favorable Excursion) metrics.
+Generate a structured postmortem in `state/journal/`. With `--with-prices` and a Polygon API key (`POLYGON_API_KEY`), includes MAE/MFE (Maximum Adverse/Favorable Excursion) metrics.
 
 **Summary statistics:**
 

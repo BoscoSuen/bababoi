@@ -788,10 +788,10 @@ skills:
   timeframe: daily
   difficulty: intermediate
   integrations:
-  - id: fmp
+  - id: polygon
     type: market_data
     requirement: required
-    note: Daily QQQ/SPY OHLCV via FMP
+    note: Daily SPY (^GSPC proxy) / QQQ OHLCV via Polygon (scripts/market_data); POLYGON_API_KEY
   inputs:
   - sp500_ohlcv
   - nasdaq_ohlcv
@@ -847,10 +847,10 @@ skills:
   timeframe: daily
   difficulty: intermediate
   integrations:
-  - id: fmp
+  - id: polygon
     type: market_data
     requirement: required
-    note: Financial Modeling Prep API
+    note: Daily QQQ/SPY OHLCV via Polygon (scripts/market_data); POLYGON_API_KEY
   inputs:
   - qqq_ohlcv
   - spy_ohlcv
@@ -1035,14 +1035,10 @@ skills:
   timeframe: weekly
   difficulty: advanced
   integrations:
-  - id: yfinance
+  - id: polygon
     type: market_data
     requirement: required
-    note: Keyless cross-asset ETF history; declared in the skill-local requirements file
-  - id: fmp
-    type: market_data
-    requirement: optional
-    note: Optional FMP market and Treasury data; unavailable ETF history falls back to yfinance
+    note: Cross-asset ETF history and Treasury yields via Polygon (scripts/market_data); POLYGON_API_KEY
   inputs:
   - cross_asset_ratios
   - yield_curve_data
@@ -1192,6 +1188,10 @@ skills:
   timeframe: daily
   difficulty: intermediate
   integrations:
+  - id: polygon
+    type: market_data
+    requirement: required
+    note: Index/ETF quotes and history via Polygon (^GSPC→SPY proxy; VIX via yfinance); POLYGON_API_KEY
   - id: public_csv
     type: web
     requirement: required
@@ -1598,6 +1598,10 @@ skills:
     type: calculation
     requirement: not_required
     note: Postmortem framework; pure calculation
+  - id: polygon
+    type: market_data
+    requirement: optional
+    note: Optional daily closes for realized returns via Polygon (scripts/market_data); POLYGON_API_KEY
   inputs:
   - closed_thesis_record
   outputs:
@@ -1966,10 +1970,10 @@ skills:
     type: image
     requirement: required
     note: Chart screenshot input
-  - id: fmp
+  - id: polygon
     type: market_data
     requirement: optional
-    note: Optional weekly OHLCV fallback for contrarian confirmation (Shapiro step 3)
+    note: Optional weekly OHLCV via Polygon ETF proxies for contrarian confirmation (Shapiro step 3); POLYGON_API_KEY
   inputs:
   - weekly_chart_image
   outputs:
@@ -2099,10 +2103,10 @@ skills:
   timeframe: event-driven
   difficulty: beginner
   integrations:
-  - id: fmp
+  - id: polygon
     type: market_data
     requirement: optional
-    note: Financial Modeling Prep API
+    note: Optional daily closes for MAE/MFE in postmortems via Polygon (scripts/market_data); POLYGON_API_KEY
   inputs:
   - screener_report
   - trade_actions
@@ -2304,10 +2308,10 @@ skills:
   timeframe: daily
   difficulty: intermediate
   integrations:
-  - id: fmp
+  - id: polygon
     type: market_data
     requirement: required
-    note: S&P 500 OHLCV via FMP
+    note: S&P 500 quotes/OHLCV via Polygon (scripts/market_data; public CSV constituents); POLYGON_API_KEY
   inputs:
   - sp500_ohlcv
   outputs:

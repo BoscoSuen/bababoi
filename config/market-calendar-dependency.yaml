@@ -23,8 +23,6 @@ additional_requirements:
     - pyyaml>=6.0
   market-top-detector:
     - requests>=2.31.0
-    - requirement: yfinance>=0.2.0
-      optional: FMP success path never depends on it; fallback returns None
   parabolic-short-trade-planner:
     - requests>=2.31.0
   theme-detector:

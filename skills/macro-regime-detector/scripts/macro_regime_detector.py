@@ -17,8 +17,8 @@ cross-asset ratio analysis on monthly data.
 - Concentration, Broadening, Contraction, Inflationary, Transitional
 
 Usage:
-    # With FMP API key in environment:
-    export FMP_API_KEY=YOUR_KEY
+    # With Polygon API key in environment:
+    export POLYGON_API_KEY=YOUR_KEY
     python3 macro_regime_detector.py
 
     # With explicit API key:
@@ -40,6 +40,7 @@ from datetime import datetime
 # Add parent directory to path for imports
 sys.path.insert(0, os.path.dirname(__file__))
 
+import _repo_bootstrap  # noqa: F401  (repo root → scripts.market_data)
 from calculators.concentration_calculator import calculate_concentration
 from calculators.credit_conditions_calculator import calculate_credit_conditions
 from calculators.equity_bond_calculator import calculate_equity_bond
@@ -49,22 +50,7 @@ from calculators.yield_curve_calculator import calculate_yield_curve
 from report_generator import generate_json_report, generate_markdown_report
 from scorer import calculate_composite_score, check_regime_consistency, classify_regime
 
-
-def _requests_available() -> bool:
-    try:
-        import requests  # noqa: F401
-    except ImportError:
-        return False
-    return True
-
-
-if _requests_available():
-    from fmp_client import FMPClient
-else:
-    # fmp_client exits(1) at import time when requests is missing; defer
-    # that failure to the startup probe so it surfaces as exit 2 with an
-    # actionable message. Any other fmp_client ImportError stays loud.
-    FMPClient = None  # type: ignore[assignment]
+from scripts.market_data.legacy import PolygonCompatClient as MarketDataClient
 
 # ETF symbols needed for analysis
 REQUIRED_ETFS = ["RSP", "SPY", "IWM", "TLT", "SHY", "HYG", "LQD", "XLY", "XLP"]
@@ -73,7 +59,7 @@ HISTORY_DAYS = 600  # ~2.4 years of daily data
 # Third-party packages required at runtime (see requirements.txt alongside
 # SKILL.md). Probed at startup so a broken install fails with an actionable
 # message (exit 2) instead of a silent all-zero report (issue #311).
-REQUIRED_PACKAGES = ("requests", "yfinance")
+REQUIRED_PACKAGES = ("requests",)
 
 
 def missing_required_packages() -> list[str]:
@@ -99,7 +85,16 @@ def parse_arguments():
         description="Macro Regime Detector - Cross-Asset Ratio Analysis"
     )
     parser.add_argument(
-        "--api-key", help="FMP API key (defaults to FMP_API_KEY environment variable)"
+        "--api-key", help="Polygon API key (defaults to POLYGON_API_KEY environment variable)"
+    )
+    parser.add_argument(
+        "--provider",
+        choices=["polygon", "fixture"],
+        default="polygon",
+        help="polygon (live, cached) or fixture (offline replay of a cache directory)",
+    )
+    parser.add_argument(
+        "--fixture-dir", default=None, help="cache-layout dir for --provider fixture"
     )
     parser.add_argument(
         "--output-dir",
@@ -138,16 +133,19 @@ def main():
         )
         sys.exit(2)
 
-    # Initialize market-data client. FMP is optional; without a key, ETF
-    # history is fetched directly through yfinance.
-    client = FMPClient(api_key=args.api_key)
+    # Initialize market-data client (Polygon via scripts/market_data). A missing
+    # key is a configuration error (exit 2), not a data outage (exit 1).
+    try:
+        if args.provider == "fixture":
+            client = MarketDataClient(fixture_dir=args.fixture_dir)
+        else:
+            client = MarketDataClient(api_key=args.api_key)
+    except ValueError as exc:
+        print(f"ERROR: {exc}", file=sys.stderr)
+        sys.exit(2)
     data_mode = client.get_data_mode()
-    if data_mode == "yfinance_only":
-        print("Market data client initialized (yfinance-only mode)")
-        data_source = "yfinance"
-    else:
-        print("Market data client initialized (FMP with yfinance fallback)")
-        data_source = "FMP API with yfinance fallback"
+    data_source = f"polygon ({data_mode})" if data_mode != "polygon" else "polygon"
+    print(f"Market data client initialized ({data_source})")
 
     # ================================================================
     # Step 1: Fetch Market Data (9 ETFs + Treasury rates = 10 API calls)

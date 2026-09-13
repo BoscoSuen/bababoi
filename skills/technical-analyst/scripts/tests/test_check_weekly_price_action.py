@@ -1,8 +1,8 @@
 """Tests for check_weekly_price_action.py -- CLI logic (price-source fallback
 chain, detector-json guards, redaction, report generation).
 
-Network calls are stubbed out with a fake `requests.Session`; no live FMP
-calls are made here. Run with:
+Provider calls are stubbed out with a fake ``scripts.market_data`` provider; no
+live Polygon calls are made here. Run with:
     python3 -m pytest skills/technical-analyst/scripts/tests/test_check_weekly_price_action.py -v
 """
 
@@ -16,7 +16,6 @@ from datetime import date, timedelta
 from pathlib import Path
 
 import pytest
-import requests
 
 SCRIPT_DIR = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(SCRIPT_DIR))
@@ -39,24 +38,35 @@ from check_weekly_price_action import (  # noqa: E402
 # ---------------------------------------------------------------------------
 
 
-class _FakeResponse:
-    def __init__(self, payload, status_code=200):
-        self._payload = payload
-        self.status_code = status_code
-        self.text = json.dumps(payload)
+class _FakeProvider:
+    """Scripted ``daily_bars`` responses: a list is returned, an exception is raised."""
 
-    def json(self):
-        return self._payload
-
-
-class _FakeSession:
     def __init__(self, responses):
         self.responses = list(responses)
         self.calls = []
 
-    def get(self, url, params=None, timeout=None):
-        self.calls.append({"url": url, "params": dict(params or {})})
-        return self.responses.pop(0)
+    def daily_bars(self, symbol, start, end):
+        self.calls.append((symbol, start.isoformat(), end.isoformat()))
+        item = self.responses.pop(0)
+        if isinstance(item, Exception):
+            raise item
+        return item
+
+
+def _bars_from_rows(rows):
+    return [
+        {
+            "date": r["date"],
+            "open": r["open"],
+            "high": r["high"],
+            "low": r["low"],
+            "close": r["close"],
+            "adjClose": r["close"],
+            "volume": r["volume"],
+            "vwap": None,
+        }
+        for r in rows
+    ]
 
 
 def make_eod_rows(dates, closes):
@@ -99,66 +109,68 @@ class TestPriceSourceChains:
             for entry in chain:
                 assert len(entry) == 3
                 symbol, kind, invert = entry
-                assert kind in ("futures", "etf")
+                assert kind in ("futures", "fx", "etf")
                 assert isinstance(invert, bool)
 
 
 class TestFetchPriceSeries:
     def test_primary_success_no_proxy(self):
-        client = PriceClient(api_key="fake", sleep_seconds=0.0)
         dates = _weekday_dates(date(2026, 1, 1), 90)
         closes = [100 + i * 0.3 for i in range(len(dates))]
         rows = make_eod_rows(dates, closes)
-        client.session = _FakeSession([_FakeResponse(rows, status_code=200)])
-        chain = [("ESUSD", "futures", False)]
+        client = PriceClient(api_key="fake", provider=_FakeProvider([_bars_from_rows(rows)]))
+        chain = [("SPY", "etf", False)]
         result = fetch_price_series(client, chain, dates[0], dates[-1], as_of=dates[-1])
         assert result["error"] is None
-        assert result["price_symbol"] == "ESUSD"
-        assert result["proxy_used"] is False
+        assert result["price_symbol"] == "SPY"
+        assert result["proxy_used"] is True  # kind == "etf"
         assert len(result["daily_bars"]) == len(dates)
+        assert client.api_calls_made == 1
 
-    def test_402_falls_back_to_etf_proxy(self):
-        client = PriceClient(api_key="fake", sleep_seconds=0.0)
+    def test_futures_entry_is_skipped_without_a_call_and_etf_proxy_used(self):
         dates = _weekday_dates(date(2026, 1, 1), 90)
         closes = [100 + i * 0.3 for i in range(len(dates))]
         rows = make_eod_rows(dates, closes)
-        client.session = _FakeSession(
-            [
-                _FakeResponse({"error": "restricted"}, status_code=402),
-                _FakeResponse(rows, status_code=200),
-            ]
-        )
+        provider = _FakeProvider([_bars_from_rows(rows)])
+        client = PriceClient(api_key="fake", provider=provider)
         chain = [("NQUSD", "futures", False), ("QQQ", "etf", False)]
         result = fetch_price_series(client, chain, dates[0], dates[-1], as_of=dates[-1])
         assert result["error"] is None
         assert result["price_symbol"] == "QQQ"
         assert result["proxy_used"] is True
+        assert result["attempts"][0]["status"] == "unsupported_by_provider"
+        assert provider.calls == [("QQQ", dates[0], dates[-1])]
 
     def test_zero_rows_is_treated_as_failure_and_advances_chain(self):
-        client = PriceClient(api_key="fake", sleep_seconds=0.0)
         dates = _weekday_dates(date(2026, 1, 1), 90)
         closes = [100 + i * 0.3 for i in range(len(dates))]
         rows = make_eod_rows(dates, closes)
-        client.session = _FakeSession(
-            [
-                _FakeResponse([], status_code=200),
-                _FakeResponse(rows, status_code=200),
-            ]
-        )
-        chain = [("VXUSD", "futures", False), ("SOMEPROXY", "etf", False)]
+        client = PriceClient(api_key="fake", provider=_FakeProvider([[], _bars_from_rows(rows)]))
+        chain = [("VXX", "etf", False), ("SOMEPROXY", "etf", False)]
         result = fetch_price_series(client, chain, dates[0], dates[-1], as_of=dates[-1])
         assert result["error"] is None
         assert result["price_symbol"] == "SOMEPROXY"
-        assert result["proxy_used"] is True
+        assert result["attempts"][0]["status"] == "0 rows"
+
+    def test_provider_error_advances_chain(self):
+        from scripts.market_data.provider import NotAvailable, ProviderError
+
+        dates = _weekday_dates(date(2026, 1, 1), 40)
+        rows = make_eod_rows(dates, [100.0] * len(dates))
+        client = PriceClient(
+            api_key="fake",  # pragma: allowlist secret
+            provider=_FakeProvider(
+                [NotAvailable("not entitled"), ProviderError("HTTP 500"), _bars_from_rows(rows)]
+            ),
+        )
+        chain = [("A", "etf", False), ("B", "etf", False), ("C", "etf", False)]
+        result = fetch_price_series(client, chain, dates[0], dates[-1], as_of=dates[-1])
+        assert result["price_symbol"] == "C"
+        assert result["attempts"][0]["status"].startswith("error: unsupported_by_provider")
+        assert result["attempts"][1]["status"] == "error: HTTP 500"
 
     def test_all_chain_members_fail_is_no_price_source(self):
-        client = PriceClient(api_key="fake", sleep_seconds=0.0)
-        client.session = _FakeSession(
-            [
-                _FakeResponse({}, status_code=402),
-                _FakeResponse([], status_code=200),
-            ]
-        )
+        client = PriceClient(api_key="fake", provider=_FakeProvider([[], []]))
         chain = [("VXUSD", "futures", False), ("NOPROXY", "etf", False)]
         result = fetch_price_series(client, chain, "2026-01-01", "2026-03-01", as_of="2026-03-01")
         assert result["error"] == "no_price_source"
@@ -166,34 +178,28 @@ class TestFetchPriceSeries:
         assert len(result["attempts"]) == 2
 
     def test_field_fallback_close_or_price(self):
-        # `full` endpoint uses close; verify the fallback to `price` (light
-        # endpoint's field) still works if a chain member returns that shape.
-        client = PriceClient(api_key="fake", sleep_seconds=0.0)
+        # build_sorted_daily_series still accepts the light-endpoint `price` alias.
+        from check_weekly_price_action import build_sorted_daily_series
+
         dates = _weekday_dates(date(2026, 1, 1), 40)
         rows = [
             {"date": d, "open": 1, "high": 2, "low": 0.5, "price": 1.5, "volume": 10} for d in dates
         ]
-        client.session = _FakeSession([_FakeResponse(rows, status_code=200)])
-        chain = [("XUSD", "futures", False)]
-        result = fetch_price_series(client, chain, dates[0], dates[-1], as_of=dates[-1])
-        assert result["error"] is None
-        assert result["daily_bars"][0]["close"] == 1.5
+        assert build_sorted_daily_series(rows)[0]["close"] == 1.5
 
 
 class TestAsOfInformationCutoff:
     def test_daily_bars_never_include_dates_after_as_of(self):
-        client = PriceClient(api_key="fake", sleep_seconds=0.0)
         dates = _weekday_dates(date(2026, 1, 1), 90)
         closes = [100.0 + i * 0.1 for i in range(len(dates))]
         rows = make_eod_rows(dates, closes)
-        client.session = _FakeSession([_FakeResponse(rows, status_code=200)])
+        client = PriceClient(api_key="fake", provider=_FakeProvider([_bars_from_rows(rows)]))
         as_of = dates[69]
         result = fetch_price_series(
-            client, [("ESUSD", "futures", False)], dates[0], dates[-1], as_of=as_of
+            client, [("SPY", "etf", False)], dates[0], dates[-1], as_of=as_of
         )
         returned_dates = [b["date"] for b in result["daily_bars"]]
         assert returned_dates == dates[:70]
-        assert all(d <= as_of for d in returned_dates)
 
 
 # ---------------------------------------------------------------------------
@@ -639,7 +645,7 @@ class TestMainFailsClosedOnMalformedInput:
             "--output-dir",
             str(out_dir),
         ]
-        env = {"PATH": "/usr/bin:/bin"}  # no FMP_API_KEY
+        env = {"PATH": "/usr/bin:/bin"}  # no POLYGON_API_KEY
         result = subprocess.run(cmd, capture_output=True, text=True, timeout=30, env=env)
         assert result.returncode != 0
         assert "api-key" in result.stderr.lower() or "api_key" in result.stderr.lower()
@@ -864,27 +870,31 @@ class TestRedact:
 class TestPriceClientRedaction:
     SECRET = "SECRETKEY123"  # pragma: allowlist secret
 
-    def test_connection_error_redacted(self, capsys):
-        client = PriceClient(api_key=self.SECRET, sleep_seconds=0.0)
+    def test_provider_error_redacted(self, capsys):
+        from scripts.market_data.provider import ProviderError
+
         secret = self.SECRET
-
-        class _RaisingSession:
-            def get(self, url, params=None, timeout=None):
-                raise requests.exceptions.ConnectionError(
-                    f"Max retries exceeded with url: /x?apikey={secret} (Caused by ...)"
-                )
-
-        client.session = _RaisingSession()
-        import check_weekly_price_action as mod
-
-        original_sleep = mod.time.sleep
-        mod.time.sleep = lambda _s: None
-        try:
-            rows, error = client.get_eod_rows("BTCUSD", "2026-06-01", "2026-06-29")
-        finally:
-            mod.time.sleep = original_sleep
+        client = PriceClient(
+            api_key=secret,
+            provider=_FakeProvider(
+                [
+                    ProviderError(
+                        f"Max retries exceeded with url: /x?apiKey={secret} (Caused by ...)"
+                    )
+                ]
+            ),
+        )
+        rows, error = client.get_eod_rows("BTCUSD", "2026-06-01", "2026-06-29")
         assert rows is None
         assert self.SECRET not in error
         assert "***REDACTED***" in error
         captured = capsys.readouterr()
         assert self.SECRET not in captured.err
+
+    def test_unexpected_exception_redacted(self):
+        secret = self.SECRET
+        client = PriceClient(
+            api_key=secret, provider=_FakeProvider([RuntimeError(f"boom apikey={secret}")])
+        )
+        rows, error = client.get_eod_rows("SPY", "2026-06-01", "2026-06-29")
+        assert rows is None and self.SECRET not in error

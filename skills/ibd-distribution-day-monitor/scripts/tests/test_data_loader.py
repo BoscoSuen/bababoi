@@ -91,7 +91,7 @@ class TestFetchOHLCVMocked:
         history, audit = fetch_ohlcv(mock_client, "QQQ", days=2)
         assert len(history) == 2
         assert history[0]["date"] == "2026-04-30"
-        assert audit["data_source"] == "fmp"
+        assert audit["data_source"] == "polygon"
         assert audit["audit_flags"] == []
         mock_client.get_historical_prices.assert_called_once_with("QQQ", days=2)
 

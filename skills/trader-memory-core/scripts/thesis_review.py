@@ -90,7 +90,7 @@ def generate_postmortem(
     Args:
         thesis_id: Thesis ID to generate postmortem for.
         state_dir: Path to state/theses/ directory.
-        price_adapter: Optional FMPPriceAdapter for MAE/MFE.
+        price_adapter: Optional PolygonPriceAdapter for MAE/MFE.
         journal_dir: Path to journal directory (default: state/journal/).
 
     Returns:
@@ -492,6 +492,12 @@ def main(argv: list[str] | None = None) -> int:
     pm_p = sub.add_parser("postmortem", help="Generate postmortem for a thesis")
     pm_p.add_argument("thesis_id")
     pm_p.add_argument("--journal-dir", default=None)
+    pm_p.add_argument(
+        "--with-prices",
+        action="store_true",
+        help="fetch daily closes from Polygon (POLYGON_API_KEY) to compute MAE/MFE",
+    )
+    pm_p.add_argument("--api-key", default=None, help="Polygon API key (default: POLYGON_API_KEY)")
 
     # summary
     summary_p = sub.add_parser("summary", help="Show summary statistics")
@@ -514,7 +520,20 @@ def main(argv: list[str] | None = None) -> int:
         results = thesis_store.list_review_due(Path(args.state_dir), as_of)
         print(json.dumps(results, indent=2))
     elif args.command == "postmortem":
-        path = generate_postmortem(args.thesis_id, args.state_dir, journal_dir=args.journal_dir)
+        price_adapter = None
+        if args.with_prices:
+            from polygon_price_adapter import PolygonPriceAdapter
+
+            try:
+                price_adapter = PolygonPriceAdapter(api_key=args.api_key)
+            except ValueError as exc:
+                logger.warning("MAE/MFE skipped: %s", exc)
+        path = generate_postmortem(
+            args.thesis_id,
+            args.state_dir,
+            price_adapter=price_adapter,
+            journal_dir=args.journal_dir,
+        )
         print(f"Postmortem generated: {path}")
     elif args.command == "summary":
         if not any([args.ticker, args.status, args.since, args.as_of, args.by, args.compact]):

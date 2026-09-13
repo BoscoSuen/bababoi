@@ -50,11 +50,11 @@ Detect Follow-Through Day (FTD) signals that confirm a market bottom, using Will
 Run the FTD detector script:
 
 ```bash
-python3 skills/ftd-detector/scripts/ftd_detector.py --api-key $FMP_API_KEY
+python3 skills/ftd-detector/scripts/ftd_detector.py  # uses POLYGON_API_KEY
 ```
 
 The script will:
-1. Fetch S&P 500 and QQQ historical data (60+ trading days) from FMP API
+1. Fetch S&P 500 (SPY proxy) and QQQ historical data (60+ trading days) from Polygon via `scripts/market_data`
 2. Fetch current quotes for both indices
 3. Run dual-index state machine (correction → rally → FTD detection)
 4. Assess post-FTD health (distribution days, invalidation, power trend)
@@ -122,9 +122,9 @@ NO_SIGNAL → CORRECTION → RALLY_ATTEMPT → FTD_WINDOW → FTD_CONFIRMED
 
 ## Prerequisites
 
-- **FMP API Key:** Required. Set `FMP_API_KEY` environment variable or pass via `--api-key` flag.
+- **Polygon API Key:** Required. Set `POLYGON_API_KEY` environment variable or pass via `--api-key` flag. `--provider fixture --fixture-dir DIR` replays a recorded cache offline.
 - **Python 3.9+:** With `requests` library installed.
-- **API Budget:** 4 calls per execution (well within FMP free tier of 250/day).
+- **API Budget:** a handful of calls per execution; Polygon Stocks Starter is not call-limited and responses are cached under `.cache/market_data/`.
 
 ## Output Files
 
