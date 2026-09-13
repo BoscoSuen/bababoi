@@ -6,7 +6,7 @@
       "findings": [
         {
           "improvement": "Use a dedicated output path like `reports/` to avoid source tree pollution.",
-          "line": 33,
+          "line": 35,
           "message": "Sample commands write generated reports into source `scripts/` directory.",
           "path": "skills/vcp-screener/SKILL.md",
           "severity": "medium"
@@ -33,7 +33,7 @@
       "skill_name": "vcp-screener",
       "skill_type": "execution_or_hybrid",
       "test_command": "pytest skills/vcp-screener/scripts/tests -q",
-      "test_output": "........................................................................ [ 27%]\n........................................................................ [ 54%]\n........................................................................ [ 82%]\n..............................................                           [100%]\n262 passed in <elapsed>s",
+      "test_output": "........................................................................ [ 28%]\n........................................................................ [ 56%]\n........................................................................ [ 84%]\n.........................................                                [100%]\n257 passed in <elapsed>s",
       "test_status": "passed"
     },
     "declared_verification": {
@@ -69,7 +69,7 @@
         {
           "axis": "auto",
           "improvement": "Use a dedicated output path like `reports/` to avoid source tree pollution.",
-          "line": 33,
+          "line": 35,
           "message": "Sample commands write generated reports into source `scripts/` directory.",
           "path": "skills/vcp-screener/SKILL.md",
           "severity": "medium"

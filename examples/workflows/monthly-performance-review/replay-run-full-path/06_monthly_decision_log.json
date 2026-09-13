@@ -5,7 +5,7 @@
     "deferred_evidence": "Decision log is transcribed from the human rule-change decision; native trader-memory-core decision/journal persistence remains deferred (issue 294).",
     "execution_mode": "manual_contract",
     "hypothesis_revalidation": "841f238f320b0f8a58a462f5f3a82ab925c5852307a13696f737b2fc58add5de",
-    "skill_review_findings": "a3ffee73567e1aa5bb01a06521693cac5b90e3389ff43418a83607233e227855"
+    "skill_review_findings": "d2864c873ac0c7b97d4a290e2244b35e005f70bee9c594ab50361a6db7e42640"
   },
   "repo_improvements": [
     {

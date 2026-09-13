@@ -172,4 +172,7 @@ def test_optional_mapping_renders_check_skill_deps_marker(generator):
     assert "yfinance>=0.2.0  # optional: ETF scanner falls back" in theme
     assert "finvizfinance>=1.0.0  # optional: FINVIZ client degrades" in theme
     top = rendered[REPO_ROOT / "skills" / "market-top-detector" / "requirements.txt"]
-    assert "yfinance>=0.2.0  # optional: FMP success path" in top
+    # market-top-detector reads prices through scripts/market_data (Polygon);
+    # yfinance is no longer a skill-local requirement there.
+    assert "requests>=2.31.0" in top
+    assert "yfinance" not in top
