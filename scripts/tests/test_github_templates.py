@@ -52,20 +52,6 @@ EXPECTED_CONTACT_LINKS = [
     "https://tradermonty.github.io/claude-trading-skills/",
 ]
 
-FMP_PACKAGE_DRIFT_COMMAND = (
-    "python3 scripts/package_skills.py --check "
-    "--skill pead-screener "
-    "--skill earnings-trade-analyzer "
-    "--skill ibd-distribution-day-monitor "
-    "--skill vcp-screener "
-    "--skill parabolic-short-trade-planner "
-    "--skill ftd-detector "
-    "--skill canslim-screener "
-    "--skill macro-regime-detector "
-    "--skill market-top-detector "
-    "--skill us-undervalued-growth-screener"
-)
-
 
 def load_yaml(path: Path) -> object:
     with path.open(encoding="utf-8") as handle:
@@ -262,9 +248,7 @@ def test_pull_request_template_matches_local_and_ci_gates() -> None:
         "python3 scripts/generate_catalog_from_index.py --check",
         "python3 scripts/check_skill_catalog.py",
         "python3 skills/trading-skills-navigator/scripts/build_snapshot.py --check",
-        "python3 scripts/generate_fmp_client.py --check",
         "python3 scripts/check_package_drift_for_changed_skills.py",
-        FMP_PACKAGE_DRIFT_COMMAND,
         "python3 scripts/check_provider_contracts.py check",
     ]
     for command in required_commands:
@@ -329,44 +313,3 @@ def test_website_skill_catalog_guard_is_wired_to_pre_commit_and_metadata_ci() ->
     ]
     assert len(matching_steps) == 1
     assert matching_steps[0].get("name") == "README catalog drift check"
-
-
-def test_fmp_package_drift_ci_step_matches_constant() -> None:
-    workflow = load_yaml(CI_WORKFLOW)
-    assert isinstance(workflow, dict)
-    jobs = workflow.get("jobs")
-    assert isinstance(jobs, dict)
-    metadata = jobs.get("metadata")
-    assert isinstance(metadata, dict)
-    steps = metadata.get("steps")
-    assert isinstance(steps, list)
-    matching_steps = [step for step in steps if step.get("name") == "FMP skill package drift check"]
-    assert len(matching_steps) == 1
-    assert matching_steps[0].get("run") == FMP_PACKAGE_DRIFT_COMMAND
-
-
-def test_fmp_package_drift_pre_commit_hook_matches_constant() -> None:
-    config = load_yaml(PRE_COMMIT_CONFIG)
-    assert isinstance(config, dict)
-    repos = config.get("repos")
-    assert isinstance(repos, list)
-    local = next(repo for repo in repos if repo.get("repo") == "local")
-    hooks = local.get("hooks")
-    assert isinstance(hooks, list)
-
-    skills = FMP_PACKAGE_DRIFT_COMMAND.split("--skill ")[1:]
-    skills = [s.strip() for s in skills]
-    assert skills  # sanity: parsed at least one skill name
-
-    package_hook = next(h for h in hooks if h.get("id") == "fmp-package-drift")
-    assert package_hook.get("entry") == FMP_PACKAGE_DRIFT_COMMAND
-    package_files = package_hook.get("files")
-    assert isinstance(package_files, str)
-    for skill in skills:
-        assert skill in package_files, skill
-
-    client_hook = next(h for h in hooks if h.get("id") == "fmp-client-drift")
-    client_files = client_hook.get("files")
-    assert isinstance(client_files, str)
-    for skill in skills:
-        assert skill in client_files, skill

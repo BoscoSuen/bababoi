@@ -23,13 +23,8 @@ REPO_ROOT = pathlib.Path(__file__).resolve().parents[2]
 FMP_CLIENT_FILES = [
     "skills/canslim-screener/scripts/fmp_client.py",
     "skills/earnings-trade-analyzer/scripts/fmp_client.py",
-    "skills/ftd-detector/scripts/fmp_client.py",
-    "skills/macro-regime-detector/scripts/fmp_client.py",
-    "skills/market-top-detector/scripts/fmp_client.py",
     "skills/parabolic-short-trade-planner/scripts/fmp_client.py",
     "skills/pead-screener/scripts/fmp_client.py",
-    "skills/vcp-screener/scripts/fmp_client.py",
-    "skills/ibd-distribution-day-monitor/scripts/fmp_client.py",
 ]
 
 

@@ -20,19 +20,14 @@ REPO_ROOT = pathlib.Path(__file__).resolve().parents[2]
 FAMILY_B = [
     "skills/pead-screener/scripts/fmp_client.py",
     "skills/earnings-trade-analyzer/scripts/fmp_client.py",
-    "skills/ibd-distribution-day-monitor/scripts/fmp_client.py",
 ]
 
 FAMILY_A = [
-    "skills/vcp-screener/scripts/fmp_client.py",
     "skills/parabolic-short-trade-planner/scripts/fmp_client.py",
-    "skills/ftd-detector/scripts/fmp_client.py",
 ]
 
 SPECIALS = [
     "skills/canslim-screener/scripts/fmp_client.py",
-    "skills/macro-regime-detector/scripts/fmp_client.py",
-    "skills/market-top-detector/scripts/fmp_client.py",
 ]
 
 
@@ -131,54 +126,8 @@ def test_canslim_special_surface_and_stats(monkeypatch):
     }
 
 
-def test_macro_special_surface_and_stats(monkeypatch):
-    monkeypatch.setenv("FMP_API_KEY", "test_key")  # pragma: allowlist secret
-    mod = _load("skills/macro-regime-detector/scripts/fmp_client.py")
-    assert hasattr(mod, "_has_usable_history")
-    for method in (
-        "get_historical_prices",
-        "_get_from_yfinance",
-        "get_batch_historical",
-        "get_treasury_rates",
-        "get_api_stats",
-    ):
-        assert hasattr(mod.FMPClient, method)
-    client = mod.FMPClient(api_key="test_key")  # pragma: allowlist secret
-    assert set(client.get_api_stats()) == {
-        "cache_entries",
-        "api_calls_made",
-        "rate_limit_reached",
-    }
-
-
-def test_market_top_special_surface_and_stats(monkeypatch):
-    monkeypatch.setenv("FMP_API_KEY", "test_key")  # pragma: allowlist secret
-    mod = _load("skills/market-top-detector/scripts/fmp_client.py")
-    assert hasattr(mod, "_has_usable_history")
-    for method in (
-        "get_quote",
-        "_get_quote_from_yfinance",
-        "get_historical_prices",
-        "_get_hist_from_yfinance",
-        "get_batch_quotes",
-        "get_batch_historical",
-        "calculate_ema",
-        "calculate_sma",
-        "get_vix_term_structure",
-        "get_api_stats",
-    ):
-        assert hasattr(mod.FMPClient, method)
-    client = mod.FMPClient(api_key="test_key")  # pragma: allowlist secret
-    assert set(client.get_api_stats()) == {
-        "cache_entries",
-        "api_calls_made",
-        "rate_limit_reached",
-    }
-
-
 # Clients whose registry row includes the sp500_constituents extension.
 CONSTITUENTS_CLIENTS = [
-    "skills/vcp-screener/scripts/fmp_client.py",
     "skills/parabolic-short-trade-planner/scripts/fmp_client.py",
 ]
 

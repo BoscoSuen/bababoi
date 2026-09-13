@@ -270,12 +270,12 @@ Sanitization checklist before pasting the result into a `fixture` array:
 
 ## Canary: schedule, report shape, promotion criteria
 
-`.github/workflows/fmp-contract-canary.yml` runs
-`python3 scripts/check_provider_contracts.py canary` weekly (Monday 12:00 UTC) plus
-on `workflow_dispatch`. It is **report-only** (`continue-on-error: true`,
-mirroring the `packaged-deps-nightly` / #349 pattern): a live anomaly does not fail
-CI on its own today. If `secrets.FMP_API_KEY` is unset, the job prints
-`SKIPPED: FMP_API_KEY secret not set` and exits 0 without probing anything.
+The scheduled canary workflow was retired together with the FMP client
+generator (2026-09). `python3 scripts/check_provider_contracts.py canary` is
+now a manual, local-only probe for the frozen `fmp/` contracts; it needs
+`FMP_API_KEY` in the environment and is report-only. Polygon contracts under
+`config/provider-contracts/polygon/` are validated offline by `check` and
+exercised by `scripts/tests/test_market_data_*.py` against recorded fixtures.
 
 Report (`reports/fmp-canary-report.json` in CI, uploaded as an artifact for 30
 days; default local path `reports/fmp_canary_<YYYY-MM-DD>.json`, override with
@@ -317,9 +317,9 @@ resolved review notes. Promote only after a period of the canary running green
 
 ### Generated client stderr redaction (#357)
 
-The redaction above covers only the canary CLI. All 10 vendored `fmp_client.py`
-files (rendered from `scripts/fmp_client/core_template.py.tmpl` and the four
-`scripts/fmp_client/specials/*.py.tmpl`) mask `apikey=`/`api_key=` at every site
+The redaction above covers only the canary CLI. The frozen legacy
+`fmp_client.py` files (formerly rendered from `scripts/fmp_client/` templates;
+the generator was removed in 2026-09 and the files are now edited in place) mask `apikey=`/`api_key=` at every site
 that can echo provider text. The nine clients rendered from
 `core_template.py.tmpl`, `canslim.py.tmpl`, `macro.py.tmpl`, and
 `market_top.py.tmpl` mask a non-200 HTTP response body and a
@@ -335,11 +335,9 @@ though none of them can carry the key today. Because generated clients are
 vendored standalone (packaged without `scripts/`), they cannot import
 `scripts.provider_contracts.redact_url()`; each template instead carries a
 verbatim, module-level mirror (`_APIKEY_RE` + `_redact_key()`) with a comment
-naming that function as the source of truth. `scripts/tests/test_generate_fmp_client.py`
-asserts the regex literal is identical across all five templates' rendered
-output, so the five copies cannot silently drift apart, and
-`scripts/tests/test_fmp_client_redaction.py` exercises all 10 vendored clients
-at runtime to confirm a fake key never reaches stdout or stderr.
+naming that function as the source of truth.
+`scripts/tests/test_fmp_client_redaction.py` exercises the frozen vendored
+clients at runtime to confirm a fake key never reaches stdout or stderr.
 
 ## FMP endpoint inventory (`/stable/...` paths found in `skills/*/scripts`)
 

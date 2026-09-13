@@ -28,7 +28,10 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPO_ROOT))
 
 from scripts import check_provider_contracts  # noqa: E402
-from scripts.fmp_client.registry import SKILLS  # noqa: E402
+
+# Frozen legacy FMP clients (generator removed). Migrated skills no longer ship
+# a vendored fmp_client.py and are covered by scripts/tests/test_market_data_*.py.
+HIST_RETURN_LIST = {"earnings-trade-analyzer": True}
 from scripts.provider_contracts import (  # noqa: E402
     ContractLoadError,
     load_contracts,
@@ -203,7 +206,7 @@ def test_row_not_object_is_fatal():
 
 
 # ---------------------------------------------------------------------------
-# D3: the ten generated fmp_client.py clients exercised on the real fixtures
+# D3: the frozen legacy fmp_client.py clients exercised on the real fixtures
 # ---------------------------------------------------------------------------
 
 
@@ -238,23 +241,19 @@ def _assert_hist_row(row):
 CORE_TEMPLATE_SKILLS = [
     "pead-screener",
     "earnings-trade-analyzer",
-    "ibd-distribution-day-monitor",
-    "vcp-screener",
     "parabolic-short-trade-planner",
-    "ftd-detector",
 ]
 
 
 @pytest.mark.parametrize("skill", CORE_TEMPLATE_SKILLS)
 def test_core_template_client_historical_prices_accepts_fixture(skill, monkeypatch):
     monkeypatch.setenv("FMP_API_KEY", "test_key")  # pragma: allowlist secret
-    config = SKILLS[skill]
     mod = _load_client_module(f"skills/{skill}/scripts/fmp_client.py")
     client = mod.FMPClient(api_key="test_key")  # pragma: allowlist secret
     monkeypatch.setattr(client, "_rate_limited_get", lambda *a, **k: copy.deepcopy(HIST_FIXTURE))
 
     data = client.get_historical_prices("AAPL", days=5)
-    if config.hist_return_list:
+    if HIST_RETURN_LIST.get(skill, False):
         assert isinstance(data, list)
         assert data
         _assert_hist_row(data[0])
@@ -265,13 +264,12 @@ def test_core_template_client_historical_prices_accepts_fixture(skill, monkeypat
         _assert_hist_row(data["historical"][0])
 
 
-QUOTE_CLIENTS = ["vcp-screener", "parabolic-short-trade-planner", "ftd-detector"]
+QUOTE_CLIENTS = ["parabolic-short-trade-planner"]
 
 
 @pytest.mark.parametrize("skill", QUOTE_CLIENTS)
 def test_core_template_client_quote_accepts_fixture(skill, monkeypatch):
     monkeypatch.setenv("FMP_API_KEY", "test_key")  # pragma: allowlist secret
-    assert SKILLS[skill].has_quote
     mod = _load_client_module(f"skills/{skill}/scripts/fmp_client.py")
     client = mod.FMPClient(api_key="test_key")  # pragma: allowlist secret
     monkeypatch.setattr(client, "_rate_limited_get", lambda *a, **k: copy.deepcopy(QUOTE_FIXTURE))
@@ -282,13 +280,12 @@ def test_core_template_client_quote_accepts_fixture(skill, monkeypatch):
     assert "marketCap" in quotes[0]
 
 
-FAMILY_B_SKILLS = ["pead-screener", "earnings-trade-analyzer", "ibd-distribution-day-monitor"]
+FAMILY_B_SKILLS = ["pead-screener", "earnings-trade-analyzer"]
 
 
 @pytest.mark.parametrize("skill", FAMILY_B_SKILLS)
 def test_family_b_client_company_profiles_accepts_fixture(skill, monkeypatch):
     monkeypatch.setenv("FMP_API_KEY", "test_key")  # pragma: allowlist secret
-    assert SKILLS[skill].family == "B"
     mod = _load_client_module(f"skills/{skill}/scripts/fmp_client.py")
     client = mod.FMPClient(api_key="test_key")  # pragma: allowlist secret
     monkeypatch.setattr(client, "_rate_limited_get", lambda *a, **k: copy.deepcopy(PROFILE_FIXTURE))
@@ -378,7 +375,7 @@ def test_earnings_calendar_query_values_are_all_strings():
         assert isinstance(value, str), f"{key}={value!r} is not a str"
 
 
-# --- specials: canslim, macro, market-top, us-undervalued-growth-screener ---
+# --- specials: canslim, us-undervalued-growth-screener ---
 
 
 def test_canslim_special_historical_and_quote_and_profile_accept_fixture(monkeypatch):
@@ -400,32 +397,6 @@ def test_canslim_special_historical_and_quote_and_profile_accept_fixture(monkeyp
     assert isinstance(profile, list)
     # canslim keeps the documented mktCap alias shim for its own screener code.
     assert profile[0]["mktCap"] == profile[0]["marketCap"]
-
-
-def test_macro_special_historical_accepts_fixture(monkeypatch):
-    monkeypatch.setenv("FMP_API_KEY", "test_key")  # pragma: allowlist secret
-    mod = _load_client_module("skills/macro-regime-detector/scripts/fmp_client.py")
-    client = mod.FMPClient(api_key="test_key")  # pragma: allowlist secret
-    monkeypatch.setattr(client, "_rate_limited_get", lambda *a, **k: copy.deepcopy(HIST_FIXTURE))
-
-    data = client.get_historical_prices("AAPL", days=5)
-    assert mod._has_usable_history(data)
-    _assert_hist_row(data["historical"][0])
-
-
-def test_market_top_special_historical_and_quote_accept_fixture(monkeypatch):
-    monkeypatch.setenv("FMP_API_KEY", "test_key")  # pragma: allowlist secret
-    mod = _load_client_module("skills/market-top-detector/scripts/fmp_client.py")
-    client = mod.FMPClient(api_key="test_key")  # pragma: allowlist secret
-
-    monkeypatch.setattr(client, "_rate_limited_get", lambda *a, **k: copy.deepcopy(HIST_FIXTURE))
-    hist = client.get_historical_prices("AAPL", days=5)
-    assert mod._has_usable_history(hist)
-    _assert_hist_row(hist["historical"][0])
-
-    monkeypatch.setattr(client, "_rate_limited_get", lambda *a, **k: copy.deepcopy(QUOTE_FIXTURE))
-    quote = client.get_quote("AAPL")
-    assert isinstance(quote, list) and quote[0]["symbol"] == "AAPL"
 
 
 def test_us_undervalued_growth_screener_historical_profile_quotes_accept_fixture(monkeypatch):

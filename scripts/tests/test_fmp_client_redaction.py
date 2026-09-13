@@ -26,23 +26,18 @@ FAKE_KEY = "FAKEKEY123"  # pragma: allowlist secret
 FAMILY_B = [
     "skills/pead-screener/scripts/fmp_client.py",
     "skills/earnings-trade-analyzer/scripts/fmp_client.py",
-    "skills/ibd-distribution-day-monitor/scripts/fmp_client.py",
 ]
 
 # Family A: core_template.py.tmpl clients without budget enforcement
 # (constructor takes only api_key).
 FAMILY_A = [
-    "skills/vcp-screener/scripts/fmp_client.py",
     "skills/parabolic-short-trade-planner/scripts/fmp_client.py",
-    "skills/ftd-detector/scripts/fmp_client.py",
 ]
 
 CORE_CLIENTS = FAMILY_B + FAMILY_A
 
 SPECIAL_CLIENTS = [
     "skills/canslim-screener/scripts/fmp_client.py",
-    "skills/macro-regime-detector/scripts/fmp_client.py",
-    "skills/market-top-detector/scripts/fmp_client.py",
 ]
 
 GARP_CLIENT = "skills/us-undervalued-growth-screener/scripts/fmp_client.py"
