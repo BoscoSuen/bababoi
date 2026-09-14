@@ -30,7 +30,7 @@ def test_versioned_bilingual_corpus_is_complete(repo_metadata: dict) -> None:
 
     assert benchmark["schema_version"] == 1
     assert len(benchmark["cases"]) >= 208
-    assert {case["language"] for case in benchmark["cases"]} == {"en", "ja"}
+    assert {case["language"] for case in benchmark["cases"]} == {"en", "zh"}
     assert {case["label"] for case in benchmark["cases"]} >= {
         "positive",
         "hard_negative",
@@ -54,8 +54,8 @@ def test_every_persona_and_workflow_has_bilingual_guards(repo_metadata: dict) ->
 
     assert set(report["coverage"]["personas"]) == expected_personas
     for coverage in report["coverage"]["personas"].values():
-        assert coverage["positive_languages"] == ["en", "ja"]
-        assert coverage["hard_negative_languages"] == ["en", "ja"]
+        assert coverage["positive_languages"] == ["en", "zh"]
+        assert coverage["hard_negative_languages"] == ["en", "zh"]
         assert coverage["neighbor_cases"] >= 1
     assert set(report["coverage"]["workflows"]) == expected_workflows
     for coverage in report["coverage"]["workflows"].values():
@@ -73,12 +73,12 @@ def test_metamorphic_contract_has_required_language_specific_coverage(
         "word_order",
         "orthographic",
     }
-    assert set(report["coverage"]["transformations"]["ja"]) >= {
+    assert set(report["coverage"]["transformations"]["zh"]) >= {
         "punctuation",
         "word_order",
         "orthographic",
-        "ja_particle",
-        "ja_conjugation",
+        "zh_particle",
+        "zh_expression",
     }
 
 
@@ -115,7 +115,7 @@ def test_hard_negative_must_use_a_versioned_neighbor_contract(repo_metadata: dic
     benchmark = deepcopy(load_benchmark(BENCHMARK_PATH))
     for case in benchmark["cases"]:
         if case["id"] in {"research-n01", "research-n02"}:
-            case["query"] = "I am a beginner" if case["language"] == "en" else "初心者です"
+            case["query"] = "I am a beginner" if case["language"] == "en" else "我是初学者"
             case["expected_candidate_personas"] = ["beginner-onramp"]
             case["expected_selected_persona"] = "beginner-onramp"
             case["expected_primary_workflow"] = "market-regime-daily"

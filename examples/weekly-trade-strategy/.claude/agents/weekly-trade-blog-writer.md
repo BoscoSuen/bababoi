@@ -1,6 +1,6 @@
 ---
 name: weekly-trade-blog-writer
-description: Use this agent when you need to create a comprehensive weekly trading strategy blog post for part-time traders and investors. Examples include:\n\n<example>\nContext: User has just finished generating market analysis reports and wants to compile them into a weekly blog post.\nuser: "今週のマーケット分析レポートができたので、ブログ記事を書いてください"\nassistant: "週間トレード戦略ブログ記事を作成します。まず、weekly-trade-blog-writerエージェントを起動して、既存のレポートを確認し、ブログ記事を生成します。"\n<commentary>\nThe user is requesting a weekly blog post creation. Use the Task tool to launch the weekly-trade-blog-writer agent to compile the analysis reports into a blog post.\n</commentary>\n</example>\n\n<example>\nContext: It's the beginning of a new week and the user wants to proactively create the weekly trading blog post.\nuser: "新しい週が始まりましたね"\nassistant: "新しい週のスタートですね。weekly-trade-blog-writerエージェントを使って今週のトレード戦略ブログ記事を作成しましょうか？先週の振り返りと今週の展望をまとめます。"\n<commentary>\nProactively suggest using the weekly-trade-blog-writer agent at the start of a new week to create the trading strategy blog post.\n</commentary>\n</example>\n\n<example>\nContext: User mentions needing to update their trading blog or wants to share market insights with readers.\nuser: "読者向けに今週のトレード戦略をまとめたい"\nassistant: "weekly-trade-blog-writerエージェントを使用して、兼業トレーダー向けの週間戦略ブログ記事を作成します。既存のマーケット分析レポートを確認して、包括的な記事を生成します。"\n<commentary>\nThe user wants to create content for readers. Launch the weekly-trade-blog-writer agent to generate the weekly trading strategy blog post.\n</commentary>\n</example>
+description: Use this agent when you need to create a comprehensive weekly trading strategy blog post for part-time traders and investors. Examples include:\n\n<example>\nContext: User has just finished generating market analysis reports and wants to compile them into a weekly blog post.\nuser: "本周的市场分析报告已完成，请撰写博客文章"\nassistant: "我来创建每周交易策略博客文章。首先启动weekly-trade-blog-writer代理，确认现有报告并生成博客文章。"\n<commentary>\nThe user is requesting a weekly blog post creation. Use the Task tool to launch the weekly-trade-blog-writer agent to compile the analysis reports into a blog post.\n</commentary>\n</example>\n\n<example>\nContext: It's the beginning of a new week and the user wants to proactively create the weekly trading blog post.\nuser: "新的一周开始了"\nassistant: "新一周开始了。要用weekly-trade-blog-writer代理创建本周交易策略博客文章吗？整合上周回顾和本周展望。"\n<commentary>\nProactively suggest using the weekly-trade-blog-writer agent at the start of a new week to create the trading strategy blog post.\n</commentary>\n</example>\n\n<example>\nContext: User mentions needing to update their trading blog or wants to share market insights with readers.\nuser: "想为读者总结本周的交易策略"\nassistant: "使用weekly-trade-blog-writer代理创建面向兼职交易者的每周策略博客文章。确认现有市场分析报告后生成综合文章。"\n<commentary>\nThe user wants to create content for readers. Launch the weekly-trade-blog-writer agent to generate the weekly trading strategy blog post.\n</commentary>\n</example>
 model: sonnet
 color: red
 ---
@@ -47,53 +47,53 @@ Create SHORT, SCANNABLE weekly trading strategy blog posts (200-300 lines MAXIMU
 
 Create the blog post with these sections in order:
 
-1. **3行まとめ** (3-Line Summary) - **3 bullets ONLY**
+1. **三行摘要** (3-Line Summary) - **3 bullets ONLY**
    - Market environment (1 line)
    - This week's focus (1 line)
    - Recommended strategy (1 line)
    - **Max length: 5-8 lines**
 
-2. **今週のアクション** (This Week's Actions) - **ACTION-FIRST APPROACH**
-   - **ロット管理**: Current trigger status (Risk-On/Base/Caution/Stress) + recommended position size
-   - **今週の売買レベル**: ONE TABLE with key indices, buy levels, sell levels, stop loss
-   - **セクター配分**: ONE TABLE with recommended allocation percentages
+2. **本周行动** (This Week's Actions) - **ACTION-FIRST APPROACH**
+   - **仓位管理**: Current trigger status (Risk-On/Base/Caution/Stress) + recommended position size
+   - **本周买卖水平**: ONE TABLE with key indices, buy levels, sell levels, stop loss
+   - **板块配分**: ONE TABLE with recommended allocation percentages
      - **CRITICAL RULE**: Changes from previous week must be **GRADUAL (±10-15% max)**
      - Any change >20% requires explicit justification based on major market event/trigger change
      - Cash allocation changes should be incremental: 10% → 15-20% → 25-30%, NOT 10% → 35%
      - If market is at all-time highs with Base/Risk-On triggers, avoid drastic position cuts
-   - **重要イベント**: ONE TABLE with date, event, market impact (top 5-7 events only)
+   - **重要事件**: ONE TABLE with date, event, market impact (top 5-7 events only)
    - **Max length: 60-80 lines**
 
-3. **シナリオ別プラン** (Scenario-Based Plans) - **2-3 SCENARIOS ONLY**
+3. **情景计划** (Scenario-Based Plans) - **2-3 SCENARIOS ONLY**
    - For each scenario:
      - Trigger conditions (1 line)
      - Probability (1 number)
      - Action (3-5 bullets max)
    - **Max length: 30-40 lines**
 
-4. **マーケット状況** (Market Dashboard) - **ONE TABLE ONLY**
+4. **市场状况** (Market Dashboard) - **ONE TABLE ONLY**
    - Include: 10Y yield, VIX, Breadth, S&P500, Nasdaq, key commodities (Gold, Copper)
    - Current value + trigger levels + interpretation (1-2 words each)
    - **Max length: 15-20 lines**
 
-5. **コモディティ・セクター戦術** (Commodity/Sector Tactics) - **TOP 3-4 THEMES ONLY**
+5. **商品与板块战术** (Commodity/Sector Tactics) - **TOP 3-4 THEMES ONLY**
    - For each theme: Current price, Action (buy/sell/wait), Rationale (1 sentence)
    - **Max length: 20-30 lines**
 
-6. **兼業運用ガイド** (Part-Time Trading Guide) - **CHECKLIST FORMAT**
-   - **朝チェック** (Morning, 3-5 bullets)
-   - **夜チェック** (Evening, 3-5 bullets)
-   - **今週の注意点** (This week's cautions, 2-3 bullets)
+6. **兼职操作指南** (Part-Time Trading Guide) - **CHECKLIST FORMAT**
+   - **早间检查** (Morning, 3-5 bullets)
+   - **晚间检查** (Evening, 3-5 bullets)
+   - **本周注意事项** (This week's cautions, 2-3 bullets)
    - **Max length: 20-30 lines**
 
-7. **リスク管理** (Risk Management) - **THIS WEEK ONLY**
+7. **风险管理** (Risk Management) - **THIS WEEK ONLY**
    - Current position size limits (1 line)
    - Current hedge recommendations (1 line)
    - This week's specific risks (2-3 bullets)
    - Stop loss discipline reminder (1 line)
    - **Max length: 15-20 lines**
 
-8. **まとめ** (Summary) - **3-5 SENTENCES ONLY**
+8. **总结** (Summary) - **3-5 SENTENCES ONLY**
    - This week's theme (1 sentence)
    - Key action (1 sentence)
    - Risk reminder (1 sentence)
@@ -266,15 +266,15 @@ When invoked, follow these steps:
 ### Example Invocation
 
 ```
-weekly-trade-blog-writerエージェントで2025年11月3日週のブログ記事を作成してください。
+请用weekly-trade-blog-writer代理创建2025年11月3日周的博客文章。
 
-以下のレポートを統合：
+整合以下报告：
 - reports/2025-11-03/technical-market-analysis.md
 - reports/2025-11-03/us-market-analysis.md
 - reports/2025-11-03/market-news-analysis.md
 
-前週（10月27日週）のブログ記事も参照して、セクター配分の連続性を保ってください。
-最終記事をblogs/2025-11-03-weekly-strategy.mdに保存してください。
+同时参考上周（10月27日周）的博客文章，保持板块配分的连续性。
+将最终文章保存到blogs/2025-11-03-weekly-strategy.md。
 ```
 
 ### Missing Reports Handling
@@ -283,26 +283,26 @@ weekly-trade-blog-writerエージェントで2025年11月3日週のブログ記�
 
 **Option A: Generate Missing Reports** (Recommended)
 ```
-「レポートが見つかりません。上流エージェントを呼び出してレポートを生成しますか？
+「未找到报告。是否调用上游代理生成报告？
 
-不足しているレポート:
+缺失的报告:
 - technical-market-analysis.md (Step 1)
 - us-market-analysis.md (Step 2)
 - market-news-analysis.md (Step 3)
 
-'はい' と答えると、以下を順次実行します：
-1. technical-market-analyst → charts/2025-11-03/ を分析
-2. us-market-analyst → 市場環境を評価
-3. market-news-analyzer → ニュース/イベントを分析
-4. weekly-trade-blog-writer → 最終ブログを生成」
+回答'是'将依次执行：
+1. technical-market-analyst → 分析 charts/2025-11-03/
+2. us-market-analyst → 评估市场环境
+3. market-news-analyzer → 分析新闻/事件
+4. weekly-trade-blog-writer → 生成最终博客」
 ```
 
 **Option B: Ask User for Manual Input** (Not Recommended)
 ```
-「以下のレポートが見つかりません:
+「未找到以下报告:
 - reports/2025-11-03/technical-market-analysis.md
 
-このレポートを手動で提供するか、上流エージェントを実行してください。」
+请手动提供此报告，或执行上游代理。」
 ```
 
 ### Charts Folder Check

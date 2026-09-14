@@ -4,7 +4,7 @@ title: "Trade Performance Coach"
 grand_parent: English
 parent: Skill Guides
 nav_order: 69
-lang_peer: /ja/skills/trade-performance-coach/
+lang_peer: /zh/skills/trade-performance-coach/
 permalink: /en/skills/trade-performance-coach/
 generated: true
 ---

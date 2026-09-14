@@ -4,7 +4,7 @@ title: "Technical Analyst"
 grand_parent: English
 parent: Skill Guides
 nav_order: 42
-lang_peer: /ja/skills/technical-analyst/
+lang_peer: /zh/skills/technical-analyst/
 permalink: /en/skills/technical-analyst/
 ---
 

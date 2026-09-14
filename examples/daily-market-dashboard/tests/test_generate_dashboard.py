@@ -144,10 +144,10 @@ class TestGenerateMarkdown(unittest.TestCase):
         assert "Strong VCP" in md
         assert "-1.2%" in md
 
-    def test_japanese_output(self):
-        md = generate_markdown(self._make_results(), date(2026, 3, 18), lang="ja")
-        assert "デイリーマーケットダッシュボード" in md
-        assert "シグナル一覧" in md
+    def test_chinese_output(self):
+        md = generate_markdown(self._make_results(), date(2026, 3, 18), lang="zh")
+        assert "每日市场仪表板" in md
+        assert "信号一览" in md
 
     def test_note_section_present(self):
         md = generate_markdown(self._make_results(), date(2026, 3, 18))

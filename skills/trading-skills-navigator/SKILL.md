@@ -6,8 +6,8 @@ description: >-
   trading or investing goal and needs to know which skill/workflow to use, where
   to start, or whether something works without paid API keys — e.g. "where do I
   start", "which skill should I use", "I want to swing trade only when the market
-  is favorable", "what works without API keys", "どれを使えばいい", "API キー無しで
-  使えるものは". Routes and explains only; it never executes trades or auto-runs
+  is favorable", "what works without API keys", "该用哪个", "不需要API密钥的有哪些".
+  Routes and explains only; it never executes trades or auto-runs
   other skills, and it is honest when no workflow has shipped yet.
 ---
 
@@ -25,7 +25,7 @@ consumes the repo metadata; this SKILL.md narrates the result conversationally.
 ## When to Use
 
 - The user expresses a trading/investing goal and asks where to start or which
-  skill/workflow to use ("どれを使えばいい", "where do I start").
+  skill/workflow to use ("该用哪个", "where do I start").
 - The user asks what works **without paid API keys**.
 - The user wants the no-API vs API path separated, or a beginner path.
 - The user describes a persona ("part-time swing trader", "dividend investor",

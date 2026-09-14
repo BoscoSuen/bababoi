@@ -16,7 +16,7 @@ The project follows a **first for self, open for others** stance: it is built fi
 
 **Project vision:** [`PROJECT_VISION.md`](PROJECT_VISION.md)
 
-日本語版READMEは[`README.ja.md`](README.ja.md)をご覧ください。
+中文版README请参阅[`README.zh.md`](README.zh.md)。
 
 ## Disclaimer
 
@@ -48,9 +48,9 @@ New users should start with one of these operational workflows. Each link points
 | Record and learn from every closed trade | [`trade-memory-loop`](workflows/trade-memory-loop.yaml) | trader-memory-core, signal-postmortem | No API for manual path |
 | Review monthly performance and adjust rules | [`monthly-performance-review`](workflows/monthly-performance-review.yaml) ([sample](examples/workflows/monthly-performance-review/sample-run/)) | trader-memory-core, signal-postmortem, backtest-expert | No API for manual path |
 
-See [`workflows/README.md`](workflows/README.md) for how to read a manifest and run it manually. For a one-page "which workflow fits my situation?" guide, see [Find Your Workflow](docs/en/find-your-workflow.md) ([日本語](docs/ja/find-your-workflow.md)).
+See [`workflows/README.md`](workflows/README.md) for how to read a manifest and run it manually. For a one-page "which workflow fits my situation?" guide, see [Find Your Workflow](docs/en/find-your-workflow.md) ([中文](docs/zh/find-your-workflow.md)).
 
-New here? Follow [Your First Week](docs/en/your-first-week.md) ([日本語](docs/ja/your-first-week.md)) from installation through a no-paid-data-API market check, first journal entry, and first weekly review.
+New here? Follow [Your First Week](docs/en/your-first-week.md) ([中文](docs/zh/your-first-week.md)) from installation through a no-paid-data-API market check, first journal entry, and first weekly review.
 
 ### What This Actually Costs
 
@@ -336,9 +336,9 @@ The main Core + Satellite starting path is described above. The examples below s
 
 - **Data Quality Checker** (`data-quality-checker`)
   - Validates data quality in market analysis documents and blog articles before publication.
-  - 5 check categories: price scale inconsistencies (ETF vs futures digit hints), instrument notation consistency, date/weekday mismatches (English + Japanese), allocation total errors (section-limited), and unit mismatches.
+  - 5 check categories: price scale inconsistencies (ETF vs futures digit hints), instrument notation consistency, date/weekday mismatches (English + Chinese), allocation total errors (section-limited), and unit mismatches.
   - Advisory mode — flags issues as warnings for human review, exit 0 even with findings.
-  - Supports full-width Japanese characters (％, 〜), range notation (50-55%), and year inference for dates without explicit year.
+  - Supports full-width CJK characters (％, 〜), range notation (50-55%), and year inference for dates without explicit year.
   - No API key required — works offline on local markdown files.
 
 - **Skill Designer** (`skill-designer`)
@@ -364,7 +364,7 @@ The main Core + Satellite starting path is described above. The examples below s
 
 The self-improvement and skill-generation pipelines are maintainer workflows,
 not beginner trading steps. See the [Skill Automation Quickstart](docs/dev/skill-automation.md)
-([日本語](docs/dev/skill-automation.ja.md)) for behavior, side effects, manual commands, and macOS scheduling.
+([中文](docs/dev/skill-automation.zh.md)) for behavior, side effects, manual commands, and macOS scheduling.
 
 ## Customization & Contribution
 - Update `SKILL.md` files to tweak trigger descriptions or capability notes; ensure the frontmatter name matches the folder name when zipping.

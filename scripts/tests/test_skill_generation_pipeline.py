@@ -584,9 +584,9 @@ def test_idea_to_skill_name(pipeline_module):
 
 def test_idea_to_skill_name_unicode(pipeline_module):
     """Falls back to id if title produces no alpha chars."""
-    idea = {"title": "日本語スキル", "id": "raw_unicode_001"}
+    idea = {"title": "中文技能", "id": "raw_unicode_001"}
     result = pipeline_module.idea_to_skill_name(idea)
-    # Should fall back to id since Japanese chars are non-ascii/alpha
+    # Should fall back to id since Chinese chars are non-ascii/alpha
     assert "raw" in result or "unicode" in result
 
 
@@ -1060,7 +1060,7 @@ def test_check_unexpected_changes_allows_pyproject_and_docs(pipeline_module, tmp
                 cmd,
                 0,
                 "skills/my-skill/SKILL.md\npyproject.toml\n"
-                "docs/en/skills/my-skill.md\ndocs/ja/skills/my-skill.md\n",
+                "docs/en/skills/my-skill.md\ndocs/zh/skills/my-skill.md\n",
                 "",
             )
         if "ls-files" in cmd_str:

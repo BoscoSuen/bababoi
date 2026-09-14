@@ -4,7 +4,7 @@ title: "Dividend Growth Pullback Screener"
 grand_parent: English
 parent: Skill Guides
 nav_order: 13
-lang_peer: /ja/skills/dividend-growth-pullback-screener/
+lang_peer: /zh/skills/dividend-growth-pullback-screener/
 permalink: /en/skills/dividend-growth-pullback-screener/
 ---
 

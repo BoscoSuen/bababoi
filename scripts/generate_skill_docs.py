@@ -2,7 +2,7 @@
 """Generate Jekyll documentation pages from SKILL.md files.
 
 Reads each skill's SKILL.md (YAML frontmatter + body) and CLAUDE.md
-(API requirements table) to produce EN and JA pages under docs/.
+(API requirements table) to produce EN and ZH pages under docs/.
 
 Usage:
     python3 scripts/generate_skill_docs.py                  # all missing skills
@@ -283,10 +283,10 @@ def api_badges(api_info: dict | None) -> str:
     return " ".join(badges)
 
 
-def api_badges_ja(api_info: dict | None) -> str:
-    """Return Japanese Jekyll badge spans from API info dict."""
+def api_badges_zh(api_info: dict | None) -> str:
+    """Return Chinese Jekyll badge spans from API info dict."""
     if not api_info:
-        return '<span class="badge badge-free">API不要</span>'
+        return '<span class="badge badge-free">无需API</span>'
 
     badges = []
     fmp = api_info.get("fmp", "")
@@ -295,25 +295,25 @@ def api_badges_ja(api_info: dict | None) -> str:
 
     has_required = False
     if "Required" in fmp:
-        badges.append('<span class="badge badge-api">FMP必須</span>')
+        badges.append('<span class="badge badge-api">FMP必需</span>')
         has_required = True
     elif "Optional" in fmp:
-        badges.append('<span class="badge badge-optional">FMP任意</span>')
+        badges.append('<span class="badge badge-optional">FMP可选</span>')
 
     if "Required" in finviz:
-        badges.append('<span class="badge badge-api">FINVIZ必須</span>')
+        badges.append('<span class="badge badge-api">FINVIZ必需</span>')
         has_required = True
     elif "Optional" in finviz or "Recommended" in finviz:
-        badges.append('<span class="badge badge-optional">FINVIZ任意</span>')
+        badges.append('<span class="badge badge-optional">FINVIZ可选</span>')
 
     if "Required" in alpaca:
-        badges.append('<span class="badge badge-api">Alpaca必須</span>')
+        badges.append('<span class="badge badge-api">Alpaca必需</span>')
         has_required = True
 
     if not badges:
-        badges.append('<span class="badge badge-free">API不要</span>')
+        badges.append('<span class="badge badge-free">无需API</span>')
     elif not has_required:
-        badges.insert(0, '<span class="badge badge-free">API不要</span>')
+        badges.insert(0, '<span class="badge badge-free">无需API</span>')
 
     return " ".join(badges)
 
@@ -330,7 +330,7 @@ def _generate_buttons(skill_name: str, skill_packages_dir: Path | None, lang: st
         skill_name: The skill slug (e.g., "pead-screener").
         skill_packages_dir: Path to the skill-packages directory, or None.
             Download button is shown only when the .skill file exists.
-        lang: "en" or "ja".
+        lang: "en" or "zh".
 
     Returns:
         Markdown string with Source button always present, plus Download
@@ -343,9 +343,9 @@ def _generate_buttons(skill_name: str, skill_packages_dir: Path | None, lang: st
 
     if has_package:
         dl_url = f"{GITHUB_REPO_URL}/raw/main/skill-packages/{skill_name}.skill"
-        if lang == "ja":
+        if lang == "zh":
             buttons.append(
-                f"[スキルパッケージをダウンロード (.skill)]({dl_url})"
+                f"[下载技能包 (.skill)]({dl_url})"
                 "{: .btn .btn-primary .fs-5 .mb-4 .mb-md-0 .mr-2 }"
             )
         else:
@@ -355,8 +355,8 @@ def _generate_buttons(skill_name: str, skill_packages_dir: Path | None, lang: st
             )
 
     src_url = f"{GITHUB_REPO_URL}/tree/main/skills/{skill_name}"
-    if lang == "ja":
-        buttons.append(f"[GitHubでソースを見る]({src_url}){{: .btn .fs-5 .mb-4 .mb-md-0 }}")
+    if lang == "zh":
+        buttons.append(f"[在GitHub上查看源码]({src_url}){{: .btn .fs-5 .mb-4 .mb-md-0 }}")
     else:
         buttons.append(f"[View Source on GitHub]({src_url}){{: .btn .fs-5 .mb-4 .mb-md-0 }}")
 
@@ -410,7 +410,7 @@ title: "{title}"
 grand_parent: English
 parent: Skill Guides
 nav_order: {nav_order}
-lang_peer: /ja/skills/{skill_name}/
+lang_peer: /zh/skills/{skill_name}/
 permalink: /en/skills/{skill_name}/
 generated: true
 ---
@@ -493,28 +493,28 @@ generated: true
     return page.rstrip() + "\n"
 
 
-def generate_ja_page(
+def generate_zh_page(
     skill_name: str,
     skill_data: dict,
     api_info: dict | None,
     nav_order: int,
     skill_packages_dir: Path | None = None,
 ) -> str:
-    """Generate a JA documentation page (EN content + translation banner)."""
+    """Generate a ZH documentation page (EN content + translation banner)."""
     fm = skill_data["frontmatter"]
     title = _title_case(skill_name)
     description = fm.get("description", "")
-    badges_ja = api_badges_ja(api_info)
-    buttons = _generate_buttons(skill_name, skill_packages_dir, "ja")
+    badges_zh = api_badges_zh(api_info)
+    buttons = _generate_buttons(skill_name, skill_packages_dir, "zh")
 
     page = f"""---
 layout: default
 title: "{title}"
-grand_parent: 日本語
-parent: スキルガイド
+grand_parent: 中文
+parent: 技能指南
 nav_order: {nav_order}
 lang_peer: /en/skills/{skill_name}/
-permalink: /ja/skills/{skill_name}/
+permalink: /zh/skills/{skill_name}/
 generated: true
 ---
 
@@ -524,19 +524,19 @@ generated: true
 {description}
 {{: .fs-6 .fw-300 }}
 
-{badges_ja}
+{badges_zh}
 
 """
     if buttons:
         page += f"{buttons}\n\n"
 
-    page += f"""> **Note:** This page has not yet been translated into Japanese.
-> Please refer to the [English version]({{{{ '/en/skills/{skill_name}/' | relative_url }}}}) for the full guide.
+    page += f"""> **注意：** 本页面尚未翻译为中文。
+> 请参阅[英文版]({{{{ '/en/skills/{skill_name}/' | relative_url }}}})获取完整指南。
 {{: .warning }}
 
 ---
 
-[English版ガイドを見る]({{{{ '/en/skills/{skill_name}/' | relative_url }}}}){{: .btn .btn-primary .fs-5 .mb-4 .mb-md-0 .mr-2 }}
+[查看英文版指南]({{{{ '/en/skills/{skill_name}/' | relative_url }}}}){{: .btn .btn-primary .fs-5 .mb-4 .mb-md-0 .mr-2 }}
 """
     return page
 
@@ -595,7 +595,7 @@ title: "{title}"
 grand_parent: English
 parent: Skill Guides
 nav_order: {nav_order}
-lang_peer: /ja/skills/{skill_name}/
+lang_peer: /zh/skills/{skill_name}/
 permalink: /en/skills/{skill_name}/
 generated: true
 ---
@@ -682,7 +682,7 @@ generated: true
     return page.rstrip() + "\n"
 
 
-def generate_ja_full_page(
+def generate_zh_full_page(
     skill_name: str,
     skill_data: dict,
     api_info: dict | None,
@@ -691,13 +691,13 @@ def generate_ja_full_page(
     resources: dict,
     skill_packages_dir: Path | None = None,
 ) -> str:
-    """Generate a 10-section JA documentation skeleton page."""
+    """Generate a 10-section ZH documentation skeleton page."""
     fm = skill_data["frontmatter"]
     sections = skill_data["sections"]
     title = _title_case(skill_name)
     description = fm.get("description", "")
-    badges = api_badges_ja(api_info)
-    buttons = _generate_buttons(skill_name, skill_packages_dir, "ja")
+    badges = api_badges_zh(api_info)
+    buttons = _generate_buttons(skill_name, skill_packages_dir, "zh")
 
     # Auto-fill content (same as EN)
     overview = _extract_section(sections, ["overview", title.lower()])
@@ -733,11 +733,11 @@ def generate_ja_full_page(
     page = f"""---
 layout: default
 title: "{title}"
-grand_parent: 日本語
-parent: スキルガイド
+grand_parent: 中文
+parent: 技能指南
 nav_order: {nav_order}
 lang_peer: /en/skills/{skill_name}/
-permalink: /ja/skills/{skill_name}/
+permalink: /zh/skills/{skill_name}/
 generated: true
 ---
 
@@ -754,7 +754,7 @@ generated: true
         page += f"{buttons}\n\n"
 
     page += f"""<details open markdown="block">
-  <summary>目次</summary>
+  <summary>目录</summary>
   {{: .text-delta }}
 - TOC
 {{:toc}}
@@ -762,11 +762,11 @@ generated: true
 
 ---
 
-## 1. 概要
+## 1. 概述
 
 {overview}
 
-<!-- TODO: 翻訳 -->
+<!-- TODO: 翻译 -->
 
 ---
 
@@ -774,55 +774,55 @@ generated: true
 
 {prerequisites}
 
-<!-- TODO: 翻訳 -->
+<!-- TODO: 翻译 -->
 
 ---
 
-## 3. クイックスタート
+## 3. 快速开始
 
 {quick_start}
 
-<!-- TODO: 翻訳 -->
+<!-- TODO: 翻译 -->
 
 ---
 
-## 4. 仕組み
+## 4. 工作原理
 
-<!-- TODO: 翻訳 -->
-
----
-
-## 5. 使用例
-
-<!-- TODO: 翻訳 -->
+<!-- TODO: 翻译 -->
 
 ---
 
-## 6. 出力の読み方
+## 5. 使用示例
 
-<!-- TODO: 翻訳 -->
-
----
-
-## 7. Tips & ベストプラクティス
-
-<!-- TODO: 翻訳 -->
+<!-- TODO: 翻译 -->
 
 ---
 
-## 8. 他スキルとの連携
+## 6. 理解输出
 
-<!-- TODO: 翻訳 -->
-
----
-
-## 9. トラブルシューティング
-
-<!-- TODO: 翻訳 -->
+<!-- TODO: 翻译 -->
 
 ---
 
-## 10. リファレンス
+## 7. 技巧与最佳实践
+
+<!-- TODO: 翻译 -->
+
+---
+
+## 8. 与其他技能组合
+
+<!-- TODO: 翻译 -->
+
+---
+
+## 9. 故障排除
+
+<!-- TODO: 翻译 -->
+
+---
+
+## 10. 参考
 
 {resources_text}"""
 
@@ -955,7 +955,7 @@ def generate_index_table_row(
     title = _title_case(skill_name)
     star = " ★" if skill_name in HAND_WRITTEN else ""
     link = f"{{{{ '/{lang}/skills/{skill_name}/' | relative_url }}}}"
-    badges = api_badges_ja(api_info) if lang == "ja" else api_badges(api_info)
+    badges = api_badges_zh(api_info) if lang == "zh" else api_badges(api_info)
     short_desc = description.split(".")[0].strip() if description else title
     # Collapse newlines/whitespace BEFORE truncating so a multi-line YAML
     # block-scalar description (e.g. scenario-analyzer) can never span
@@ -973,7 +973,7 @@ def update_index_pages(
     docs_dir: Path,
     api_reqs: dict[str, dict],
 ) -> None:
-    """Regenerate the Available Guides table in both EN and JA index.md."""
+    """Regenerate the Available Guides table in both EN and ZH index.md."""
     # Collect all skills with SKILL.md
     all_skills: list[tuple[str, dict, dict | None]] = []
     for d in sorted(skills_dir.iterdir()):
@@ -982,7 +982,7 @@ def update_index_pages(
         data = parse_skill_md(d / "SKILL.md")
         all_skills.append((d.name, data, api_reqs.get(d.name)))
 
-    for lang in ("en", "ja"):
+    for lang in ("en", "zh"):
         index_path = docs_dir / lang / "skills" / "index.md"
         if not index_path.exists():
             continue
@@ -1043,14 +1043,14 @@ def _replace_table_rows(index_path: Path, rows: list[str]) -> None:
 # Catalog page update
 # ---------------------------------------------------------------------------
 
-_SLUG_RE = re.compile(r"/(?:en|ja)/skills/([\w-]+)/")
+_SLUG_RE = re.compile(r"/(?:en|zh)/skills/([\w-]+)/")
 
 
 def _extract_catalog_slugs(text: str) -> set[str]:
     """Extract all skill slugs from catalog links and bold names."""
     slugs: set[str] = set()
 
-    # From links like [Name](/en/skills/slug/) or [Name](/ja/skills/slug/)
+    # From links like [Name](/en/skills/slug/) or [Name](/zh/skills/slug/)
     for match in _SLUG_RE.finditer(text):
         slugs.add(match.group(1))
 
@@ -1059,7 +1059,7 @@ def _extract_catalog_slugs(text: str) -> set[str]:
         slugs.add(_slugify(match.group(1)))
 
     # From non-linked, non-bold names in table data rows (e.g., "| Name | ...")
-    # Skip header rows that contain "Skill" or "スキル"
+    # Skip header rows that contain "Skill" or "技能"
     for line in text.splitlines():
         if not line.startswith("|"):
             continue
@@ -1070,7 +1070,7 @@ def _extract_catalog_slugs(text: str) -> set[str]:
         if not name_col or name_col.startswith("---"):
             continue
         # Skip headers
-        if name_col in ("Skill", "スキル", "Badge", "バッジ"):
+        if name_col in ("Skill", "技能", "Badge", "徽章"):
             continue
         # Already covered by bold or link patterns
         if "**" in name_col or "[" in name_col:
@@ -1100,19 +1100,19 @@ def _api_status_en(api_info: dict | None) -> tuple[str, str, str]:
     return (fmp, finviz, alpaca)
 
 
-def _api_status_ja(api_info: dict | None) -> tuple[str, str, str]:
-    """Return (fmp, finviz, alpaca) status strings for JA catalog."""
+def _api_status_zh(api_info: dict | None) -> tuple[str, str, str]:
+    """Return (fmp, finviz, alpaca) status strings for ZH catalog."""
     if not api_info:
         return ("-", "-", "-")
     fmp_raw = api_info.get("fmp", "")
     finviz_raw = api_info.get("finviz", "")
     alpaca_raw = api_info.get("alpaca", "")
 
-    fmp = "必須" if "Required" in fmp_raw else ("任意" if "Optional" in fmp_raw else "-")
+    fmp = "必需" if "Required" in fmp_raw else ("可选" if "Optional" in fmp_raw else "-")
     finviz = (
-        "推奨" if "Recommended" in finviz_raw else ("任意" if "Optional" in finviz_raw else "-")
+        "推荐" if "Recommended" in finviz_raw else ("可选" if "Optional" in finviz_raw else "-")
     )
-    alpaca = "必須" if "Required" in alpaca_raw else "-"
+    alpaca = "必需" if "Required" in alpaca_raw else "-"
     return (fmp, finviz, alpaca)
 
 
@@ -1121,7 +1121,7 @@ def update_catalog_api_matrix(
     all_skills: list[tuple[str, dict, dict | None]],
 ) -> None:
     """Add missing skills to the API Requirements Matrix in catalog pages."""
-    for lang in ("en", "ja"):
+    for lang in ("en", "zh"):
         catalog_path = docs_dir / lang / "skill-catalog.md"
         if not catalog_path.exists():
             continue
@@ -1130,7 +1130,7 @@ def update_catalog_api_matrix(
         lines = text.splitlines()
 
         # Find the API Requirements Matrix section
-        section_heading = "## API Requirements Matrix" if lang == "en" else "## API要件マトリクス"
+        section_heading = "## API Requirements Matrix" if lang == "en" else "## API需求矩阵"
         section_start = None
         for i, line in enumerate(lines):
             if line.strip() == section_heading:
@@ -1161,9 +1161,9 @@ def update_catalog_api_matrix(
 
         # For JA: find the aggregate row index
         aggregate_idx = None
-        if lang == "ja":
+        if lang == "zh":
             for i in range(sep_idx + 1, table_end):
-                if "その他すべてのスキル" in lines[i]:
+                if "所有其他技能" in lines[i]:
                     aggregate_idx = i
                     break
 
@@ -1180,7 +1180,7 @@ def update_catalog_api_matrix(
                 fmp, finviz, alpaca = _api_status_en(api_info)
                 new_rows.append(f"| {title} | {fmp} | {finviz} | {alpaca} |")
             else:
-                fmp, finviz, alpaca = _api_status_ja(api_info)
+                fmp, finviz, alpaca = _api_status_zh(api_info)
                 # Skip skills where all values are "-" for JA
                 if fmp == "-" and finviz == "-" and alpaca == "-":
                     continue
@@ -1195,7 +1195,7 @@ def update_catalog_api_matrix(
         try:
             Path(backup_path).write_text(text, encoding="utf-8")
 
-            if lang == "ja" and aggregate_idx is not None:
+            if lang == "zh" and aggregate_idx is not None:
                 # Insert before the aggregate row
                 updated_lines = lines[:aggregate_idx] + new_rows + lines[aggregate_idx:]
             else:
@@ -1244,7 +1244,7 @@ def _render_skill_pages(
     skill_packages_dir: Path | None,
     mode: str,
 ) -> tuple[str, str]:
-    """Render (en, ja) page content exactly as the write loop would."""
+    """Render (en, zh) page content exactly as the write loop would."""
     skill_data = parse_skill_md(d / "SKILL.md")
     api_info = api_reqs.get(name)
     cli_example = cli_examples.get(name)
@@ -1259,7 +1259,7 @@ def _render_skill_pages(
             resources,
             skill_packages_dir=skill_packages_dir,
         )
-        ja = generate_ja_full_page(
+        zh = generate_zh_full_page(
             name,
             skill_data,
             api_info,
@@ -1278,18 +1278,18 @@ def _render_skill_pages(
             resources,
             skill_packages_dir=skill_packages_dir,
         )
-        ja = generate_ja_page(
+        zh = generate_zh_page(
             name,
             skill_data,
             api_info,
             nav_order,
             skill_packages_dir=skill_packages_dir,
         )
-    return en, ja
+    return en, zh
 
 
 def _may_write(path: Path, name: str, args: argparse.Namespace) -> bool:
-    """Per-page write decision (EN and JA decided independently).
+    """Per-page write decision (EN and ZH decided independently).
 
     HAND_WRITTEN ★ guides are always protected (missing OR existing) unless
     --force; this preserves the existing ``test_skips_hand_written`` contract.
@@ -1312,7 +1312,7 @@ def _may_write(path: Path, name: str, args: argparse.Namespace) -> bool:
 def _check_drift(
     skill_dirs: list[Path],
     en_dir: Path,
-    ja_dir: Path,
+    zh_dir: Path,
     api_reqs: dict,
     cli_examples: dict,
     skill_packages_dir: Path | None,
@@ -1334,16 +1334,16 @@ def _check_drift(
             continue
         name = d.name
         en_path = en_dir / f"{name}.md"
-        ja_path = ja_dir / f"{name}.md"
+        zh_path = zh_dir / f"{name}.md"
 
-        # 1. Existence: every skill must have EN + JA pages.
-        for p in (en_path, ja_path):
+        # 1. Existence: every skill must have EN + ZH pages.
+        for p in (en_path, zh_path):
             if not p.is_file():
                 print(f"DRIFT: {p} does not exist", file=sys.stderr)
                 drift = True
 
         # 2. Marker validity: present-but-invalid generated: value.
-        for p in (en_path, ja_path):
+        for p in (en_path, zh_path):
             if p.is_file() and _marker_present_but_invalid(p):
                 print(
                     f"DRIFT: {p} has invalid 'generated:' marker (must be true or false)",
@@ -1357,13 +1357,13 @@ def _check_drift(
         en_owned = (
             name not in HAND_WRITTEN and en_path.is_file() and _doc_is_generated(en_path) is True
         )
-        ja_owned = (
-            name not in HAND_WRITTEN and ja_path.is_file() and _doc_is_generated(ja_path) is True
+        zh_owned = (
+            name not in HAND_WRITTEN and zh_path.is_file() and _doc_is_generated(zh_path) is True
         )
-        if not (en_owned or ja_owned):
+        if not (en_owned or zh_owned):
             continue
         nav_order = nav_orders.get(name, NAV_ORDER_START)
-        expected_en, expected_ja = _render_skill_pages(
+        expected_en, expected_zh = _render_skill_pages(
             d, name, nav_order, api_reqs, cli_examples, skill_packages_dir, args.mode
         )
         if en_owned:
@@ -1372,12 +1372,12 @@ def _check_drift(
                 drift = True
             else:
                 print(f"OK: {en_path} matches", file=sys.stderr)
-        if ja_owned:
-            if ja_path.read_text(encoding="utf-8") != expected_ja.rstrip("\n") + "\n":
-                print(f"DRIFT: {ja_path} differs from regenerated output", file=sys.stderr)
+        if zh_owned:
+            if zh_path.read_text(encoding="utf-8") != expected_zh.rstrip("\n") + "\n":
+                print(f"DRIFT: {zh_path} differs from regenerated output", file=sys.stderr)
                 drift = True
             else:
-                print(f"OK: {ja_path} matches", file=sys.stderr)
+                print(f"OK: {zh_path} matches", file=sys.stderr)
 
     return 1 if drift else 0
 
@@ -1442,17 +1442,17 @@ def main(argv: list[str] | None = None) -> int:
         skill_dirs = [args.skills_dir / args.skill]
 
     en_dir = args.docs_dir / "en" / "skills"
-    ja_dir = args.docs_dir / "ja" / "skills"
+    zh_dir = args.docs_dir / "zh" / "skills"
 
     # --check is a pure read/compare gate: return BEFORE any mkdir/write so it
     # never touches the tree or runs the index/catalog updaters.
     if args.check:
         return _check_drift(
-            skill_dirs, en_dir, ja_dir, api_reqs, cli_examples, skill_packages_dir, args
+            skill_dirs, en_dir, zh_dir, api_reqs, cli_examples, skill_packages_dir, args
         )
 
     en_dir.mkdir(parents=True, exist_ok=True)
-    ja_dir.mkdir(parents=True, exist_ok=True)
+    zh_dir.mkdir(parents=True, exist_ok=True)
 
     # Assign nav_orders from the full skill set (shared with --check via
     # _compute_nav_orders) so `--skill <name>` alone doesn't collapse every
@@ -1460,7 +1460,7 @@ def main(argv: list[str] | None = None) -> int:
     nav_orders = _compute_nav_orders(all_skill_dirs, args.overwrite)
 
     generated_en = 0
-    generated_ja = 0
+    generated_zh = 0
     skipped = 0
 
     for d in skill_dirs:
@@ -1469,17 +1469,17 @@ def main(argv: list[str] | None = None) -> int:
 
         name = d.name
         en_path = en_dir / f"{name}.md"
-        ja_path = ja_dir / f"{name}.md"
+        zh_path = zh_dir / f"{name}.md"
 
-        # Per-page ownership guard (EN and JA decided independently).
+        # Per-page ownership guard (EN and ZH decided independently).
         write_en = _may_write(en_path, name, args)
-        write_ja = _may_write(ja_path, name, args)
-        if not write_en and not write_ja:
+        write_zh = _may_write(zh_path, name, args)
+        if not write_en and not write_zh:
             skipped += 1
             continue
 
         nav_order = nav_orders.get(name, NAV_ORDER_START)
-        en_content, ja_content = _render_skill_pages(
+        en_content, zh_content = _render_skill_pages(
             d, name, nav_order, api_reqs, cli_examples, skill_packages_dir, args.mode
         )
 
@@ -1489,20 +1489,20 @@ def main(argv: list[str] | None = None) -> int:
         elif args.overwrite:
             print(f"  Protected, EN skipped: {name} (use --force)", file=sys.stderr)
 
-        if write_ja:
-            ja_path.write_text(ja_content, encoding="utf-8")
-            generated_ja += 1
+        if write_zh:
+            zh_path.write_text(zh_content, encoding="utf-8")
+            generated_zh += 1
         elif args.overwrite:
-            print(f"  Protected, JA skipped: {name} (use --force)", file=sys.stderr)
+            print(f"  Protected, ZH skipped: {name} (use --force)", file=sys.stderr)
 
         wrote = []
         if write_en:
             wrote.append("EN")
-        if write_ja:
-            wrote.append("JA")
+        if write_zh:
+            wrote.append("ZH")
         print(f"  Generated: {name} ({' + '.join(wrote)}, mode={args.mode})")
 
-    print(f"\nDone: {generated_en} EN + {generated_ja} JA generated, {skipped} skipped")
+    print(f"\nDone: {generated_en} EN + {generated_zh} ZH generated, {skipped} skipped")
 
     # Update index pages with current skill table
     update_index_pages(args.skills_dir, args.docs_dir, api_reqs)
@@ -1522,7 +1522,7 @@ def main(argv: list[str] | None = None) -> int:
             f"\nWarning: --catalog-category '{args.catalog_category}' was specified "
             "but category table insertion is not yet implemented.\n"
             "Please add the skill to the category table manually in "
-            "docs/en/skill-catalog.md and docs/ja/skill-catalog.md."
+            "docs/en/skill-catalog.md and docs/zh/skill-catalog.md."
         )
 
     return 0

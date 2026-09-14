@@ -4,7 +4,7 @@ title: "Economic Calendar Fetcher"
 grand_parent: English
 parent: Skill Guides
 nav_order: 17
-lang_peer: /ja/skills/economic-calendar-fetcher/
+lang_peer: /zh/skills/economic-calendar-fetcher/
 permalink: /en/skills/economic-calendar-fetcher/
 ---
 

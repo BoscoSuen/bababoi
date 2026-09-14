@@ -4,7 +4,7 @@ title: "Options Strategy Advisor"
 grand_parent: English
 parent: Skill Guides
 nav_order: 32
-lang_peer: /ja/skills/options-strategy-advisor/
+lang_peer: /zh/skills/options-strategy-advisor/
 permalink: /en/skills/options-strategy-advisor/
 ---
 

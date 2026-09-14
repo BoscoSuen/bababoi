@@ -1,6 +1,6 @@
 ---
 name: stanley-druckenmiller-investment
-description: Druckenmiller Strategy Synthesizer - Integrates 8 upstream skill outputs (Market Breadth, Uptrend Analysis, Market Top, Macro Regime, FTD Detector, VCP Screener, Theme Detector, CANSLIM Screener) into a unified conviction score (0-100), pattern classification, and allocation recommendation. Use when user asks about overall market conviction, portfolio positioning, asset allocation, strategy synthesis, or Druckenmiller-style analysis. Triggers on queries like "What is my conviction level?", "How should I position?", "Run the strategy synthesizer", "Druckenmiller analysis", "総合的な市場判断", "確信度スコア", "ポートフォリオ配分", "ドラッケンミラー分析".
+description: Druckenmiller Strategy Synthesizer - Integrates 8 upstream skill outputs (Market Breadth, Uptrend Analysis, Market Top, Macro Regime, FTD Detector, VCP Screener, Theme Detector, CANSLIM Screener) into a unified conviction score (0-100), pattern classification, and allocation recommendation. Use when user asks about overall market conviction, portfolio positioning, asset allocation, strategy synthesis, or Druckenmiller-style analysis. Triggers on queries like "What is my conviction level?", "How should I position?", "Run the strategy synthesizer", "Druckenmiller analysis", "综合市场判断", "确信度评分", "投资组合配置", "德鲁肯米勒分析".
 ---
 
 # Druckenmiller Strategy Synthesizer
@@ -19,12 +19,12 @@ Synthesize outputs from 8 upstream analysis skills (5 required + 3 optional) int
 - User asks "Should I increase or decrease exposure?"
 - User wants pattern classification (policy pivot, distortion, contrarian, wait)
 
-**Japanese:**
-- 「総合的な市場判断は？」「今のポジショニングは？」
-- ブレッドス、アップトレンド、天井リスク、マクロの統合判断
-- 「エクスポージャーを増やすべき？減らすべき？」
-- 「ドラッケンミラー分析を実行して」
-- 個別スキル実行後の戦略統合レポート
+**Chinese:**
+- "综合市场判断是什么？" "现在该怎么配置？"
+- 广度、上升趋势、见顶风险、宏观的综合判断
+- "应该增加还是减少敞口？"
+- "执行德鲁肯米勒分析"
+- 各技能执行后的策略综合报告
 
 ---
 

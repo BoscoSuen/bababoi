@@ -4,7 +4,7 @@ title: "Crypto Regime Analyzer"
 grand_parent: English
 parent: Skill Guides
 nav_order: 15
-lang_peer: /ja/skills/crypto-regime-analyzer/
+lang_peer: /zh/skills/crypto-regime-analyzer/
 permalink: /en/skills/crypto-regime-analyzer/
 generated: true
 ---

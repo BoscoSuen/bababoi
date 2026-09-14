@@ -28,12 +28,12 @@ Use this skill when:
 - User mentions narratives like "this time is different" or "revolutionary technology" becoming mainstream
 - User consults about risk management for existing positions
 
-**Japanese:**
-- ユーザーが「今の相場はバブルか?」と尋ねる
-- 投資の利確・新規参入・空売りのタイミング判断を求める
-- 社会現象(非投資家の参入、メディア過熱、IPO氾濫)を観察し懸念を表明
-- 「今回は違う」「革命的技術」などの物語が主流化している状況を報告
-- 保有ポジションのリスク管理方法を相談
+**Chinese:**
+- 用户询问"当前市场是否是泡沫？"
+- 寻求投资止盈、新进入、做空的时机判断
+- 观察到社会现象（非投资者入场、媒体过热、IPO泛滥）并表达担忧
+- 报告"这次不同"、"革命性技术"等叙事成为主流的情况
+- 咨询持仓的风险管理方法
 
 ---
 
@@ -480,17 +480,17 @@ Only consider shorts after confirming at least 3 of the following:
 - Red flags during review
 - Best practices for objective evaluation
 
-### `references/bubble_framework.md` (Japanese)
+### `references/bubble_framework.md` (Chinese)
 - Detailed theoretical framework
 - Explanation of Minsky/Kindleberger model
 - Behavioral psychology elements
 
-### `references/historical_cases.md` (Japanese)
+### `references/historical_cases.md` (Chinese)
 - Analysis of past bubble cases
 - Dotcom, Crypto, Pandemic bubbles
 - Common pattern extraction
 
-### `references/quick_reference.md` (Japanese)
+### `references/quick_reference.md` (Chinese)
 ### `references/quick_reference_en.md` (English)
 - Daily checklist
 - Emergency 3-question assessment
@@ -501,7 +501,7 @@ Only consider shorts after confirming at least 3 of the following:
 - **First use or need detailed guidance:** Load `implementation_guide.md`
 - **Need theoretical background:** Load `bubble_framework.md`
 - **Need historical context:** Load `historical_cases.md`
-- **Daily operations:** Load `quick_reference.md` (Japanese) or `quick_reference_en.md` (English)
+- **Daily operations:** Load `quick_reference.md` (Chinese) or `quick_reference_en.md` (English)
 
 ---
 

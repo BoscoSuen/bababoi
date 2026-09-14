@@ -4,7 +4,7 @@ title: "Breakout Trade Planner"
 grand_parent: English
 parent: Skill Guides
 nav_order: 11
-lang_peer: /ja/skills/breakout-trade-planner/
+lang_peer: /zh/skills/breakout-trade-planner/
 permalink: /en/skills/breakout-trade-planner/
 ---
 

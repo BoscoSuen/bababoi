@@ -11,7 +11,7 @@ Anything outside the markers is untouched. Each marker pair maps to one
 region renderer keyed by `name`. Currently:
 
     catalog-en  → README.md  Detailed Skill Catalog (English)
-    catalog-ja  → README.ja.md Detailed Skill Catalog (Japanese)
+    catalog-zh  → README.zh.md Detailed Skill Catalog (Chinese)
 
 Idempotent — same input always produces byte-identical output. Use
 `--check` to detect drift in CI.
@@ -53,15 +53,15 @@ CATEGORY_LABELS_EN = {
     "meta": "Meta / Development Tooling",
 }
 
-CATEGORY_LABELS_JA = {
-    "market-regime": "相場環境（Market Regime）",
-    "core-portfolio": "コアポートフォリオ（Core Portfolio）",
-    "swing-opportunity": "スイング候補（Swing Opportunity）",
-    "trade-planning": "トレード計画（Trade Planning）",
-    "trade-memory": "トレード記録（Trade Memory）",
-    "strategy-research": "戦略リサーチ（Strategy Research）",
-    "advanced-satellite": "アドバンスト・サテライト（Advanced Satellite）",
-    "meta": "メタ / 開発ツール（Meta）",
+CATEGORY_LABELS_ZH = {
+    "market-regime": "市场体制（Market Regime）",
+    "core-portfolio": "核心投资组合（Core Portfolio）",
+    "swing-opportunity": "波段机会（Swing Opportunity）",
+    "trade-planning": "交易计划（Trade Planning）",
+    "trade-memory": "交易记忆（Trade Memory）",
+    "strategy-research": "策略研究（Strategy Research）",
+    "advanced-satellite": "高级卫星（Advanced Satellite）",
+    "meta": "元 / 开发工具（Meta）",
 }
 
 INTEGRATION_BADGES = {
@@ -167,12 +167,12 @@ def render_catalog_en(skills: list[dict]) -> str:
     return buf.getvalue().rstrip("\n")
 
 
-def render_catalog_ja(skills: list[dict]) -> str:
+def render_catalog_zh(skills: list[dict]) -> str:
     buf = io.StringIO()
     buf.write(
-        "<!-- 本セクションは skills-index.yaml から "
-        "scripts/generate_catalog_from_index.py で自動生成されます。"
-        "手動編集せず、index を更新して generator を再実行してください。 -->\n\n"
+        "<!-- 本部分由 skills-index.yaml 通过 "
+        "scripts/generate_catalog_from_index.py 自动生成。"
+        "请勿手动编辑，请更新 index 并重新运行生成器。 -->\n\n"
     )
     buckets = group_by_category(skills)
     for cat in [
@@ -188,8 +188,8 @@ def render_catalog_ja(skills: list[dict]) -> str:
         items = buckets.get(cat, [])
         if not items:
             continue
-        buf.write(f"### {CATEGORY_LABELS_JA[cat]}\n\n")
-        buf.write("| スキル | サマリ | 依存 | 運用ロール | ステータス |\n")
+        buf.write(f"### {CATEGORY_LABELS_ZH[cat]}\n\n")
+        buf.write("| 技能 | 摘要 | 依赖 | 运营角色 | 状态 |\n")
         buf.write("|---|---|---|---|---|\n")
         for s in items:
             sid = s.get("id", "")
@@ -304,14 +304,14 @@ def render_operational_roles_en(skills: list[dict]) -> str:
     return buf.getvalue().rstrip("\n")
 
 
-def render_operational_roles_ja(skills: list[dict]) -> str:
+def render_operational_roles_zh(skills: list[dict]) -> str:
     buf = io.StringIO()
     buf.write(
-        "<!-- このマトリクスは skills-index.yaml から "
-        "scripts/generate_catalog_from_index.py で自動生成されます。"
-        "手動編集しないでください。 -->\n\n"
+        "<!-- 本矩阵由 skills-index.yaml 通过 "
+        "scripts/generate_catalog_from_index.py 自动生成。"
+        "请勿手动编辑。 -->\n\n"
     )
-    buf.write("| スキル | 運用ロール | standalone の理由 |\n")
+    buf.write("| 技能 | 运营角色 | standalone 原因 |\n")
     buf.write("|---|---|---|\n")
     for skill in sorted(skills, key=lambda item: item.get("id", "")):
         role = _operational_role(skill)
@@ -326,10 +326,10 @@ def render_operational_roles_ja(skills: list[dict]) -> str:
 
 RENDERERS = {
     "catalog-en": render_catalog_en,
-    "catalog-ja": render_catalog_ja,
+    "catalog-zh": render_catalog_zh,
     "api-matrix": render_api_matrix,
     "operational-roles-en": render_operational_roles_en,
-    "operational-roles-ja": render_operational_roles_ja,
+    "operational-roles-zh": render_operational_roles_zh,
 }
 
 
@@ -370,10 +370,10 @@ def rewrite_file(path: Path, skills: list[dict]) -> tuple[str, str]:
 
 TARGETS = [
     ("README.md", {"catalog-en"}),
-    ("README.ja.md", {"catalog-ja"}),
+    ("README.zh.md", {"catalog-zh"}),
     ("CLAUDE.md", {"api-matrix"}),
     ("docs/en/skill-catalog.md", {"operational-roles-en"}),
-    ("docs/ja/skill-catalog.md", {"operational-roles-ja"}),
+    ("docs/zh/skill-catalog.md", {"operational-roles-zh"}),
 ]
 
 
@@ -456,7 +456,7 @@ def main(argv: list[str] | None = None) -> int:
         return 1
 
     print(
-        "OK: website EN/JA skill catalogs match skills-index.yaml",
+        "OK: website EN/ZH skill catalogs match skills-index.yaml",
         file=sys.stderr,
     )
     return 1 if (args.check and drift) else 0

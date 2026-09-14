@@ -376,10 +376,10 @@ def _detect_automation_requests(user_messages: list[str]) -> dict:
         "automate",
         "workflow",
         "pipeline",
-        "スキル",
-        "作成",
-        "自動化",
-        "ワークフロー",
+        "技能",
+        "创建",
+        "自动化",
+        "工作流",
     ]
     matches: list[str] = []
 

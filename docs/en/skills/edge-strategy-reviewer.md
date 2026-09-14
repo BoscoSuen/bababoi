@@ -4,7 +4,7 @@ title: "Edge Strategy Reviewer"
 grand_parent: English
 parent: Skill Guides
 nav_order: 23
-lang_peer: /ja/skills/edge-strategy-reviewer/
+lang_peer: /zh/skills/edge-strategy-reviewer/
 permalink: /en/skills/edge-strategy-reviewer/
 ---
 

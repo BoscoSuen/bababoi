@@ -50,7 +50,7 @@ The most frequent date error is stating the wrong day of the week.
 This is especially common in:
 
 - Weekly strategy reports that reference multiple future dates
-- Japanese-language reports using kanji weekday notation
+- Chinese-language reports using Chinese weekday notation
 - Cross-year date references (December dates written in January)
 
 **Prevention**: Always verify weekday with `calendar.weekday(year, month, day)`.

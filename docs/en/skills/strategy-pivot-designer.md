@@ -4,7 +4,7 @@ title: "Strategy Pivot Designer"
 grand_parent: English
 parent: Skill Guides
 nav_order: 41
-lang_peer: /ja/skills/strategy-pivot-designer/
+lang_peer: /zh/skills/strategy-pivot-designer/
 permalink: /en/skills/strategy-pivot-designer/
 ---
 

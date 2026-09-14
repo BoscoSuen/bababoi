@@ -4,7 +4,7 @@ title: "Dual Axis Skill Reviewer"
 grand_parent: English
 parent: Skill Guides
 nav_order: 14
-lang_peer: /ja/skills/dual-axis-skill-reviewer/
+lang_peer: /zh/skills/dual-axis-skill-reviewer/
 permalink: /en/skills/dual-axis-skill-reviewer/
 ---
 

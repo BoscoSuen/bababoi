@@ -76,7 +76,7 @@ python3 skills/us-undervalued-growth-screener/scripts/evaluate_candidates.py \
   --input <final-snapshot.json> \
   --artifact-root <run-root> \
   --output-dir <final-dir> \
-  --strict --require-final --language ja
+  --strict --require-final --language zh
 ```
 
 ## Resume

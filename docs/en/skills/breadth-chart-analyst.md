@@ -4,7 +4,7 @@ title: "Breadth Chart Analyst"
 grand_parent: English
 parent: Skill Guides
 nav_order: 11
-lang_peer: /ja/skills/breadth-chart-analyst/
+lang_peer: /zh/skills/breadth-chart-analyst/
 permalink: /en/skills/breadth-chart-analyst/
 ---
 

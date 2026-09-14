@@ -7,11 +7,11 @@ import yaml
 
 ROOT = Path(__file__).resolve().parents[2]
 EN_FAQ = ROOT / "docs" / "en" / "faq.md"
-JA_FAQ = ROOT / "docs" / "ja" / "faq.md"
+ZH_FAQ = ROOT / "docs" / "zh" / "faq.md"
 README_EN = ROOT / "README.md"
-README_JA = ROOT / "README.ja.md"
+README_ZH = ROOT / "README.zh.md"
 GETTING_STARTED_EN = ROOT / "docs" / "en" / "getting-started.md"
-GETTING_STARTED_JA = ROOT / "docs" / "ja" / "getting-started.md"
+GETTING_STARTED_ZH = ROOT / "docs" / "zh" / "getting-started.md"
 DOCS_GUIDE = ROOT / "docs" / "README.md"
 
 SKILLS_HELP_URL = "https://support.claude.com/en/articles/12512180-use-skills-in-claude"
@@ -37,31 +37,31 @@ EXPECTED_FRONTMATTER = {
         "title": "Frequently Asked Questions",
         "parent": "English",
         "nav_order": 10,
-        "lang_peer": "/ja/faq/",
+        "lang_peer": "/zh/faq/",
         "permalink": "/en/faq/",
     },
-    JA_FAQ: {
+    ZH_FAQ: {
         "layout": "default",
-        "title": "よくある質問",
-        "parent": "日本語",
+        "title": "常见问题",
+        "parent": "中文",
         "nav_order": 10,
         "lang_peer": "/en/faq/",
-        "permalink": "/ja/faq/",
+        "permalink": "/zh/faq/",
     },
 }
 
 TOPIC_MARKERS = {
-    "Q01": (("no code", "Claude Web"), ("コード", "Claude Web")),
+    "Q01": (("no code", "Claude Web"), ("代码", "Claude Web")),
     "Q02": (("Free", "Claude Code"), ("Free", "Claude Code")),
     "Q03": (("Web", "Claude Code"), ("Web", "Claude Code")),
-    "Q04": (("FinViz Screener", "API key"), ("FinViz Screener", "APIキー")),
-    "Q05": (("optional", "skills-index.yaml"), ("任意", "skills-index.yaml")),
-    "Q06": (("current pricing", PRICING_URL), ("最新の料金", PRICING_URL)),
-    "Q07": (("does not place orders", "human"), ("発注しません", "人間")),
-    "Q08": (("not financial advice", "decision"), ("投資助言では", "判断")),
-    "Q09": (("environment variables", "rotate"), ("環境変数", "ローテーション")),
-    "Q10": (("Japanese", "prompt"), ("日本語", "プロンプト")),
-    "Q11": (("guarantee", "source"), ("保証", "出典")),
+    "Q04": (("FinViz Screener", "API key"), ("FinViz Screener", "API 密钥")),
+    "Q05": (("optional", "skills-index.yaml"), ("可选", "skills-index.yaml")),
+    "Q06": (("current pricing", PRICING_URL), ("最新定价", PRICING_URL)),
+    "Q07": (("does not place orders", "human"), ("不执行下单", "人工")),
+    "Q08": (("not financial advice", "decision"), ("不构成投资建议", "判断")),
+    "Q09": (("environment variables", "rotate"), ("环境变量", "轮换")),
+    "Q10": (("Chinese", "prompt"), ("中文", "提示词")),
+    "Q11": (("guarantee", "source"), ("保证", "来源")),
     "Q12": (("Customize > Skills", "SKILL.md"), ("Customize > Skills", "SKILL.md")),
 }
 
@@ -88,16 +88,10 @@ def question_sections(text: str) -> dict[str, str]:
 
 def web_install_section(text: str) -> str:
     match = re.search(
-        r"^### (?:Use with )?Claude Web App(?:で使う場合)?\n(.*?)(?=^### |\Z)",
+        r"^### (?:(?:Use with )?Claude Web App|在 ?Claude Web ?(?:App|应用) ?中使用)\n(.*?)(?=^### |\Z)",
         text,
         flags=re.DOTALL | re.MULTILINE,
     )
-    if not match:
-        match = re.search(
-            r"^### Claudeウェブアプリで使う場合\n(.*?)(?=^### |\Z)",
-            text,
-            flags=re.DOTALL | re.MULTILINE,
-        )
     assert match, "missing Claude Web installation section"
     return match.group(1)
 
@@ -108,7 +102,7 @@ def test_faq_pages_have_complete_reciprocal_frontmatter() -> None:
 
 
 def test_top_level_navigation_is_unique_and_matches_in_both_languages() -> None:
-    for lang in ("en", "ja"):
+    for lang in ("en", "zh"):
         nav_orders = {
             filename: parse_frontmatter(read(ROOT / "docs" / lang / filename))["nav_order"]
             for filename in TOP_LEVEL_NAV
@@ -120,32 +114,32 @@ def test_top_level_navigation_is_unique_and_matches_in_both_languages() -> None:
 
 def test_faq_pages_have_twelve_matched_questions_with_semantic_parity() -> None:
     en_sections = question_sections(read(EN_FAQ))
-    ja_sections = question_sections(read(JA_FAQ))
+    zh_sections = question_sections(read(ZH_FAQ))
     expected_ids = list(TOPIC_MARKERS)
 
     assert list(en_sections) == expected_ids
-    assert list(ja_sections) == expected_ids
+    assert list(zh_sections) == expected_ids
 
-    for question_id, (en_markers, ja_markers) in TOPIC_MARKERS.items():
+    for question_id, (en_markers, zh_markers) in TOPIC_MARKERS.items():
         assert all(marker in en_sections[question_id] for marker in en_markers)
-        assert all(marker in ja_sections[question_id] for marker in ja_markers)
+        assert all(marker in zh_sections[question_id] for marker in zh_markers)
 
 
 def test_faq_external_links_use_the_reviewed_static_allowlist() -> None:
-    for path in (EN_FAQ, JA_FAQ):
+    for path in (EN_FAQ, ZH_FAQ):
         urls = set(re.findall(r"https://[^\s)>]+", read(path)))
         assert urls == ALLOWED_FAQ_URLS
 
 
 def test_readmes_and_getting_started_link_to_the_localized_faq() -> None:
     assert "[FAQ](docs/en/faq.md)" in read(README_EN)
-    assert "[よくある質問](docs/ja/faq.md)" in read(README_JA)
+    assert "[常见问题](docs/zh/faq.md)" in read(README_ZH)
     assert "{{ '/en/faq/' | relative_url }}" in read(GETTING_STARTED_EN)
-    assert "{{ '/ja/faq/' | relative_url }}" in read(GETTING_STARTED_JA)
+    assert "{{ '/zh/faq/' | relative_url }}" in read(GETTING_STARTED_ZH)
 
 
 def test_existing_entry_points_describe_current_web_skills_access() -> None:
-    for path in (README_EN, README_JA, GETTING_STARTED_EN, GETTING_STARTED_JA):
+    for path in (README_EN, README_ZH, GETTING_STARTED_EN, GETTING_STARTED_ZH):
         text = read(path)
         section = web_install_section(text)
 
@@ -161,11 +155,11 @@ def test_existing_entry_points_do_not_require_a_paid_plan_for_web_skills() -> No
     forbidden = (
         "Claude Skills require a paid Claude plan",
         "Paid Claude plan that supports the Skills feature",
-        "有料 Claude プランが必要",
-        "有料 Claude プラン |",
+        "Claude Skills需要付费Claude计划",
+        "付费Claude计划 |",
     )
 
-    for path in (README_EN, README_JA, GETTING_STARTED_EN, GETTING_STARTED_JA):
+    for path in (README_EN, README_ZH, GETTING_STARTED_EN, GETTING_STARTED_ZH):
         text = read(path)
         assert not any(phrase in text for phrase in forbidden)
         assert "Free" in text
@@ -175,45 +169,45 @@ def test_existing_entry_points_do_not_require_a_paid_plan_for_web_skills() -> No
 
 def test_getting_started_requires_explicit_skill_visibility_and_enablement_check() -> None:
     en_text = read(GETTING_STARTED_EN)
-    ja_text = read(GETTING_STARTED_JA)
+    zh_text = read(GETTING_STARTED_ZH)
 
     assert "activates automatically" not in en_text
-    assert "自動的に有効" not in ja_text
+    assert "自动激活" not in zh_text
     assert "appears in Customize > Skills" in en_text
     assert "enable it if needed" in en_text
-    assert "Customize > Skills に表示" in ja_text
-    assert "必要に応じて有効化" in ja_text
+    assert "Customize > Skills" in zh_text
+    assert "启用" in zh_text
 
 
 def test_getting_started_only_requires_restart_for_a_new_top_level_skills_directory() -> None:
     en_text = read(GETTING_STARTED_EN)
-    ja_text = read(GETTING_STARTED_JA)
+    zh_text = read(GETTING_STARTED_ZH)
 
     assert "Restart Claude Code after adding a new skill" not in en_text
-    assert "新しいスキルの追加後は再起動が必要" not in ja_text
+    assert "添加新技能后需要重启" not in zh_text
     assert "Top-level skills directory created after this session started" in en_text
     assert "Changes inside an existing skills directory are detected automatically" in en_text
-    assert "セッション開始後に最上位skillsディレクトリを新規作成した" in ja_text
-    assert "既存skillsディレクトリ内の変更は自動検出される" in ja_text
+    assert "新建了顶层 skills 目录" in zh_text
+    assert "自动检测" in zh_text
 
 
 def test_portfolio_manager_is_documented_as_read_only_for_orders() -> None:
     en_text = read(GETTING_STARTED_EN)
-    ja_text = read(GETTING_STARTED_JA)
+    zh_text = read(GETTING_STARTED_ZH)
 
     assert "execute trades" not in en_text
-    assert "トレード執行" not in ja_text
+    assert "执行交易" not in zh_text
     assert "Required for Portfolio Manager to retrieve live holdings" in en_text
-    assert "ライブ保有データを取得し、分析とリバランス案を作る場合は必須" in ja_text
+    assert "Portfolio Manager" in zh_text and "实时持仓" in zh_text
     assert "does not submit broker orders" in en_text
     assert "separate human confirmation and execution" in en_text
-    assert "ブローカーへ注文を送信しません" in ja_text
-    assert "人間が別途確認・執行" in ja_text
+    assert "不会向券商发送订单" in zh_text
+    assert "人工" in zh_text and "确认" in zh_text
 
 
 def test_contributor_guide_lists_faq_as_top_level_page_ten() -> None:
     text = read(DOCS_GUIDE)
 
     assert "│   ├── faq.md" in text
-    assert "| **FAQ** | `en/faq.md`, `ja/faq.md` |" in text
+    assert "| **FAQ** | `en/faq.md`, `zh/faq.md` |" in text
     assert "| 10 | FAQ |" in text

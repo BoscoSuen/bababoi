@@ -4,7 +4,7 @@ title: "Futures Position Sizer"
 grand_parent: English
 parent: Skill Guides
 nav_order: 33
-lang_peer: /ja/skills/futures-position-sizer/
+lang_peer: /zh/skills/futures-position-sizer/
 permalink: /en/skills/futures-position-sizer/
 generated: true
 ---

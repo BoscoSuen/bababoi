@@ -1,6 +1,6 @@
 # Source Prompt Coverage Map
 
-The original Japanese prompt remains the methodological authority. The skill reorganizes it into progressive research instructions, a source-linked schema, deterministic calculations, audit statuses, and tests.
+The original Chinese prompt remains the methodological authority. The skill reorganizes it into progressive research instructions, a source-linked schema, deterministic calculations, audit statuses, and tests.
 
 | Original prompt area | Skill implementation |
 |---|---|

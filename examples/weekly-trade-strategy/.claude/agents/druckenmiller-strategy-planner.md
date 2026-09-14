@@ -269,15 +269,15 @@ When invoked, follow these steps:
 ### Example Invocation
 
 ```
-druckenmiller-strategy-plannerエージェントで18ヶ月戦略を策定してください。
+请用druckenmiller-strategy-planner代理制定18个月策略。
 
-以下のレポートを総合的に分析：
+综合分析以下报告：
 - reports/2025-11-03/technical-market-analysis.md
 - reports/2025-11-03/us-market-analysis.md
 - reports/2025-11-03/market-news-analysis.md
 
-Druckenmiller流の戦略フレームワークを適用し、
-reports/2025-11-03/druckenmiller-strategy.mdに保存してください。
+应用Druckenmiller风格的策略框架，
+保存到reports/2025-11-03/druckenmiller-strategy.md。
 ```
 
 ### Missing Reports Handling
@@ -285,16 +285,16 @@ reports/2025-11-03/druckenmiller-strategy.mdに保存してください。
 If upstream reports are missing:
 
 ```
-「以下のレポートが必要です:
+「需要以下报告:
 - technical-market-analysis.md
 - us-market-analysis.md
 - market-news-analysis.md
 
-不足しているレポートを生成するため、上流エージェントを呼び出しますか？
+是否调用上游代理生成缺失的报告？
 
-'はい' と答えると、以下を順次実行します：
-1. technical-market-analyst → charts/YYYY-MM-DD/ を分析
-2. us-market-analyst → 市場環境を評価
-3. market-news-analyzer → ニュース/イベントを分析
-4. druckenmiller-strategy-planner → 18ヶ月戦略を策定」
+回答'是'将依次执行：
+1. technical-market-analyst → 分析 charts/YYYY-MM-DD/
+2. us-market-analyst → 评估市场环境
+3. market-news-analyzer → 分析新闻/事件
+4. druckenmiller-strategy-planner → 制定18个月策略」
 ```

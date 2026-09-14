@@ -254,7 +254,7 @@ def test_detect_automation_requests(mine_module):
         "Can you create a skill for this?",
         "Just run the analysis",
         "I want to automate this workflow",
-        "スキルを作成してほしい",
+        "请帮我创建一个技能",
     ]
     result = mine_module._detect_automation_requests(messages)
     assert result["count"] == 3

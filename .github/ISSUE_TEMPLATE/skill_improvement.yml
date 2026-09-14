@@ -1,5 +1,5 @@
-name: Skill improvement / スキル改善
-description: Propose a focused improvement to an existing skill. / 既存スキルの具体的な改善を提案します。
+name: Skill improvement / 技能改进
+description: Propose a focused improvement to an existing skill. / 为现有技能提出具体改进建议。
 title: "[Skill improvement]: "
 labels: ["enhancement"]
 body:
@@ -9,20 +9,20 @@ body:
         Use this form for focused improvements to tests, fixtures, documentation,
         error handling, metadata, packaging, or safety boundaries.
 
-        テスト、fixture、文書、エラー処理、metadata、package、安全境界の改善に利用してください。
+        用于测试、fixture、文档、错误处理、metadata、package或安全边界的改进。
   - type: input
     id: skill-name
     attributes:
-      label: Skill name / スキル名
-      description: Use the directory name under `skills/` if known. / 分かれば `skills/` 配下のディレクトリ名を書いてください。
+      label: Skill name / 技能名称
+      description: Use the directory name under `skills/` if known. / 如果知道，请填写 `skills/` 下的目录名。
       placeholder: "portfolio-manager"
     validations:
       required: true
   - type: dropdown
     id: improvement-type
     attributes:
-      label: Improvement type / 改善種別
-      description: Select the closest category. / 最も近い分類を選んでください。
+      label: Improvement type / 改进类型
+      description: Select the closest category. / 选择最接近的分类。
       options:
         - Tests or fixtures
         - Documentation or examples
@@ -36,39 +36,39 @@ body:
   - type: textarea
     id: problem
     attributes:
-      label: Problem / 課題
-      description: Explain what makes the skill hard to use, test, or trust. / 何が使いにくい、検証しにくい、信頼しにくいか説明してください。
+      label: Problem / 问题
+      description: Explain what makes the skill hard to use, test, or trust. / 说明是什么导致该技能难以使用、测试或信任。
       placeholder: "The current SKILL.md does not explain..."
     validations:
       required: true
   - type: textarea
     id: proposed-change
     attributes:
-      label: Proposed change / 提案する変更
-      description: Keep the change narrow and verifiable. / 変更範囲を小さく、検証可能にしてください。
+      label: Proposed change / 建议的变更
+      description: Keep the change narrow and verifiable. / 请保持变更范围小且可验证。
       placeholder: "Add fixtures that cover..."
     validations:
       required: true
   - type: textarea
     id: validation
     attributes:
-      label: Suggested validation / 想定する検証
-      description: Name targeted tests, package checks, or documentation checks. / 対象テスト、package、文書checkを書いてください。
+      label: Suggested validation / 建议的验证方式
+      description: Name targeted tests, package checks, or documentation checks. / 请填写目标测试、package检查或文档检查。
       placeholder: "python3.9 -m pytest skills/<skill>/scripts/tests -q"
     validations:
       required: true
   - type: textarea
     id: additional-context
     attributes:
-      label: Additional context / 補足
-      description: Add sanitized examples, links, or prior output if useful. / 必要なら秘密情報を除いた例、リンク、過去の出力を追加してください。
+      label: Additional context / 补充信息
+      description: Add sanitized examples, links, or prior output if useful. / 如需要可添加已脱敏的示例、链接或之前的输出。
   - type: checkboxes
     id: acknowledgements
     attributes:
-      label: Acknowledgements / 確認事項
-      description: Confirm both items before submitting. / 送信前に両方を確認してください。
+      label: Acknowledgements / 确认事项
+      description: Confirm both items before submitting. / 提交前请确认以下两项。
       options:
-        - label: I removed secrets, API keys, personal information, and brokerage account data. / 秘密情報、APIキー、個人情報、証券口座情報を除外しました。
+        - label: I removed secrets, API keys, personal information, and brokerage account data. / 已移除密钥、API密钥、个人信息和证券账户数据。
           required: true
-        - label: This is not a request for financial advice, buy/sell recommendations, profit guarantees, or broker execution. / 金融助言、売買推奨、利益保証、発注実行の依頼ではありません。
+        - label: This is not a request for financial advice, buy/sell recommendations, profit guarantees, or broker execution. / 本报告不涉及金融建议、买卖推荐、收益保证或经纪商执行请求。
           required: true

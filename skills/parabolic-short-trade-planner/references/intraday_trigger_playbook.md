@@ -38,7 +38,7 @@
 ```
 plan_id template:   <TICKER>-<YYYYMMDD>-ORL5
 trigger_type:       orl_5min_break
-condition (ja):     5min ORL を出来高 1.2x 以上で下抜け
+condition (zh):     5分钟ORL在成交量1.2倍以上时被跌破
 entry_hint:         5min_orl_low - 0.05
 stop_hint:          session_HOD + 0.25 * ATR
 structural_targets: dma_10, dma_20
@@ -59,7 +59,7 @@ structural_targets: dma_10, dma_20
 ```
 plan_id template:   <TICKER>-<YYYYMMDD>-FR5
 trigger_type:       first_red_5min
-condition (ja):     寄付後最初の赤 5min の安値割れ
+condition (zh):     开盘后首根红色5分钟K线低点被跌破
 entry_hint:         first_red_5min_low - 0.05
 stop_hint:          first_red_5min_high
 ```
@@ -79,7 +79,7 @@ stop_hint:          first_red_5min_high
 ```
 plan_id template:   <TICKER>-<YYYYMMDD>-VWF
 trigger_type:       vwap_fail
-condition (ja):     First crack 後 VWAP retest で 5min 終値拒否 + lower-high 下抜け
+condition (zh):     First crack后VWAP回测时5分钟收盘价被拒绝 + lower-high被跌破
 entry_hint:         lower_high_low - 0.05
 stop_hint:          vwap_reclaim_5min_close
 ```

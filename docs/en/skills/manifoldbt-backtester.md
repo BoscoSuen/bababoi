@@ -4,7 +4,7 @@ title: "Manifoldbt Backtester"
 grand_parent: English
 parent: Skill Guides
 nav_order: 42
-lang_peer: /ja/skills/manifoldbt-backtester/
+lang_peer: /zh/skills/manifoldbt-backtester/
 permalink: /en/skills/manifoldbt-backtester/
 generated: true
 ---

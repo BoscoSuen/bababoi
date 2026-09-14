@@ -3,7 +3,7 @@ layout: default
 title: Frequently Asked Questions
 parent: English
 nav_order: 10
-lang_peer: /ja/faq/
+lang_peer: /zh/faq/
 permalink: /en/faq/
 ---
 
@@ -97,11 +97,11 @@ Use the narrowest permissions available and prefer paper or sandbox credentials
 while testing. If a secret is exposed, revoke or rotate it immediately. Review
 each skill's inputs and outputs before supplying private account data.
 
-## Q10. Can I ask questions in Japanese?
+## Q10. Can I ask questions in Chinese?
 
-Yes. You can write a Japanese prompt even when a skill contains English
+Yes. You can write a Chinese prompt even when a skill contains English
 technical terms. Include the ticker, time frame, input source, and desired output
-format explicitly. This site provides matched English and Japanese guides so
+format explicitly. This site provides matched English and Chinese guides so
 you can compare terminology when needed.
 
 ## Q11. How reliable are the results?

@@ -3,10 +3,10 @@
   {% assign current_lang = page.url | slice: 1, 2 %}
   {% if current_lang == "en" %}
     <span style="font-weight: 600;">EN</span> |
-    <a href="{{ page.lang_peer | relative_url }}">JP</a>
-  {% elsif current_lang == "ja" %}
+    <a href="{{ page.lang_peer | relative_url }}">中文</a>
+  {% elsif current_lang == "zh" %}
     <a href="{{ page.lang_peer | relative_url }}">EN</a> |
-    <span style="font-weight: 600;">JP</span>
+    <span style="font-weight: 600;">中文</span>
   {% else %}
     <a href="{{ page.lang_peer | relative_url }}">Switch Language</a>
   {% endif %}

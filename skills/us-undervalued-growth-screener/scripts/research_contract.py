@@ -172,7 +172,7 @@ ALLOWED_EARNINGS_PERIOD_TYPES = {"quarter", "full_year"}
 ALLOWED_FORWARD_PERIOD_KINDS = {"ntm", "fy1"}
 ALLOWED_FUTURE_PERIOD_KINDS = {"fy2", "fy3", "other"}
 PLACEHOLDER_RE = re.compile(
-    r"replace this|placeholder|synthetic text|todo|tbd|fill in|example only|ここに|要入力",
+    r"replace this|placeholder|synthetic text|todo|tbd|fill in|example only|此处填写|需要输入",
     re.IGNORECASE,
 )
 
@@ -549,10 +549,10 @@ def validate_market_context(
         "priced in",
         "rate hike",
         "rate cut",
-        "市場は",
-        "織り込",
-        "利上げ",
-        "利下げ",
+        "市场已",
+        "已计入",
+        "加息",
+        "降息",
     )
     if any(term in summary_lower for term in expectation_terms):
         expectation_sources = supporting_sources("market_context.market_rate_expectations")

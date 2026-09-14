@@ -796,16 +796,16 @@ class EvaluatorTests(FixtureMixin, unittest.TestCase):
 
     def test_markdown_contains_full_contract_sections_and_no_placeholder(self) -> None:
         report = self.evaluate(self.single("ACME"))
-        markdown = EVALUATOR.render_markdown(report, language="ja")
+        markdown = EVALUATOR.render_markdown(report, language="zh")
         for heading in [
-            "#### 1. 基本情報",
-            "#### 5. 直近決算",
-            "#### 7. 同業他社比較",
-            "#### 9. 倍率据え置きシナリオ",
-            "#### 13. 投資仮説の無効化条件",
-            "## H. 最終選定3銘柄",
-            "## I. 情報源台帳",
-            "## J. 未解決データと全体警告",
+            "#### 1. 基本信息",
+            "#### 5. 最近财报",
+            "#### 7. 同业比较",
+            "#### 9. 倍数不变情景",
+            "#### 13. 投资假说失效条件",
+            "## H. 最终精选3只",
+            "## I. 信息来源台账",
+            "## J. 未解决数据与整体警告",
         ]:
             self.assertIn(heading, markdown)
         self.assertNotIn("Replace this", markdown)
@@ -822,7 +822,7 @@ class EvaluatorTests(FixtureMixin, unittest.TestCase):
                     "--output-dir",
                     temp_dir,
                     "--language",
-                    "ja",
+                    "zh",
                     "--strict",
                 ]
             )
@@ -2132,7 +2132,7 @@ class RegressionV33Tests(FixtureMixin, unittest.TestCase):
             "excluded": [],
             "unavailable_after_enrichment": [],
         }
-        markdown = EVALUATOR.render_markdown(report, language="ja")
+        markdown = EVALUATOR.render_markdown(report, language="zh")
         self.assertIn("MODX", markdown)
         self.assertIn("mid_cycle_normalization_required", markdown)
         self.assertIn("FAILX", markdown)
@@ -3013,7 +3013,7 @@ class RegressionV35Tests(FixtureMixin, unittest.TestCase):
 
     def test_prepublish_audit_and_bundle_are_self_contained(self) -> None:
         report = self.evaluate(self.payload)
-        markdown = EVALUATOR.render_markdown(report, language="ja")
+        markdown = EVALUATOR.render_markdown(report, language="zh")
         self.assertTrue(
             PREPUBLISH.audit_publication(
                 report, report_markdown=markdown, artifact_root=ASSETS_DIR
@@ -3046,7 +3046,7 @@ class RegressionV35Tests(FixtureMixin, unittest.TestCase):
 
     def test_prepublish_audit_rejects_continue_language(self) -> None:
         report = self.evaluate(self.payload)
-        markdown = EVALUATOR.render_markdown(report, language="ja") + "\n次のターンで続けます。\n"
+        markdown = EVALUATOR.render_markdown(report, language="zh") + "\n下一轮再处理。\n"
         audit = PREPUBLISH.audit_publication(
             report, report_markdown=markdown, artifact_root=ASSETS_DIR
         )

@@ -4,7 +4,7 @@ title: "Trader Memory Core"
 grand_parent: English
 parent: Skill Guides
 nav_order: 45
-lang_peer: /ja/skills/trader-memory-core/
+lang_peer: /zh/skills/trader-memory-core/
 permalink: /en/skills/trader-memory-core/
 ---
 

@@ -4,7 +4,7 @@ title: "Skill Designer"
 grand_parent: English
 parent: Skill Guides
 nav_order: 38
-lang_peer: /ja/skills/skill-designer/
+lang_peer: /zh/skills/skill-designer/
 permalink: /en/skills/skill-designer/
 ---
 

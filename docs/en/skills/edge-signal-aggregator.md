@@ -4,7 +4,7 @@ title: "Edge Signal Aggregator"
 grand_parent: English
 parent: Skill Guides
 nav_order: 11
-lang_peer: /ja/skills/edge-signal-aggregator/
+lang_peer: /zh/skills/edge-signal-aggregator/
 permalink: /en/skills/edge-signal-aggregator/
 ---
 

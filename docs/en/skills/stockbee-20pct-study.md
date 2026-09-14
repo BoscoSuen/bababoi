@@ -4,7 +4,7 @@ title: "Stockbee 20% Study"
 grand_parent: English
 parent: Skill Guides
 nav_order: 52
-lang_peer: /ja/skills/stockbee-20pct-study/
+lang_peer: /zh/skills/stockbee-20pct-study/
 permalink: /en/skills/stockbee-20pct-study/
 generated: false
 ---

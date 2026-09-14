@@ -21,7 +21,7 @@ def build_orl_plan(
     return {
         "plan_id": plan_id,
         "trigger_type": TRIGGER_TYPE,
-        "condition": "5min ORL を出来高 1.2x 以上で下抜け",
+        "condition": "5min ORL 以1.2x以上成交量跌破",
         "entry_hint": "5min_orl_low - 0.05",
         "stop_hint": f"session_HOD + {stop_buffer_atr} * ATR",
         "structural_targets": ["dma_10", "dma_20"],

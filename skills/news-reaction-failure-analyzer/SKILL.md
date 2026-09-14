@@ -35,9 +35,9 @@ never merely "didn't respond enough." See
 - After `cot-contrarian-detector` flags a market CROWDED_LONG / CROWDED_SHORT
   and the user wants to move to step 2
 
-**Japanese:**
-- 「この市場は好材料に反応しなかった？」
-- 「COTで偏っているこの銘柄のニュース失敗を確認して」
+**Chinese:**
+- "这个市场没有对利好消息做出反应？"
+- "确认COT持仓偏向一边的这个品种的新闻失败"
 
 **Do NOT use when:**
 - The market isn't crowded (NEUTRAL classification) — this skill refuses

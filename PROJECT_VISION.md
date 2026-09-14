@@ -3,7 +3,7 @@
 Version: 0.2
 Last updated: 2026-07-01
 
-Japanese version: [PROJECT_VISION.ja.md](PROJECT_VISION.ja.md)
+Chinese version: [PROJECT_VISION.zh.md](PROJECT_VISION.zh.md)
 
 Claude Trading Skills is a Claude Skills-based trading process OS for time-constrained individual investors.
 
@@ -232,7 +232,7 @@ Main tasks:
 
 Definition of done:
 
-- `PROJECT_VISION.md` and `PROJECT_VISION.ja.md` exist
+- `PROJECT_VISION.md` and `PROJECT_VISION.zh.md` exist
 - `skills-index.yaml` or `skills-inventory.yaml` exists
 - All skills have initial classifications for category, use case, required API, difficulty, and timeframe
 - The API requirements matrix is current
@@ -334,7 +334,7 @@ Definition of done:
 
 ### Phase 4: User-Friendly Entry Points — ✅ partially complete (2026-05-24)
 
-> **Status:** README (EN/JA) has a Recommended Starting Path + No-API starter path keyed to the 5 workflows; generated workflow & skillset doc pages exist; the Navigator is the natural-language on-ramp; the dedicated [Find Your Workflow](docs/en/find-your-workflow.md) ([日本語](docs/ja/find-your-workflow.md)) on-ramp is now published (PR #142); and the [Hermes Trading Research Agent Work Package](https://github.com/tradermonty/hermes-trading-research-agent-work-package) companion is linked from the README (PR #140) as a ready-to-run agent-style usage path. Broader quickstart polish (starter prompts, API setup wizard, web UI) remains follow-up.
+> **Status:** README (EN/ZH) has a Recommended Starting Path + No-API starter path keyed to the 5 workflows; generated workflow & skillset doc pages exist; the Navigator is the natural-language on-ramp; the dedicated [Find Your Workflow](docs/en/find-your-workflow.md) ([中文](docs/zh/find-your-workflow.md)) on-ramp is now published (PR #142); and the [Hermes Trading Research Agent Work Package](https://github.com/tradermonty/hermes-trading-research-agent-work-package) companion is linked from the README (PR #140) as a ready-to-run agent-style usage path. Broader quickstart polish (starter prompts, API setup wizard, web UI) remains follow-up.
 
 Make the project easier for users who are not comfortable with GitHub or `.skill` files.
 
@@ -439,7 +439,7 @@ Future development should follow these principles:
 
 Near-term work should proceed in this order:
 
-- ✅ **Done (2026-05-09)**: Project vision documents (`PROJECT_VISION.md` / `PROJECT_VISION.ja.md`)
+- ✅ **Done (2026-05-09)**: Project vision documents (`PROJECT_VISION.md` / `PROJECT_VISION.zh.md`)
 - ✅ **Done (2026-05-09)**: `skills-index.yaml` SSoT + validator (PR #84)
 - ✅ **Done (2026-05-09)**: 5 core workflow manifests under `workflows/` (PR #85)
 - ✅ **Done (2026-05-09)**: Auto-generated workflow doc pages (PR #86)
@@ -447,7 +447,7 @@ Near-term work should proceed in this order:
 - ✅ **Done**: Trading Skills Navigator v0 (deterministic recommender + Web App snapshot fallback + manifest-driven setup)
 - **Partial**: Major skillsets in YAML — 4 core skillsets shipped (`market-regime`, `core-portfolio`, `swing-opportunity`, `trade-memory`); remaining skillset candidates (`dividend-income`, `strategy-research`, `advanced-satellite`) deferred
 - **Next**: Add advanced workflow manifests (`risk-off-short-daily`, `earnings-weekly`, `strategy-research-pipeline`) — tracked in [#216](https://github.com/tradermonty/claude-trading-skills/issues/216)
-- ✅ **Done (2026-05-24)**: Create "Find Your Workflow" documentation ([EN](docs/en/find-your-workflow.md) / [JA](docs/ja/find-your-workflow.md), PR #142)
+- ✅ **Done (2026-05-24)**: Create "Find Your Workflow" documentation ([EN](docs/en/find-your-workflow.md) / [ZH](docs/zh/find-your-workflow.md), PR #142)
 - ✅ **Done (2026-05-24)**: Public end-to-end sample operating examples — both `sample-run/` (required-only) and `sample-run-full-path/` (with optional step) under [`examples/workflows/`](examples/workflows/) for `market-regime-daily` and `trade-memory-loop` (PR #141; required-only path shipped earlier in PR #118)
 - ✅ **Done (2026-05-24)**: Companion work package — [Hermes Trading Research Agent](https://github.com/tradermonty/hermes-trading-research-agent-work-package) link added to README (PR #140)
 - **Later**: Add bundle builder or recommender CLI if needed

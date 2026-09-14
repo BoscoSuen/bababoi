@@ -4,7 +4,7 @@ title: Backtest Expert
 grand_parent: English
 parent: Skill Guides
 nav_order: 7
-lang_peer: /ja/skills/backtest-expert/
+lang_peer: /zh/skills/backtest-expert/
 permalink: /en/skills/backtest-expert/
 ---
 

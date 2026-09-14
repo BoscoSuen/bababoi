@@ -49,7 +49,7 @@ python3 scripts/score_ideas.py \
    - Skill usage frequency (`skills/*/` path references)
    - Error patterns (non-zero exit codes, `is_error` flags, exception keywords)
    - Repetitive tool sequences (3+ tools repeated 3+ times)
-   - Automation request keywords (English and Japanese)
+   - Automation request keywords (English and Chinese)
    - Unresolved requests (5+ minute gap after user message)
 6. Invoke Claude CLI headless for idea abstraction
 7. Output `raw_candidates.yaml`

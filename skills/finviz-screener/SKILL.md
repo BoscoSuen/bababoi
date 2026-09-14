@@ -1,6 +1,6 @@
 ---
 name: finviz-screener
-description: Build and open FinViz screener URLs from natural language requests. Use when user wants to screen stocks, find stocks matching criteria, filter by fundamentals or technicals, or asks to open FinViz with specific conditions. Supports both Japanese and English input (e.g., "高配当で成長している小型株を探したい", "Find oversold large caps with high ROE").
+description: Build and open FinViz screener URLs from natural language requests. Use when user wants to screen stocks, find stocks matching criteria, filter by fundamentals or technicals, or asks to open FinViz with specific conditions. Supports both Chinese and English input (e.g., "寻找高股息且持续增长的小盘股", "Find oversold large caps with high ROE").
 ---
 
 # FinViz Screener
@@ -10,7 +10,7 @@ description: Build and open FinViz screener URLs from natural language requests.
 Translate natural-language stock screening requests into FinViz screener filter codes, build the URL, and open it in Chrome. No API key required for public screener; FINVIZ Elite is auto-detected from `$FINVIZ_API_KEY` for enhanced functionality.
 
 **Key Features:**
-- Natural language → filter code mapping (Japanese + English)
+- Natural language → filter code mapping (Chinese + English)
 - URL construction with view type and sort order selection
 - Elite/Public auto-detection (environment variable or explicit flag)
 - Chrome-first browser opening with OS-appropriate fallbacks
@@ -21,13 +21,13 @@ Translate natural-language stock screening requests into FinViz screener filter 
 ## When to Use This Skill
 
 **Explicit Triggers:**
-- "高配当で成長している小型株を探したい"
+- "寻找高股息且持续增长的小盘股"
 - "Find oversold large caps near 52-week lows"
-- "テクノロジーセクターの割安株をスクリーニングしたい"
+- "筛选科技板块的低估值股票"
 - "Screen for stocks with insider buying"
-- "FinVizでブレイクアウト候補を表示して"
+- "在FinViz上显示突破候选股"
 - "Show me high-growth small caps on FinViz"
-- "配当利回り5%以上でROE15%以上の銘柄を探して"
+- "寻找股息率5%以上且ROE15%以上的股票"
 
 **Implicit Triggers:**
 - User describes stock screening criteria using fundamental or technical terms
@@ -60,56 +60,56 @@ Map the user's natural-language request to FinViz filter codes. Use the Common C
 
 **Common Concept Mapping:**
 
-| User Concept (EN) | User Concept (JP) | Filter Codes |
+| User Concept (EN) | User Concept (ZH) | Filter Codes |
 |---|---|---|
-| High dividend | 高配当 | `fa_div_o3` or `fa_div_o5` |
-| Small cap | 小型株 | `cap_small` |
-| Mid cap | 中型株 | `cap_mid` |
-| Large cap | 大型株 | `cap_large` |
-| Mega cap | 超大型株 | `cap_mega` |
-| Value / cheap | 割安 | `fa_pe_u20,fa_pb_u2` |
-| Growth stock | 成長株 | `fa_epsqoq_o25,fa_salesqoq_o15` |
-| Oversold | 売られすぎ | `ta_rsi_os30` |
-| Overbought | 買われすぎ | `ta_rsi_ob70` |
-| Near 52W high | 52週高値付近 | `ta_highlow52w_b0to5h` |
-| Near 52W low | 52週安値付近 | `ta_highlow52w_a0to5l` |
-| Breakout | ブレイクアウト | `ta_highlow52w_b0to5h,sh_relvol_o1.5` |
-| Technology | テクノロジー | `sec_technology` |
-| Healthcare | ヘルスケア | `sec_healthcare` |
-| Energy | エネルギー | `sec_energy` |
+| High dividend | 高股息 | `fa_div_o3` or `fa_div_o5` |
+| Small cap | 小盘股 | `cap_small` |
+| Mid cap | 中盘股 | `cap_mid` |
+| Large cap | 大盘股 | `cap_large` |
+| Mega cap | 超大盘股 | `cap_mega` |
+| Value / cheap | 低估值 | `fa_pe_u20,fa_pb_u2` |
+| Growth stock | 成长股 | `fa_epsqoq_o25,fa_salesqoq_o15` |
+| Oversold | 超卖 | `ta_rsi_os30` |
+| Overbought | 超买 | `ta_rsi_ob70` |
+| Near 52W high | 接近52周高点 | `ta_highlow52w_b0to5h` |
+| Near 52W low | 接近52周低点 | `ta_highlow52w_a0to5l` |
+| Breakout | 突破 | `ta_highlow52w_b0to5h,sh_relvol_o1.5` |
+| Technology | 科技 | `sec_technology` |
+| Healthcare | 医疗保健 | `sec_healthcare` |
+| Energy | 能源 | `sec_energy` |
 | Financial | 金融 | `sec_financial` |
-| Semiconductors | 半導体 | `ind_semiconductors` |
-| Biotechnology | バイオテク | `ind_biotechnology` |
-| US stocks | 米国株 | `geo_usa` |
-| Profitable | 黒字 | `fa_pe_profitable` |
+| Semiconductors | 半导体 | `ind_semiconductors` |
+| Biotechnology | 生物科技 | `ind_biotechnology` |
+| US stocks | 美股 | `geo_usa` |
+| Profitable | 盈利 | `fa_pe_profitable` |
 | High ROE | 高ROE | `fa_roe_o15` or `fa_roe_o20` |
-| Low debt | 低負債 | `fa_debteq_u0.5` |
-| Insider buying | インサイダー買い | `sh_insidertrans_verypos` |
-| Short squeeze | ショートスクイーズ | `sh_short_o20,sh_relvol_o2` |
-| Dividend growth | 増配 | `fa_divgrowth_3yo10` |
-| Deep value | ディープバリュー | `fa_pb_u1,fa_pe_u10` |
-| Momentum | モメンタム | `ta_perf_13wup,ta_sma50_pa,ta_sma200_pa` |
-| Defensive | ディフェンシブ | `ta_beta_u0.5` or `sec_utilities,sec_consumerdefensive` |
-| Liquid / high volume | 高出来高 | `sh_avgvol_o500` or `sh_avgvol_o1000` |
-| Pullback from high | 高値からの押し目 | `ta_highlow52w_10to30-bhx` |
-| Near 52W low reversal | 安値圏リバーサル | `ta_highlow52w_10to30-alx` |
-| Fallen angel | 急落後反発 | `ta_highlow52w_b20to30h,ta_rsi_os40` |
-| AI theme | AIテーマ | `--themes "artificialintelligence"` |
-| Cybersecurity theme | サイバーセキュリティ | `--themes "cybersecurity"` |
-| AI + Cybersecurity | AI＆サイバーセキュリティ | `--themes "artificialintelligence,cybersecurity"` |
-| AI Cloud sub-theme | AIクラウド | `--subthemes "aicloud"` |
-| AI Compute sub-theme | AI半導体 | `--subthemes "aicompute"` |
-| Yield 3-8% (trap excluded) | 配当3-8%（トラップ除外）| `fa_div_3to8` |
-| Mid-range P/E | 適正PER帯 | `fa_pe_10to20` |
-| EV undervalued | EV割安 | `fa_evebitda_u10` |
-| Earnings next week | 来週決算 | `earningsdate_nextweek` |
-| IPO recent | 直近IPO | `ipodate_thismonth` |
-| Target price above | 目標株価以上 | `targetprice_a20` |
-| Recent news | 最新ニュースあり | `news_date_today` |
-| High institutional | 機関保有率高 | `sh_instown_o60` |
-| Low float | 浮動株少 | `sh_float_u20` |
-| Near all-time high | 史上最高値付近 | `ta_alltime_b0to5h` |
-| High ATR | 高ボラティリティ | `ta_averagetruerange_o1.5` |
+| Low debt | 低负债 | `fa_debteq_u0.5` |
+| Insider buying | 内部人买入 | `sh_insidertrans_verypos` |
+| Short squeeze | 轧空 | `sh_short_o20,sh_relvol_o2` |
+| Dividend growth | 股息增长 | `fa_divgrowth_3yo10` |
+| Deep value | 深度价值 | `fa_pb_u1,fa_pe_u10` |
+| Momentum | 动量 | `ta_perf_13wup,ta_sma50_pa,ta_sma200_pa` |
+| Defensive | 防御型 | `ta_beta_u0.5` or `sec_utilities,sec_consumerdefensive` |
+| Liquid / high volume | 高成交量 | `sh_avgvol_o500` or `sh_avgvol_o1000` |
+| Pullback from high | 高位回调 | `ta_highlow52w_10to30-bhx` |
+| Near 52W low reversal | 低位反转 | `ta_highlow52w_10to30-alx` |
+| Fallen angel | 急跌后反弹 | `ta_highlow52w_b20to30h,ta_rsi_os40` |
+| AI theme | AI主题 | `--themes "artificialintelligence"` |
+| Cybersecurity theme | 网络安全 | `--themes "cybersecurity"` |
+| AI + Cybersecurity | AI与网络安全 | `--themes "artificialintelligence,cybersecurity"` |
+| AI Cloud sub-theme | AI云计算 | `--subthemes "aicloud"` |
+| AI Compute sub-theme | AI芯片 | `--subthemes "aicompute"` |
+| Yield 3-8% (trap excluded) | 股息率3-8%（排除陷阱）| `fa_div_3to8` |
+| Mid-range P/E | 合理市盈率区间 | `fa_pe_10to20` |
+| EV undervalued | EV低估 | `fa_evebitda_u10` |
+| Earnings next week | 下周财报 | `earningsdate_nextweek` |
+| IPO recent | 近期IPO | `ipodate_thismonth` |
+| Target price above | 高于目标价 | `targetprice_a20` |
+| Recent news | 有最新消息 | `news_date_today` |
+| High institutional | 机构持股率高 | `sh_instown_o60` |
+| Low float | 低流通股 | `sh_float_u20` |
+| Near all-time high | 接近历史新高 | `ta_alltime_b0to5h` |
+| High ATR | 高波动率 | `ta_averagetruerange_o1.5` |
 
 ### Step 3: Present Filter Selection
 

@@ -5,7 +5,7 @@ Produces a unified markdown report in knowledge/daily_dashboard_YYYY-MM-DD.md
 and removes dashboards older than 3 days.
 
 Usage:
-    python3 generate_dashboard.py --project-root ../.. --lang ja
+    python3 generate_dashboard.py --project-root ../.. --lang zh
 """
 
 from __future__ import annotations
@@ -70,38 +70,38 @@ _I18N: dict[str, dict[str, str]] = {
         ),
         "generated_at": "Generated at",
     },
-    "ja": {
-        "title": "デイリーマーケットダッシュボード",
-        "signal_dashboard": "シグナル一覧",
-        "col_skill": "スキル",
-        "col_score": "スコア",
-        "col_zone": "ゾーン / 状態",
-        "ftd_status": "FTD ステータス",
-        "market_state": "市場状態",
-        "signal": "シグナル",
-        "quality_score": "品質スコア",
-        "guidance": "ガイダンス",
-        "exposure_range": "エクスポージャー範囲",
-        "breadth_uptrend": "市場の広がり & 上昇トレンド",
-        "uptrend_composite": "上昇トレンド総合",
-        "breadth_composite": "市場の広がり総合",
-        "theme_highlights": "注目テーマ (上位3)",
-        "vcp_candidates": "VCP 候補銘柄",
-        "col_ticker": "ティッカー",
-        "col_rating": "評価",
-        "col_pivot_dist": "ピボット距離",
-        "candidates": "候補",
-        "bullish": "強気",
-        "bearish": "弱気",
-        "no_data": "データ取得失敗",
-        "no_breadth": "市場の広がり/上昇トレンドのデータがありません。",
-        "no_themes": "強気テーマは検出されませんでした。",
-        "no_vcp": "VCP候補銘柄はありません。",
+    "zh": {
+        "title": "每日市场仪表板",
+        "signal_dashboard": "信号一览",
+        "col_skill": "技能",
+        "col_score": "分数",
+        "col_zone": "区间 / 状态",
+        "ftd_status": "FTD 状态",
+        "market_state": "市场状态",
+        "signal": "信号",
+        "quality_score": "质量分数",
+        "guidance": "指引",
+        "exposure_range": "敞口范围",
+        "breadth_uptrend": "市场广度 & 上升趋势",
+        "uptrend_composite": "上升趋势综合",
+        "breadth_composite": "市场广度综合",
+        "theme_highlights": "热门主题（前3）",
+        "vcp_candidates": "VCP 候选标的",
+        "col_ticker": "代码",
+        "col_rating": "评级",
+        "col_pivot_dist": "枢轴距离",
+        "candidates": "候选",
+        "bullish": "看多",
+        "bearish": "看空",
+        "no_data": "未产生输出",
+        "no_breadth": "暂无市场广度/上升趋势数据。",
+        "no_themes": "未检测到看多主题。",
+        "no_vcp": "未找到VCP候选标的。",
         "note_top_detector": (
-            "Market Top Detector と Economic Calendar はインタラクティブな実行が必要です。"
-            "チャットで `/market-top-detector` や `/economic-calendar-fetcher` を実行してください。"
+            "Market Top Detector 和 Economic Calendar 需要交互式执行。"
+            "请在聊天中运行 `/market-top-detector` 或 `/economic-calendar-fetcher`。"
         ),
-        "generated_at": "生成日時",
+        "generated_at": "生成时间",
     },
 }
 
@@ -430,7 +430,7 @@ def main() -> None:
     )
     parser.add_argument(
         "--lang",
-        choices=["en", "ja"],
+        choices=["en", "zh"],
         default="en",
         help="Dashboard language (default: en)",
     )

@@ -216,7 +216,7 @@ class TestCompetingRegimeRecommendations:
 
 class TestClassificationConfidenceLabel:
     def test_report_shows_classification_confidence_label(self):
-        """レポートに 'Classification Confidence' が含まれ 'Transition Confidence' が含まれないこと"""
+        """Report should contain 'Classification Confidence' but not 'Transition Confidence'."""
         analysis = _make_analysis()
         with tempfile.NamedTemporaryFile(mode="w", suffix=".md", delete=False) as f:
             path = f.name
@@ -230,7 +230,7 @@ class TestClassificationConfidenceLabel:
             os.unlink(path)
 
     def test_report_footnote_contains_destination_clarity(self):
-        """footnote に Destination Clarity の説明が残っていること"""
+        """Footnote should still contain the Destination Clarity explanation."""
         analysis = _make_analysis()
         with tempfile.NamedTemporaryFile(mode="w", suffix=".md", delete=False) as f:
             path = f.name
@@ -243,7 +243,7 @@ class TestClassificationConfidenceLabel:
             os.unlink(path)
 
     def test_report_footnote_separates_classification_from_transition_probability(self):
-        """footnote が Classification Confidence と Transition Probability を別指標として明記すること"""
+        """Footnote should list Classification Confidence and Transition Probability as separate metrics."""
         analysis = _make_analysis()
         with tempfile.NamedTemporaryFile(mode="w", suffix=".md", delete=False) as f:
             path = f.name

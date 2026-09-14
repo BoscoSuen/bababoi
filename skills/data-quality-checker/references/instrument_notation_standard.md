@@ -4,14 +4,14 @@ Reference document for consistent instrument naming across market analysis docum
 
 ## Standard Notation Table
 
-| Asset | Ticker (ETF) | Ticker (Futures) | Full Name (EN) | Japanese | Notes |
-|-------|-------------|-------------------|----------------|----------|-------|
-| Gold | GLD | GC | Gold | 金 / ゴールド / 金先物 | GLD = SPDR Gold Shares ETF; GC = COMEX Gold Futures |
-| Silver | SLV | SI | Silver | 銀 | SLV = iShares Silver Trust; SI = COMEX Silver Futures |
-| S&P 500 | SPY | ES | S&P 500 | S&P500 | SPY = SPDR S&P 500 ETF; SPX = index; ES = E-mini Futures |
-| S&P 500 Index | -- | SPX | S&P 500 Index | S&P500指数 | Cash index, not tradable directly |
-| Volatility | -- | VIX | CBOE VIX | 恐怖指数 / VIX | VIX = index; VXX/UVXY = ETPs |
-| US Treasuries | TLT | ZB | 20+ Year Treasury | 米国債 / 10年債 | TLT = iShares 20+ Year; ZB = 30Y futures |
+| Asset | Ticker (ETF) | Ticker (Futures) | Full Name (EN) | Chinese | Notes |
+|-------|-------------|-------------------|----------------|---------|-------|
+| Gold | GLD | GC | Gold | 黄金 / 金期货 | GLD = SPDR Gold Shares ETF; GC = COMEX Gold Futures |
+| Silver | SLV | SI | Silver | 白银 | SLV = iShares Silver Trust; SI = COMEX Silver Futures |
+| S&P 500 | SPY | ES | S&P 500 | 标普500 | SPY = SPDR S&P 500 ETF; SPX = index; ES = E-mini Futures |
+| S&P 500 Index | -- | SPX | S&P 500 Index | 标普500指数 | Cash index, not tradable directly |
+| Volatility | -- | VIX | CBOE VIX | 恐慌指数 / VIX | VIX = index; VXX/UVXY = ETPs |
+| US Treasuries | TLT | ZB | 20+ Year Treasury | 美国国债 / 10年期国债 | TLT = iShares 20+ Year; ZB = 30Y futures |
 | Crude Oil | USO | CL | WTI Crude Oil | 原油 / WTI | USO = United States Oil Fund; CL = NYMEX WTI Futures |
 
 ## Digit-Count Hints (Price Scale Validation)
@@ -46,9 +46,9 @@ the decimal point.
 
 | Standard | Alternatives | Avoid |
 |----------|-------------|-------|
-| USD/JPY | USDJPY, ドル円 | JPY/USD (reversed) |
-| EUR/USD | EURUSD, ユーロドル | USD/EUR (reversed) |
-| GBP/USD | GBPUSD, ポンドドル | USD/GBP (reversed) |
+| USD/JPY | USDJPY, 美元/日元 | JPY/USD (reversed) |
+| EUR/USD | EURUSD, 欧元/美元 | USD/EUR (reversed) |
+| GBP/USD | GBPUSD, 英镑/美元 | USD/GBP (reversed) |
 
 **Convention**: Base currency / Quote currency. The price tells you how many
 units of the quote currency you need to buy one unit of the base currency.
@@ -66,13 +66,13 @@ units of the quote currency you need to buy one unit of the base currency.
 
 ## Commodity Notation
 
-| Commodity | Futures Ticker | ETF Ticker | Japanese |
-|-----------|---------------|------------|----------|
-| Gold | GC | GLD, IAU | 金, ゴールド |
-| Silver | SI | SLV | 銀 |
+| Commodity | Futures Ticker | ETF Ticker | Chinese |
+|-----------|---------------|------------|---------|
+| Gold | GC | GLD, IAU | 黄金 |
+| Silver | SI | SLV | 白银 |
 | Crude Oil (WTI) | CL | USO | 原油, WTI |
-| Natural Gas | NG | UNG | 天然ガス |
-| Copper | HG | COPX | 銅 |
+| Natural Gas | NG | UNG | 天然气 |
+| Copper | HG | COPX | 铜 |
 
 ## Best Practices
 
@@ -81,5 +81,5 @@ units of the quote currency you need to buy one unit of the base currency.
    "SPDR Gold Shares (GLD) traded at $268."
 3. **Do not mix ETF and futures tickers** for the same asset without
    explicit labeling (e.g., "GLD (ETF) vs GC (futures)").
-4. **Japanese documents** may use Japanese names, but should include
-   the ticker on first mention: "金（GLD）は$268で取引。"
+4. **Chinese documents** may use Chinese names, but should include
+   the ticker on first mention: "黄金（GLD）报价$268。"

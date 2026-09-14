@@ -9,7 +9,7 @@ import pytest
 
 
 def test_output_dir_created_when_missing(tmp_path, monkeypatch):
-    """--output-dir に存在しないパスを渡しても FileNotFoundError が出ないこと"""
+    """Passing a non-existent path to --output-dir should not raise FileNotFoundError."""
     new_dir = tmp_path / "nonexistent"
     assert not new_dir.exists()
 

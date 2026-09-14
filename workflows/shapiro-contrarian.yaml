@@ -1,7 +1,7 @@
 schema_version: 1
 id: shapiro-contrarian
 display_name: Shapiro COT Contrarian
-display_name_ja: Shapiro式COT逆張り
+display_name_zh: Shapiro 式 COT 逆向交易
 cadence: weekly
 estimated_minutes: 60
 target_users:
@@ -15,22 +15,22 @@ when_to_run: >-
   markets for crowded speculative extremes and, only where a news-failure
   and a weekly price-action reversal both confirm, produces a
   contract-sized contrarian fade plan.
-when_to_run_ja: >-
-  CFTCのCommitment of Tradersレポート公開後（毎週金曜日の米東部時間午後3時30分頃、
-  火曜日時点の建玉）に週次で実行する。約65の先物市場から投機筋の極端な混雑を探し、
-  ニュース反応の失敗と週足の価格反転の両方が確認できた場合にのみ、
-  契約数を算出した逆張り計画を作成する。
+when_to_run_zh: >-
+  在 CFTC 交易者持仓报告发布后（每周五美东时间下午 3:30 左右，
+  反映周二的持仓）按周执行。从约 65 个期货市场中筛选投机头寸的极端拥挤，
+  仅在新闻反应失败和周线价格反转均得到确认时，
+  才生成带合约数量的逆向交易计划。
 when_not_to_run: >-
   Do not run intraday or more than weekly — COT data updates once a week
   and the edge is positioning-driven, not intraday. Do not act on a
   crowding extreme alone; the gate must reach READY_FOR_PLAN (crowding,
   news failure, and price action all CONFIRMED) before any sizing. Not
   for equities — COT covers CFTC futures markets only.
-when_not_to_run_ja: >-
-  日中または週1回を超えて実行しない。COTデータは週次更新であり、エッジは日中値動きではなく
-  建玉状況に由来する。混雑の極端値だけで取引しない。ポジションサイズ計算前に、混雑、
-  ニュース反応の失敗、価格動向がすべて CONFIRMED となり、ゲートが READY_FOR_PLAN に
-  到達する必要がある。COTはCFTC先物市場のみを対象とするため、株式には使用しない。
+when_not_to_run_zh: >-
+  不在盘中或超过每周一次的频率执行。COT 数据按周更新，优势来源于持仓状况
+  而非盘中价格波动。不要仅凭拥挤极端值交易。在计算仓位规模之前，拥挤、
+  新闻反应失败和价格走势必须全部为 CONFIRMED，关卡须达到 READY_FOR_PLAN。
+  COT 仅覆盖 CFTC 期货市场，不适用于股票。
 
 required_skills:
   - cot-contrarian-detector
@@ -67,7 +67,7 @@ artifacts:
 steps:
   - step: 1
     name: Screen COT crowding
-    name_ja: COTの混雑度をスクリーニングする
+    name_zh: 筛选 COT 拥挤度
     skill: cot-contrarian-detector
     produces:
       - cot_crowding_report
@@ -76,13 +76,13 @@ steps:
       Which futures markets are at a 3-year COT-index crowding extreme
       (CROWDED_LONG / CROWDED_SHORT) this week? Crowding alone is not a
       signal — carry only the extremes forward.
-    decision_question_ja: >-
-      今週、3年間のCOT指数で混雑の極端値（CROWDED_LONG / CROWDED_SHORT）にある
-      先物市場はどれか。混雑だけではシグナルにならないため、極端値のみ次へ進める。
+    decision_question_zh: >-
+      本周有哪些期货市场处于 3 年 COT 指数的拥挤极端值
+      （CROWDED_LONG / CROWDED_SHORT）？拥挤本身不构成信号，仅将极端值推进至下一步。
 
   - step: 2
     name: Check for news-reaction failure
-    name_ja: ニュース反応の失敗を確認する
+    name_zh: 检查新闻反应失败
     skill: news-reaction-failure-analyzer
     consumes:
       - cot_crowding_report
@@ -94,16 +94,16 @@ steps:
       the crowd's direction (CONFIRMED, against a curated primary/wire-source
       events file built via WebSearch)? Drop NOT_CONFIRMED /
       INSUFFICIENT_EVIDENCE markets.
-    decision_question_ja: >-
-      各混雑市場で、群衆の方向に有利なニュースに価格が反応しなかったことを
-      CONFIRMED と判定できるか。WebSearchで作成した一次情報・通信社情報の
-      イベントファイルを使用し、NOT_CONFIRMED / INSUFFICIENT_EVIDENCE の市場は除外する。
+    decision_question_zh: >-
+      对于每个拥挤市场，价格是否未能对有利于多数方向的新闻做出反应
+      （判定为 CONFIRMED）？使用通过 WebSearch 整理的一手来源/通讯社
+      事件文件，排除 NOT_CONFIRMED / INSUFFICIENT_EVIDENCE 的市场。
     depends_on:
       - 1
 
   - step: 3
     name: Confirm weekly price-action reversal
-    name_ja: 週足の価格反転を確認する
+    name_zh: 确认周线价格反转
     skill: technical-analyst
     consumes:
       - cot_crowding_report
@@ -114,16 +114,16 @@ steps:
       On the weekly chart, is there a reversal against the crowd (key
       reversal, failed breakout, or failed extreme) — CONFIRMED — with a
       defined swing stop? Reject NOT_CONFIRMED / INSUFFICIENT_DATA.
-    decision_question_ja: >-
-      週足チャートで群衆と逆方向の反転（キーリバーサル、ブレイクアウト失敗、極端値失敗）が
-      CONFIRMED となり、スイングのストップが明確か。NOT_CONFIRMED /
-      INSUFFICIENT_DATA は却下する。
+    decision_question_zh: >-
+      在周线图上是否存在与多数方向相反的反转（关键反转、突破失败或极端值失败）
+      且被判定为 CONFIRMED，并有明确的波段止损？拒绝 NOT_CONFIRMED /
+      INSUFFICIENT_DATA。
     depends_on:
       - 1
 
   - step: 4
     name: Synthesize the contrarian setup gate
-    name_ja: 逆張りセットアップのゲート判定を統合する
+    name_zh: 综合逆向交易形态关卡判定
     skill: contrarian-setup-gate
     consumes:
       - cot_crowding_report
@@ -137,11 +137,11 @@ steps:
       action all CONFIRMED, fail-closed)? Only READY_FOR_PLAN markets
       proceed to sizing; CROWDED / WATCHING_PRICE / REJECTED /
       INSUFFICIENT_EVIDENCE stop here.
-    decision_question_ja: >-
-      ゲートは、混雑、ニュース反応の失敗、価格動向がすべて CONFIRMED となる
-      fail-closed の READY_FOR_PLAN に到達したか。READY_FOR_PLAN の市場だけを
-      ポジションサイズ計算へ進め、CROWDED / WATCHING_PRICE / REJECTED /
-      INSUFFICIENT_EVIDENCE はここで停止する。
+    decision_question_zh: >-
+      关卡是否达到 fail-closed 的 READY_FOR_PLAN（拥挤、新闻反应失败和
+      价格走势全部为 CONFIRMED）？仅将 READY_FOR_PLAN 的市场推进至
+      仓位规模计算；CROWDED / WATCHING_PRICE / REJECTED /
+      INSUFFICIENT_EVIDENCE 在此停止。
     depends_on:
       - 1
       - 2
@@ -149,7 +149,7 @@ steps:
 
   - step: 5
     name: Size the futures position
-    name_ja: 先物ポジションのサイズを計算する
+    name_zh: 计算期货仓位规模
     skill: futures-position-sizer
     consumes:
       - contrarian_setup_gate_report
@@ -161,7 +161,7 @@ steps:
 
   - step: 6
     name: Register the contrarian thesis
-    name_ja: 逆張りの投資仮説を登録する
+    name_zh: 登记逆向交易投资假设
     skill: trader-memory-core
     consumes:
       - futures_position_size
@@ -184,16 +184,16 @@ steps:
       open-position once the order actually fills at the broker.
       Confirm per-trade risk matches the sizer output and total
       portfolio heat is within budget.
-    decision_question_ja: >-
-      sizer出力の sizing_status が SIZED の逆張りだけを、NO_TRADE の結果を除外して
-      次の順序で登録する。(1) 最初に IDEA の投資仮説を作成する（手動取り込みまたは
-      register()。attach-futures-position は既存の投資仮説に付加するだけで新規作成しない）。
-      (2) attach-futures-position で SIZED レポートを付加し、契約数、方向、乗数、USD通貨、
-      リスクをポジションへ保存する。(3) cot_crowding_report、news_failure_verdict、
-      price_action_confirmation_report、contrarian_setup_gate_report を
-      thesis_store.link_report() で投資仮説に関連付け、証拠の連鎖を監査可能にする。
-      (4) ブローカーで注文が実際に約定した後にのみ open-position で ACTIVE へ移行する。
-      取引ごとのリスクがsizer出力と一致し、ポートフォリオ全体のリスク量が上限内であることを確認する。
+    decision_question_zh: >-
+      仅登记 sizer 输出 sizing_status 为 SIZED 的逆向交易，排除 NO_TRADE 结果，
+      按以下顺序操作：(1) 先创建 IDEA 投资假设（手动导入或 register()；
+      attach-futures-position 仅附加到现有假设，不创建新假设）。
+      (2) 通过 attach-futures-position 附加 SIZED 报告，将合约数、方向、乘数、
+      USD 货币和风险保存到仓位。(3) 通过 thesis_store.link_report() 将
+      cot_crowding_report、news_failure_verdict、price_action_confirmation_report
+      和 contrarian_setup_gate_report 关联到投资假设，使证据链可审计。
+      (4) 仅在券商实际成交后通过 open-position 转为 ACTIVE。
+      确认每笔交易风险与 sizer 输出一致，且投资组合整体风险敞口在预算范围内。
     depends_on:
       - 4
       - 5
@@ -227,16 +227,16 @@ manual_review:
     order actually fills at the broker. Step 6 only reaches
     IDEA/ENTRY_READY with the futures position attached — no order is
     ever placed automatically.
-manual_review_ja:
-  - COTデータには3日間の遅延がある（火曜日時点、金曜日公開）。混雑判定はライブではなく火曜日終了時点として扱う。
-  - 混雑は前提条件であり、取引シグナルではない。サイズ計算前にニュース反応の失敗と価格動向の両方を確認する。
-  - ニュース反応失敗のイベントは実在URL付きの一次情報・通信社情報から選び、捏造しない。INSUFFICIENT_EVIDENCE は次へ進めない。
-  - サイズ計算前にゲートの setup_status が READY_FOR_PLAN であることを確認する。sizerはREADYでないゲートを拒否するが、その場合は理由を確認する。
-  - ステップ5には contrarian_setup_gate_report 以外に、常にオペレーター指定の --entry、--account-size、--risk-pct が必要である。ゲートもsizerも導出しないため、futures-position-sizer 実行前に用意する。
-  - 注文前にsizerの契約数と1契約当たりリスクを検証し、ポートフォリオ全体のリスク量が上限内であることを確認する。
-  - 先物証拠金はブローカーと時点に依存し、計算されない。取引前に必要証拠金と維持証拠金をブローカーで確認する。
-  - すべての注文はブローカーで手動入力し、自動執行しない。contrarian-position-monitor 提供まではCOT正規化、ストップ、投資仮説無効化の監視も手動で行う。
-  - ゲートの entry_trigger とsizerの予定エントリーは実際の約定ではない。予定エントリーを含む SIZED レポート自体を保存する。手動取り込み元でも entry_price は origin.raw_provenance.entry_price に保持する。実際の約定前に entry.actual_price へ書き込まない。
-  - ブローカーで注文が実際に約定するまで、投資仮説を ACTIVE（open-position）へ移行しない。ステップ6は先物ポジションを付加した IDEA / ENTRY_READY までで、注文を自動発注しない。
+manual_review_zh:
+  - COT 数据有 3 天延迟（周二快照，周五发布）。将拥挤判定视为周二收盘时的状态，而非实时数据。
+  - 拥挤是前提条件，不是交易信号。在计算仓位规模之前须确认新闻反应失败和价格走势。
+  - 新闻反应失败事件须从带有真实 URL 的一手来源/通讯社信息中筛选，不得捏造。INSUFFICIENT_EVIDENCE 不得推进。
+  - 计算仓位规模之前确认关卡的 setup_status 为 READY_FOR_PLAN。sizer 会拒绝非 READY 的关卡，若拒绝则确认原因。
+  - 步骤 5 除 contrarian_setup_gate_report 外，还始终需要操作员指定的 --entry、--account-size 和 --risk-pct。关卡和 sizer 均不推导这些值，须在执行 futures-position-sizer 前准备好。
+  - 下单前验证 sizer 的合约数和每合约风险，确认投资组合整体风险敞口在预算范围内。
+  - 期货保证金取决于券商和时点，本流程不计算。交易前在券商处确认初始保证金和维持保证金。
+  - 所有订单在券商处手动输入，不自动执行。在 contrarian-position-monitor 上线前，COT 归一化、止损和投资假设失效的监控也需手动完成。
+  - 关卡的 entry_trigger 和 sizer 的计划入场价不是实际成交价。保存包含计划入场价的 SIZED 报告本身。手动导入来源也将 entry_price 保存在 origin.raw_provenance.entry_price 中。实际成交前不写入 entry.actual_price。
+  - 在券商实际成交前不将投资假设转为 ACTIVE（open-position）。步骤 6 仅到达附加了期货仓位的 IDEA / ENTRY_READY，不自动下单。
 
 journal_destination: trader-memory-core

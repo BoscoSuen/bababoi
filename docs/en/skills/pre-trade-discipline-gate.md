@@ -4,7 +4,7 @@ title: "Pre-Trade Discipline Gate"
 grand_parent: English
 parent: Skill Guides
 nav_order: 64
-lang_peer: /ja/skills/pre-trade-discipline-gate/
+lang_peer: /zh/skills/pre-trade-discipline-gate/
 permalink: /en/skills/pre-trade-discipline-gate/
 generated: false
 ---

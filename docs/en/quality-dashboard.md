@@ -4,7 +4,7 @@ parent: English
 title: Quality Dashboard
 nav_order: 3
 permalink: /en/quality-dashboard/
-lang_peer: /ja/quality-dashboard/
+lang_peer: /zh/quality-dashboard/
 generated: true
 ---
 

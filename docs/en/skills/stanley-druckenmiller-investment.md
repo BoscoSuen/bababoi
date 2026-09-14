@@ -4,7 +4,7 @@ title: "Stanley Druckenmiller Investment"
 grand_parent: English
 parent: Skill Guides
 nav_order: 40
-lang_peer: /ja/skills/stanley-druckenmiller-investment/
+lang_peer: /zh/skills/stanley-druckenmiller-investment/
 permalink: /en/skills/stanley-druckenmiller-investment/
 ---
 

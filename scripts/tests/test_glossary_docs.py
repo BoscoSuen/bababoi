@@ -11,17 +11,17 @@ import yaml
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 GLOSSARY_PATHS = {
     "en": PROJECT_ROOT / "docs" / "en" / "glossary.md",
-    "ja": PROJECT_ROOT / "docs" / "ja" / "glossary.md",
+    "zh": PROJECT_ROOT / "docs" / "zh" / "glossary.md",
 }
 TERM_PATTERN = re.compile(
     r"^### (?P<heading>[^\n]+)\n"
     r"\{:\s+#(?P<term_id>[a-z0-9-]+)\s+\}\n\n"
     r"(?P<definition>[^\n]+)\n\n"
-    r"\*\*(?:Used by|関連スキル):\*\* (?P<used_by>[^\n]+)$",
+    r"\*\*(?:Used by|相关技能)[：:]?\*\*[：:]? (?P<used_by>[^\n]+)$",
     re.MULTILINE,
 )
 SKILL_LINK_PATTERN = re.compile(
-    r"\[[^\]]+\]\(\{\{ '/(?P<lang>en|ja)/skills/"
+    r"\[[^\]]+\]\(\{\{ '/(?P<lang>en|zh)/skills/"
     r"(?P<slug>[a-z0-9-]+)/' \| relative_url \}\}\)"
 )
 REQUIRED_TERM_IDS = {
@@ -69,9 +69,9 @@ def test_glossaries_have_matching_complete_term_structure() -> None:
     terms = {lang: _terms(path) for lang, path in GLOSSARY_PATHS.items()}
 
     assert "## Terms" in texts["en"]
-    assert "## 用語一覧" in texts["ja"]
+    assert "## 术语列表" in texts["zh"]
     assert len(terms["en"]) >= 30
-    assert [term.term_id for term in terms["en"]] == [term.term_id for term in terms["ja"]]
+    assert [term.term_id for term in terms["en"]] == [term.term_id for term in terms["zh"]]
 
     for lang, language_terms in terms.items():
         term_ids = [term.term_id for term in language_terms]
@@ -94,7 +94,7 @@ def test_each_term_links_to_matching_existing_skill_guides() -> None:
 
     for term_id in by_id["en"]:
         slugs_by_lang: dict[str, set[str]] = {}
-        for lang in ("en", "ja"):
+        for lang in ("en", "zh"):
             used_by = by_id[lang][term_id].used_by
             links = list(SKILL_LINK_PATTERN.finditer(used_by))
             assert links, f"{lang}:{term_id} needs at least one skill link"
@@ -111,8 +111,8 @@ def test_each_term_links_to_matching_existing_skill_guides() -> None:
                     f"{lang}:{term_id} links to missing skill {slug}"
                 )
 
-        assert slugs_by_lang["en"] == slugs_by_lang["ja"], (
-            f"{term_id} has different EN/JA skill links"
+        assert slugs_by_lang["en"] == slugs_by_lang["zh"], (
+            f"{term_id} has different EN/ZH skill links"
         )
 
 
@@ -122,15 +122,15 @@ def test_glossary_frontmatter_and_navigation_are_reciprocal() -> None:
             "title": "Glossary",
             "parent": "English",
             "nav_order": 7,
-            "lang_peer": "/ja/glossary/",
+            "lang_peer": "/zh/glossary/",
             "permalink": "/en/glossary/",
         },
-        "ja": {
-            "title": "用語集",
-            "parent": "日本語",
+        "zh": {
+            "title": "术语表",
+            "parent": "中文",
             "nav_order": 7,
             "lang_peer": "/en/glossary/",
-            "permalink": "/ja/glossary/",
+            "permalink": "/zh/glossary/",
         },
     }
     for lang, path in GLOSSARY_PATHS.items():
@@ -143,7 +143,7 @@ def test_glossary_frontmatter_and_navigation_are_reciprocal() -> None:
 
 
 def test_beginner_pages_link_to_the_localized_glossary() -> None:
-    for lang in ("en", "ja"):
+    for lang in ("en", "zh"):
         expected_link = f"{{{{ '/{lang}/glossary/' | relative_url }}}}"
         for filename in ("getting-started.md", "find-your-workflow.md"):
             page = PROJECT_ROOT / "docs" / lang / filename

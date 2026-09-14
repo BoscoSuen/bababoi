@@ -637,7 +637,7 @@ Before finalizing the report, verify:
 ### Example 1: CSV-Only Analysis (No Charts)
 
 ```
-User: "breadth分析して" (Analyze breadth)
+User: "分析一下breadth" (Analyze breadth)
 [No chart images provided]
 
 Breadth Analyst:

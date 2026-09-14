@@ -41,13 +41,13 @@ class TestWriteOutputs:
     def test_json_writes_utf8_with_ensure_ascii_false(self, tmp_path):
         path = tmp_path / "out.json"
         payload = {
-            "explanation": "QQQは本日Distribution Day。HIGH判定。",
+            "explanation": "QQQ今日为Distribution Day。HIGH判定。",
             "data": {"api_key": "sk-secret"},  # pragma: allowlist secret
         }
         write_json(payload, path)
         text = path.read_text(encoding="utf-8")
-        # Japanese must be present in raw form (not \u escape)
-        assert "QQQは本日" in text
+        # Chinese must be present in raw form (not \u escape)
+        assert "QQQ今日为" in text
         # API key must be redacted
         assert "sk-secret" not in text
         loaded = json.loads(text)
@@ -70,11 +70,11 @@ class TestWriteOutputs:
                 "exposure_delta_pct": -50,
                 "trailing_stop_pct": 5,
                 "alternative_action": None,
-                "rationale": "TQQQはレバレッジETF。",
+                "rationale": "TQQQ是杠杆ETF。",
             },
             "audit": {"data_source": "fmp", "audit_flags": []},
         }
         write_markdown(payload, path)
         text = path.read_text(encoding="utf-8")
-        assert "TQQQはレバレッジETF" in text
+        assert "TQQQ是杠杆ETF" in text
         assert "HIGH" in text

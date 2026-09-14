@@ -4,7 +4,7 @@ title: "Market Top Detector"
 grand_parent: English
 parent: Skill Guides
 nav_order: 31
-lang_peer: /ja/skills/market-top-detector/
+lang_peer: /zh/skills/market-top-detector/
 permalink: /en/skills/market-top-detector/
 ---
 

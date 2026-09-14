@@ -4,7 +4,7 @@ title: "Drawdown Circuit Breaker"
 grand_parent: English
 parent: Skill Guides
 nav_order: 11
-lang_peer: /ja/skills/drawdown-circuit-breaker/
+lang_peer: /zh/skills/drawdown-circuit-breaker/
 permalink: /en/skills/drawdown-circuit-breaker/
 generated: false
 ---

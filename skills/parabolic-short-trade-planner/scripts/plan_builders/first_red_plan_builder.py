@@ -19,7 +19,7 @@ def build_first_red_plan(
     return {
         "plan_id": plan_id,
         "trigger_type": TRIGGER_TYPE,
-        "condition": "寄付後最初の赤 5min の安値割れ",
+        "condition": "开盘后首根红色5min K线低点跌破",
         "entry_hint": "first_red_5min_low - 0.05",
         "stop_hint": "first_red_5min_high",
         "structural_targets": ["dma_10", "dma_20"],

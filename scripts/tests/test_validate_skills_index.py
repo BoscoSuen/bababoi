@@ -63,32 +63,32 @@ def write_index(project_root: Path, skills: list[dict]) -> None:
     )
 
 
-def _with_japanese_fields(content: dict) -> dict:
+def _with_chinese_fields(content: dict) -> dict:
     """Return a localized copy so unrelated workflow tests satisfy WF014."""
     payload = copy.deepcopy(content)
-    payload.setdefault("display_name_ja", "サンプルワークフロー")
-    payload.setdefault("when_to_run_ja", "テスト時に実行します。")
-    payload.setdefault("when_not_to_run_ja", "条件外では実行しません。")
+    payload.setdefault("display_name_zh", "示例工作流")
+    payload.setdefault("when_to_run_zh", "在测试时执行。")
+    payload.setdefault("when_not_to_run_zh", "不满足条件时不执行。")
 
     for prereq in payload.get("prerequisite_workflows") or []:
         if isinstance(prereq, dict):
-            prereq.setdefault("rationale_ja", "上流の成果物が必要です。")
+            prereq.setdefault("rationale_zh", "需要上游产出物。")
     for manual_input in payload.get("manual_inputs") or []:
         if isinstance(manual_input, dict):
-            manual_input.setdefault("description_ja", "手動入力の説明です。")
+            manual_input.setdefault("description_zh", "手动输入的说明。")
     for step in payload.get("steps") or []:
         if not isinstance(step, dict):
             continue
-        step.setdefault("name_ja", "ステップを実行する")
+        step.setdefault("name_zh", "执行步骤")
         if step.get("decision_gate"):
-            step.setdefault("decision_question_ja", "続行してよいですか？")
+            step.setdefault("decision_question_zh", "可以继续吗？")
 
     payload.setdefault("manual_review", [])
     manual_review = payload.get("manual_review") or []
-    payload.setdefault("manual_review_ja", ["確認します。" for _ in manual_review])
+    payload.setdefault("manual_review_zh", ["进行确认。" for _ in manual_review])
     for output in payload.get("final_outputs") or []:
         if isinstance(output, dict):
-            output.setdefault("description_ja", "最終出力の説明です。")
+            output.setdefault("description_zh", "最终输出的说明。")
     return payload
 
 
@@ -104,7 +104,7 @@ def write_workflow(
     workflows_dir = project_root / "workflows"
     workflows_dir.mkdir(parents=True, exist_ok=True)
     path = workflows_dir / f"{workflow_id}.yaml"
-    payload = _with_japanese_fields(content) if localize else content
+    payload = _with_chinese_fields(content) if localize else content
     path.write_text(_yaml.safe_dump(payload, sort_keys=False), encoding="utf-8")
     return path
 
@@ -726,13 +726,13 @@ def test_wf014_top_level_translation_must_be_non_empty_string(
     import yaml as _yaml
 
     workflow = _yaml.safe_load(workflow_path.read_text(encoding="utf-8"))
-    workflow["display_name_ja"] = invalid_value
+    workflow["display_name_zh"] = invalid_value
     write_workflow(tmp_path, "sample", workflow, localize=False)
 
     findings = validate(tmp_path, strict_workflows=True)
     wf014 = [finding for finding in findings if finding.code == "WF014"]
     assert wf014, findings
-    assert any("display_name_ja" in finding.message for finding in wf014)
+    assert any("display_name_zh" in finding.message for finding in wf014)
 
 
 def test_wf014_nested_translations_are_required(tmp_path: Path) -> None:
@@ -767,22 +767,22 @@ def test_wf014_nested_translations_are_required(tmp_path: Path) -> None:
     import yaml as _yaml
 
     workflow = _yaml.safe_load(workflow_path.read_text(encoding="utf-8"))
-    del workflow["prerequisite_workflows"][0]["rationale_ja"]
-    del workflow["manual_inputs"][0]["description_ja"]
-    del workflow["steps"][0]["name_ja"]
-    del workflow["steps"][0]["decision_question_ja"]
-    del workflow["final_outputs"][0]["description_ja"]
-    workflow["manual_review_ja"] = []
+    del workflow["prerequisite_workflows"][0]["rationale_zh"]
+    del workflow["manual_inputs"][0]["description_zh"]
+    del workflow["steps"][0]["name_zh"]
+    del workflow["steps"][0]["decision_question_zh"]
+    del workflow["final_outputs"][0]["description_zh"]
+    workflow["manual_review_zh"] = []
     write_workflow(tmp_path, "sample", workflow, localize=False)
 
     findings = validate(tmp_path, strict_workflows=True)
     messages = [finding.message for finding in findings if finding.code == "WF014"]
-    assert any("prerequisite_workflows[0].rationale_ja" in message for message in messages)
-    assert any("manual_inputs[0].description_ja" in message for message in messages)
-    assert any("steps[0].name_ja" in message for message in messages)
-    assert any("steps[0].decision_question_ja" in message for message in messages)
-    assert any("manual_review_ja" in message for message in messages)
-    assert any("final_outputs[0].description_ja" in message for message in messages)
+    assert any("prerequisite_workflows[0].rationale_zh" in message for message in messages)
+    assert any("manual_inputs[0].description_zh" in message for message in messages)
+    assert any("steps[0].name_zh" in message for message in messages)
+    assert any("steps[0].decision_question_zh" in message for message in messages)
+    assert any("manual_review_zh" in message for message in messages)
+    assert any("final_outputs[0].description_zh" in message for message in messages)
 
 
 @pytest.mark.parametrize(
@@ -811,7 +811,7 @@ def test_wf014_manual_review_source_must_be_a_list(tmp_path: Path) -> None:
     _setup_minimal_workflow_repo(
         tmp_path,
         manual_review="Review this output.",
-        manual_review_ja=[],
+        manual_review_zh=[],
     )
 
     findings = validate(tmp_path, strict_workflows=True)
@@ -826,7 +826,7 @@ def test_wf014_not_enforced_without_strict_workflows(tmp_path: Path) -> None:
     import yaml as _yaml
 
     workflow = _yaml.safe_load(workflow_path.read_text(encoding="utf-8"))
-    del workflow["display_name_ja"]
+    del workflow["display_name_zh"]
     write_workflow(tmp_path, "sample", workflow, localize=False)
 
     findings = validate(tmp_path, strict_workflows=False)

@@ -11,7 +11,7 @@ blocks it); use `<repo>` / `$PROJECT_DIR` / `$HOME` placeholders.
 
 Related references (this runbook links rather than duplicates):
 
-- [`skill-automation.md`](skill-automation.md) ([日本語](skill-automation.ja.md))
+- [`skill-automation.md`](skill-automation.md) ([中文](skill-automation.zh.md))
   → maintainer quickstart, manual commands, scheduling, and the mode-by-mode
   side-effect boundary for the self-improvement and generation pipelines.
 - `CLAUDE.md` → *Pre-commit Hooks*, *Creating a New Skill*, *Creating
@@ -60,13 +60,13 @@ without writing.
 
 | Generator | Regenerate | Inputs → Outputs | pre-commit hook / CI step |
 |---|---|---|---|
-| `scripts/generate_catalog_from_index.py` | `python3 scripts/generate_catalog_from_index.py` | `skills-index.yaml` → catalog blocks in `README.md`, `README.ja.md`, `CLAUDE.md` (between `<!-- skills-index:* -->` sentinels) | `catalog-drift` / "README catalog drift check" |
-| `scripts/generate_skill_docs.py` | `python3 scripts/generate_skill_docs.py` (missing only) · `--skill <name>` · `--overwrite` (generator-owned only) · `--force` (override protection — never in CI) | `skills/*/SKILL.md` + `references/` + `scripts/*.py` + `CLAUDE.md` + `skill-packages/*.skill` → `docs/{en,ja}/skills/*.md` (+ index) | `skill-docs-drift` / "Skill docs drift check" |
-| `scripts/generate_skillset_docs.py` | `python3 scripts/generate_skillset_docs.py` (`--lang en\|ja\|all`, default `all`) | `skillsets/*.yaml` → `docs/{en,ja}/skillsets.md` | `skillset-docs-drift` / "Skillset docs drift check" |
-| `scripts/generate_workflow_docs.py` | `python3 scripts/generate_workflow_docs.py` (`--lang en\|ja\|all`, default `all`) | `workflows/*.yaml` → `docs/{en,ja}/workflows.md`; JA requires complete `*_ja` prose and never falls back to EN | `workflow-docs-drift` / "Workflow docs drift check" |
+| `scripts/generate_catalog_from_index.py` | `python3 scripts/generate_catalog_from_index.py` | `skills-index.yaml` → catalog blocks in `README.md`, `README.zh.md`, `CLAUDE.md` (between `<!-- skills-index:* -->` sentinels) | `catalog-drift` / "README catalog drift check" |
+| `scripts/generate_skill_docs.py` | `python3 scripts/generate_skill_docs.py` (missing only) · `--skill <name>` · `--overwrite` (generator-owned only) · `--force` (override protection — never in CI) | `skills/*/SKILL.md` + `references/` + `scripts/*.py` + `CLAUDE.md` + `skill-packages/*.skill` → `docs/{en,zh}/skills/*.md` (+ index) | `skill-docs-drift` / "Skill docs drift check" |
+| `scripts/generate_skillset_docs.py` | `python3 scripts/generate_skillset_docs.py` (`--lang en\|zh\|all`, default `all`) | `skillsets/*.yaml` → `docs/{en,zh}/skillsets.md` | `skillset-docs-drift` / "Skillset docs drift check" |
+| `scripts/generate_workflow_docs.py` | `python3 scripts/generate_workflow_docs.py` (`--lang en\|zh\|all`, default `all`) | `workflows/*.yaml` → `docs/{en,zh}/workflows.md`; ZH requires complete `*_zh` prose and never falls back to EN | `workflow-docs-drift` / "Workflow docs drift check" |
 | `skills/trading-skills-navigator/scripts/build_snapshot.py` | `python3 skills/trading-skills-navigator/scripts/build_snapshot.py` | `skills-index.yaml` + `workflows/*.yaml` + `skillsets/*.yaml` → `skills/trading-skills-navigator/assets/metadata_snapshot.json` | `snapshot-check` / "Navigator snapshot drift check" |
 
-> `generate_skill_docs.py` has **no `--lang`** flag — it emits EN + JA
+> `generate_skill_docs.py` has **no `--lang`** flag — it emits EN + ZH
 > together. `generate_skillset_docs.py` / `generate_workflow_docs.py` **do**
 > take `--lang` (default `all`).
 
@@ -74,7 +74,7 @@ without writing.
 
 | Validator | Command | Scope |
 |---|---|---|
-| `scripts/validate_skills_index.py` | `python3 scripts/validate_skills_index.py [--strict-workflows] [--strict-metadata]` | `skills-index.yaml` ↔ `skills/` bijection, enums, workflow artifact flow. Default = warn on best-effort fields; `--strict-metadata` requires `timeframe`/`difficulty`/`inputs`/`outputs`; `--strict-workflows` errors on workflow issues, including incomplete Japanese prose (`WF014`). |
+| `scripts/validate_skills_index.py` | `python3 scripts/validate_skills_index.py [--strict-workflows] [--strict-metadata]` | `skills-index.yaml` ↔ `skills/` bijection, enums, workflow artifact flow. Default = warn on best-effort fields; `--strict-metadata` requires `timeframe`/`difficulty`/`inputs`/`outputs`; `--strict-workflows` errors on workflow issues, including incomplete Chinese prose (`WF014`). |
 | `scripts/validate_skillsets.py` | `python3 scripts/validate_skillsets.py` | `skillsets/*.yaml` manifests (SK001–SK013) + `related_workflows` coherence. Always strict. |
 | `scripts/check_provider_contracts.py` | `python3 scripts/check_provider_contracts.py check` (offline, CI) · `canary` (live, manual, FMP contracts only, needs `FMP_API_KEY`, report-only) | `config/provider-contracts/<provider>/*.v*.json` structure + fixtures vs. `skills-index.yaml` owners (`check`); live FMP response vs. contract, redacting the key (`canary`). See [`docs/dev/provider-contracts.md`](provider-contracts.md). |
 
@@ -95,7 +95,7 @@ contract: `docs/README.md` → *Skill Doc Ownership*.
 |---|---|---|
 | `skills-index.yaml` | `generate_catalog_from_index.py`, `build_snapshot.py` | `validate_skills_index.py --strict-workflows --strict-metadata`; `catalog-drift`, `snapshot-check` |
 | `skills/<s>/SKILL.md` (or its `references/`, `scripts/`) | `generate_skill_docs.py --skill <s>` (only if its page is `generated: true`) | `generate_skill_docs.py --check`; `docs-completeness` |
-| `workflows/*.yaml` | `generate_workflow_docs.py`, `build_snapshot.py` | `validate_skills_index.py --strict-workflows` (including JA completeness); `workflow-docs-drift`, `snapshot-check` |
+| `workflows/*.yaml` | `generate_workflow_docs.py`, `build_snapshot.py` | `validate_skills_index.py --strict-workflows` (including ZH completeness); `workflow-docs-drift`, `snapshot-check` |
 | `skillsets/*.yaml` | `generate_skillset_docs.py`, `build_snapshot.py` | `validate_skillsets.py`; `skillset-docs-drift`, `snapshot-check` |
 | Added a **new skill** | follow `CLAUDE.md` → *Creating a New Skill* (mandatory checklist: docs, index entry, catalog, README, API matrix) | `validate_skills_index.py --strict-metadata` + `pre-commit run --all-files` |
 
@@ -138,7 +138,7 @@ drift `--check`) then `bash scripts/run_all_tests.sh`.
 - **`no-absolute-paths` failed** → replace the `/Users/...` literal with
   `<repo>` / `$PROJECT_DIR` / `$HOME`, or `# noqa: absolute-path` if it is a
   regex/test fixture.
-- **`docs-completeness` failed** → a `skills/*/SKILL.md` lacks an EN or JA
+- **`docs-completeness` failed** → a `skills/*/SKILL.md` lacks an EN or ZH
   page; run `generate_skill_docs.py --skill <name>`.
 - **PR / issue creation fails with `must be a collaborator`** → the active
   `gh` account is wrong; see §6.
@@ -164,7 +164,7 @@ rather than assuming.
 
 For a concise explanation of what each mode reads and writes, including why
 `--dry-run` is not filesystem-read-only, see the
-[Skill Automation Quickstart](skill-automation.md) ([日本語](skill-automation.ja.md)).
+[Skill Automation Quickstart](skill-automation.md) ([中文](skill-automation.zh.md)).
 Implementation architecture, quality-gate rollback, and tests remain in
 `CLAUDE.md` → *Skill Self-Improvement Loop* and *Skill Auto-Generation
 Pipeline*. State / logs:

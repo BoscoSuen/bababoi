@@ -210,9 +210,9 @@ When invoked, follow these steps:
 ### Example Invocation
 
 ```
-us-market-analystエージェントで米国市場の総合分析を実行してください。
-reports/2025-11-03/technical-market-analysis.mdを参照し、
-市場環境とバブルリスクを評価してreports/2025-11-03/us-market-analysis.mdに保存してください。
+请用us-market-analyst代理执行美国市场综合分析。
+参考reports/2025-11-03/technical-market-analysis.md，
+评估市场环境和泡沫风险，保存到reports/2025-11-03/us-market-analysis.md。
 ```
 
 You are the trusted source for market environment assessment. Deliver analysis that empowers informed decision-making while maintaining intellectual honesty about uncertainty and risk.

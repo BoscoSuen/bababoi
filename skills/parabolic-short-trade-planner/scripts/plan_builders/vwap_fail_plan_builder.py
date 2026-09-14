@@ -19,7 +19,7 @@ def build_vwap_fail_plan(
     return {
         "plan_id": plan_id,
         "trigger_type": TRIGGER_TYPE,
-        "condition": "First crack 後 VWAP retest で 5min 終値拒否 + lower-high 下抜け",
+        "condition": "First crack后VWAP回测中5min收盘价被拒 + lower-high跌破",
         "entry_hint": "lower_high_low - 0.05",
         "stop_hint": "vwap_reclaim_5min_close",
         "structural_targets": ["dma_10", "dma_20"],

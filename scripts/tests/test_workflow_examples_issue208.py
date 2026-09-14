@@ -140,13 +140,13 @@ def test_manifest_matches_workflow_and_directory_is_complete(
 
 def test_readme_starting_paths_link_the_three_required_samples() -> None:
     english = (ROOT / "README.md").read_text(encoding="utf-8")
-    japanese = (ROOT / "README.ja.md").read_text(encoding="utf-8")
+    chinese = (ROOT / "README.zh.md").read_text(encoding="utf-8")
     examples_readme = (EXAMPLES / "README.md").read_text(encoding="utf-8")
 
     for workflow_id in STRICT_WORKFLOWS:
         sample_path = f"examples/workflows/{workflow_id}/sample-run/"
         assert f"([sample]({sample_path}))" in english
-        assert f"（[実行例]({sample_path})）" in japanese
+        assert f"（[示例]({sample_path})）" in chinese
         assert f"[`{workflow_id}/sample-run/`]({workflow_id}/sample-run/)" in examples_readme
         assert (
             f"[`{workflow_id}/sample-run-full-path/`]({workflow_id}/sample-run-full-path/)"

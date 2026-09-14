@@ -4,7 +4,7 @@ title: "Trade Hypothesis Ideator"
 grand_parent: English
 parent: Skill Guides
 nav_order: 11
-lang_peer: /ja/skills/trade-hypothesis-ideator/
+lang_peer: /zh/skills/trade-hypothesis-ideator/
 permalink: /en/skills/trade-hypothesis-ideator/
 ---
 

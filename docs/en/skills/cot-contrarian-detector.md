@@ -4,7 +4,7 @@ title: "COT Contrarian Detector"
 grand_parent: English
 parent: Skill Guides
 nav_order: 14
-lang_peer: /ja/skills/cot-contrarian-detector/
+lang_peer: /zh/skills/cot-contrarian-detector/
 permalink: /en/skills/cot-contrarian-detector/
 generated: true
 ---
@@ -56,10 +56,10 @@ reasons and are not a crowd-psychology signal).
 - User wants to find contrarian futures setups
 - User asks for a Jason Shapiro-style COT screen
 
-**Japanese:**
-- 「COTレポートで買われすぎ・売られすぎのポジションを調べて」
-- 「投機筋が偏っている市場は？」
-- 「ジェイソン・シャピロ式の逆張り分析をして」
+**Chinese:**
+- "查看COT报告中超买和超卖的持仓"
+- "哪些市场的投机仓位偏向一边？"
+- "进行杰森·夏皮罗式的逆向分析"
 
 **Do NOT use when:**
 - The user wants a trade signal right now — crowding alone is not

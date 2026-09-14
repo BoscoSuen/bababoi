@@ -4,14 +4,14 @@ title: "Data Quality Checker"
 grand_parent: English
 parent: Skill Guides
 nav_order: 12
-lang_peer: /ja/skills/data-quality-checker/
+lang_peer: /zh/skills/data-quality-checker/
 permalink: /en/skills/data-quality-checker/
 ---
 
 # Data Quality Checker
 {: .no_toc }
 
-Validate data quality in market analysis documents and blog articles before publication. Use when checking for price scale inconsistencies (ETF vs futures), instrument notation errors, date/day-of-week mismatches, allocation total errors, and unit mismatches. Supports English and Japanese content. Advisory mode -- flags issues as warnings for human review, not as blockers.
+Validate data quality in market analysis documents and blog articles before publication. Use when checking for price scale inconsistencies (ETF vs futures), instrument notation errors, date/day-of-week mismatches, allocation total errors, and unit mismatches. Supports English and Chinese content. Advisory mode -- flags issues as warnings for human review, not as blockers.
 {: .fs-6 .fw-300 }
 
 <span class="badge badge-free">No API</span>
@@ -42,7 +42,7 @@ than blocking publication.
 
 - Before publishing a weekly strategy blog or market analysis report
 - After generating automated market summaries
-- When reviewing translated documents (English/Japanese) for data accuracy
+- When reviewing translated documents (English/Chinese) for data accuracy
 - When combining data from multiple sources (FRED, FMP, FINVIZ) into one report
 - As a pre-flight check for any document containing financial data
 

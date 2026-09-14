@@ -121,7 +121,7 @@ class TestNotation:
 
     def test_notation_inconsistency_gold(self):
         """Mixed Gold, GLD, and 金 -> WARNING about mixed notation."""
-        content = "Gold is trading higher. GLD reached $268. 金は上昇中。"
+        content = "Gold is trading higher. GLD reached $268. 黄金正在上涨。"
         findings = check_notation(content)
         gold_findings = [f for f in findings if "gold" in f.message.lower()]
         assert len(gold_findings) >= 1
@@ -142,7 +142,7 @@ class TestNotation:
 
 
 class TestDates:
-    """Date-weekday validation for English and Japanese content."""
+    """Date-weekday validation for English and Chinese content."""
 
     def test_date_weekday_mismatch_english_with_year(self):
         """January 1, 2026 is Thursday, not Monday -> ERROR."""
@@ -182,34 +182,34 @@ class TestDates:
         date_findings = [f for f in findings if "Jan 1" in f.message]
         assert len(date_findings) == 0
 
-    def test_date_weekday_mismatch_japanese(self):
-        """1月1日（月）with as_of=2026-01-15 -> Jan 1, 2026 is Thursday (木), not Monday (月)."""
+    def test_date_weekday_mismatch_chinese(self):
+        """1月1日（周一）with as_of=2026-01-15 -> Jan 1, 2026 is Thursday (四), not Monday (一)."""
         assert calendar.weekday(2026, 1, 1) == 3  # Thursday = 3
-        content = "1月1日（月）"
+        content = "1月1日（周一）"
         findings = check_dates(content, as_of=date(2026, 1, 15))
         assert len(findings) >= 1
         f = findings[0]
         assert f.severity == "WARNING"
         assert f.category == "dates"
-        assert "木" in f.message  # actual weekday is Thursday = 木
+        assert "四" in f.message  # actual weekday is Thursday = 周四
 
-    def test_date_weekday_correct_japanese(self):
-        """1月1日（木）with as_of=2026-01-15 -> Jan 1, 2026 is Thursday (木) -> OK."""
+    def test_date_weekday_correct_chinese(self):
+        """1月1日（周四）with as_of=2026-01-15 -> Jan 1, 2026 is Thursday (四) -> OK."""
         assert calendar.weekday(2026, 1, 1) == 3  # Thursday
-        content = "1月1日（木）"
+        content = "1月1日（周四）"
         findings = check_dates(content, as_of=date(2026, 1, 15))
         assert len(findings) == 0
 
-    def test_date_slash_format_japanese(self):
-        """1/1(木) with as_of=2026-01-15 -> Jan 1, 2026 is Thursday -> OK."""
+    def test_date_slash_format_chinese(self):
+        """1/1(周四) with as_of=2026-01-15 -> Jan 1, 2026 is Thursday -> OK."""
         assert calendar.weekday(2026, 1, 1) == 3  # Thursday
-        content = "1/1(木)"
+        content = "1/1(周四)"
         findings = check_dates(content, as_of=date(2026, 1, 15))
         assert len(findings) == 0
 
     def test_date_week_notation(self):
-        """11/03週 -> week notation, no weekday to check, no error."""
-        content = "11/03週"
+        """11/03周 -> week notation, no weekday to check, no error."""
+        content = "11/03周"
         findings = check_dates(content, as_of=date(2026, 11, 10))
         assert len(findings) == 0
 
@@ -284,8 +284,8 @@ class TestAllocations:
         assert len(findings) == 0
 
     def test_allocation_list_format(self):
-        """Bullet list under セクター配分 heading summing to 95% -> WARNING."""
-        content = "## セクター配分\n- Tech: 40%\n- Healthcare: 30%\n- Energy: 25%\n"
+        """Bullet list under 板块配置 heading summing to 95% -> WARNING."""
+        content = "## 板块配置\n- Tech: 40%\n- Healthcare: 30%\n- Energy: 25%\n"
         findings = check_allocations(content)
         assert len(findings) >= 1
         assert findings[0].severity == "WARNING"
@@ -310,8 +310,8 @@ class TestAllocations:
         assert len(findings) == 0
 
     def test_allocation_ignores_position_heading(self):
-        """ポジション戦略 heading (without 配分) should NOT be treated as allocation."""
-        content = "## ポジション戦略\n- Stocks: 60%\n- Cash: 30%\n"
+        """仓位策略 heading (without 配置) should NOT be treated as allocation."""
+        content = "## 仓位策略\n- Stocks: 60%\n- Cash: 30%\n"
         findings = check_allocations(content)
         assert len(findings) == 0
 
@@ -351,16 +351,16 @@ class TestAllocations:
         assert findings[0].severity == "WARNING"
 
     def test_allocation_detects_sector_allocation_heading(self):
-        """セクター配分 heading should trigger allocation detection."""
-        content = "## セクター配分\n- Tech: 50%\n- Finance: 50%\n"
+        """板块配置 heading should trigger allocation detection."""
+        content = "## 板块配置\n- Tech: 50%\n- Finance: 50%\n"
         findings = check_allocations(content)
         # 50 + 50 = 100 -> no warning
         assert len(findings) == 0
 
     def test_allocation_detects_ratio_column(self):
-        """Table with 目安比率 column header triggers allocation detection."""
+        """Table with 目标比率 column header triggers allocation detection."""
         content = (
-            "| Sector | 目安比率 |\n|--------|----------|\n| Tech | 50% |\n| Finance | 50% |\n"
+            "| Sector | 目标比率 |\n|--------|----------|\n| Tech | 50% |\n| Finance | 50% |\n"
         )
         findings = check_allocations(content)
         # 50 + 50 = 100 -> no warning, but proves the section was detected

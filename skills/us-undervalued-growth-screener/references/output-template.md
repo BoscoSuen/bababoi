@@ -51,7 +51,7 @@ Recommended columns:
 | Rank | Company | Ticker | Price | Market cap | Valuation basis | Current multiple | Standard FCF yield | ROIC/sector return | Diluted-share CAGR | Cyclicality | 3Y constant-multiple upside | Final score | Data quality |
 |---:|---|---|---:|---:|---|---:|---:|---:|---:|---:|---:|---:|---:|
 
-Use `確認できず` / `not verified` for missing values.
+Use `无法确认` / `not verified` for missing values.
 
 ## 5. B. Scenario Table
 
@@ -337,7 +337,7 @@ Never render example/placeholder text. Always show 2Y base, 2Y 20%-contraction, 
 
 Insert a distinct **Conditional Candidates** section between ranked and review-required names. State each failed quality gate and the KPI that would promote the name to `eligible`.
 
-`final_three` labels are optional and category-gated. Use `確認できず` when no candidate meets the relevant conviction, cash-flow valuation, or low-case upside threshold.
+`final_three` labels are optional and category-gated. Use `无法确认` when no candidate meets the relevant conviction, cash-flow valuation, or low-case upside threshold.
 
 Before publication, provide:
 

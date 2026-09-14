@@ -58,17 +58,17 @@ LOCALES = (
         missing_api_value="--",
     ),
     LocaleSpec(
-        locale="ja",
-        path="docs/ja/skill-catalog.md",
-        category_end="## どのスキルを使うべき？",
-        api_heading="## API要件マトリクス",
-        category_header=("スキル", "説明", "API要件"),
-        api_header=("スキル", "FMP", "FINVIZ Elite", "Alpaca"),
-        count_pattern=re.compile(r"全\s*(\d+)\s*個のClaude Trading Skills"),
+        locale="zh",
+        path="docs/zh/skill-catalog.md",
+        category_end="## 我应该使用哪个技能？",
+        api_heading="## API需求矩阵",
+        category_header=("技能", "说明", "API需求"),
+        api_header=("技能", "FMP", "FINVIZ Elite", "Alpaca"),
+        count_pattern=re.compile(r"全部\s*(\d+)\s*个Claude Trading Skills"),
         api_values={
-            "required": "必須",
-            "recommended": "推奨",
-            "optional": "任意",
+            "required": "必需",
+            "recommended": "推荐",
+            "optional": "可选",
             "not_required": "-",
         },
         missing_api_value="-",
@@ -514,7 +514,7 @@ def main(argv: list[str] | None = None) -> int:
     except CatalogError as exc:
         print(f"ERROR: {exc}", file=sys.stderr)
         return 1
-    print("OK: website EN/JA skill catalogs match skills-index.yaml")
+    print("OK: website EN/ZH skill catalogs match skills-index.yaml")
     return 0
 
 

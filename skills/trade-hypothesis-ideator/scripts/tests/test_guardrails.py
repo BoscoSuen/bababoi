@@ -52,11 +52,11 @@ class TestFieldCompleteness:
 class TestBannedPhrases:
     """Banned phrase detection."""
 
-    def test_banned_phrase_japanese(self, base_hypothesis_card: dict) -> None:
+    def test_banned_phrase_chinese(self, base_hypothesis_card: dict) -> None:
         card = deepcopy(base_hypothesis_card)
-        card["thesis"] = "このルールは本番投入可能で確実に勝てる。"
+        card["thesis"] = "这个规则可以投入实盘，一定能赢。"
         errors = validate_output_bundle(_bundle(card))
-        assert any("本番投入可能" in err for err in errors)
+        assert any("投入实盘" in err for err in errors)
 
     def test_banned_phrase_english(self, base_hypothesis_card: dict) -> None:
         card = deepcopy(base_hypothesis_card)

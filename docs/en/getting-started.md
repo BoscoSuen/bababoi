@@ -3,7 +3,7 @@ layout: default
 title: Getting Started
 parent: English
 nav_order: 1
-lang_peer: /ja/getting-started/
+lang_peer: /zh/getting-started/
 permalink: /en/getting-started/
 ---
 
@@ -169,7 +169,7 @@ Find stocks with EPS growth > 25% and price above SMA200
 - Stocks are displayed in a sortable table.
 - Switch between Overview, Valuation, Financial, and Technical views for deeper analysis.
 
-> For advanced usage including Japanese input, programmatic mode, and 14+ pre-built recipes, see the [FinViz Screener Guide]({{ '/en/skills/finviz-screener/' | relative_url }}).
+> For advanced usage including Chinese input, programmatic mode, and 14+ pre-built recipes, see the [FinViz Screener Guide]({{ '/en/skills/finviz-screener/' | relative_url }}).
 {: .tip }
 
 ---

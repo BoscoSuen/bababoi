@@ -1,7 +1,7 @@
 schema_version: 1
 id: swing-opportunity-daily
 display_name: Swing Opportunity Daily
-display_name_ja: スイング取引機会の日次確認
+display_name_zh: 波段交易机会每日确认
 cadence: daily
 estimated_minutes: 40
 target_users:
@@ -12,16 +12,16 @@ api_profile: fmp-required
 when_to_run: >-
   Only after market-regime-daily has produced a non-restrictive exposure
   decision. Identifies swing trade candidates and builds entry plans.
-when_to_run_ja: >-
-  market-regime-daily が非制限的なエクスポージャー判断を出した後にのみ実行する。
-  スイング取引候補を抽出し、エントリー計画を作成する。
+when_to_run_zh: >-
+  仅在 market-regime-daily 给出非限制性敞口决策后执行。
+  筛选波段交易候选标的并制定入场计划。
 when_not_to_run: >-
   Do not run when the latest market-regime-daily exposure_decision is
   cash-priority or restrictive. Do not use as a standalone screener without
   the regime gate.
-when_not_to_run_ja: >-
-  最新の market-regime-daily の exposure_decision が cash-priority または
-  restrictive の場合は実行しない。レジームゲートを通さず、単独のスクリーナーとして使用しない。
+when_not_to_run_zh: >-
+  当最新的 market-regime-daily exposure_decision 为 cash-priority 或
+  restrictive 时不执行。不要绕过体制关卡将其作为独立筛选器使用。
 
 required_skills:
   - vcp-screener
@@ -45,9 +45,9 @@ prerequisite_workflows:
     rationale: >-
       New swing trade risk requires a non-restrictive exposure decision.
       Skip this workflow on cash-priority or restrictive days.
-    rationale_ja: >-
-      新規スイング取引のリスクを取るには、非制限的なエクスポージャー判断が必要である。
-      cash-priority または restrictive の日はこのワークフローを見送る。
+    rationale_zh: >-
+      承担新的波段交易风险需要非限制性的敞口决策。
+      在 cash-priority 或 restrictive 的日子跳过此工作流。
 
 artifacts:
   - id: circuit_breaker_decision
@@ -91,7 +91,7 @@ artifacts:
 steps:
   - step: 1
     name: Check account circuit breaker
-    name_ja: 口座のサーキットブレーカーを確認する
+    name_zh: 检查账户熔断机制
     skill: drawdown-circuit-breaker
     produces:
       - circuit_breaker_decision
@@ -99,13 +99,13 @@ steps:
     decision_question: >-
       Is the account circuit breaker clear (TRADING_ALLOWED) for new trade
       risk today?
-    decision_question_ja: >-
-      本日の新規取引リスクについて、口座のサーキットブレーカーは
-      TRADING_ALLOWED になっているか。
+    decision_question_zh: >-
+      对于今日的新交易风险，账户熔断机制是否处于
+      TRADING_ALLOWED 状态？
 
   - step: 2
     name: Run VCP screener
-    name_ja: VCPスクリーナーを実行する
+    name_zh: 运行 VCP 筛选器
     skill: vcp-screener
     produces:
       - vcp_candidates
@@ -113,7 +113,7 @@ steps:
 
   - step: 3
     name: Run Stockbee momentum burst screener
-    name_ja: Stockbeeモメンタムバースト・スクリーナーを実行する
+    name_zh: 运行 Stockbee 动量爆发筛选器
     skill: stockbee-momentum-burst-screener
     optional: true
     produces:
@@ -122,7 +122,7 @@ steps:
 
   - step: 4
     name: Run Stockbee exhaustion hammer screener
-    name_ja: Stockbeeエグゾースションハンマー・スクリーナーを実行する
+    name_zh: 运行 Stockbee 衰竭锤筛选器
     skill: stockbee-exhaustion-hammer-screener
     optional: true
     produces:
@@ -131,7 +131,7 @@ steps:
 
   - step: 5
     name: Run CANSLIM screener
-    name_ja: CANSLIMスクリーナーを実行する
+    name_zh: 运行 CANSLIM 筛选器
     skill: canslim-screener
     optional: true
     produces:
@@ -140,7 +140,7 @@ steps:
 
   - step: 6
     name: Theme detection cross-check
-    name_ja: テーマ検出でクロスチェックする
+    name_zh: 主题检测交叉验证
     skill: theme-detector
     optional: true
     produces:
@@ -149,7 +149,7 @@ steps:
 
   - step: 7
     name: Validate setups on weekly chart
-    name_ja: 週足チャートでセットアップを検証する
+    name_zh: 在周线图上验证形态
     skill: technical-analyst
     consumes:
       - vcp_candidates
@@ -166,15 +166,14 @@ steps:
       manual chart review? For exhaustion hammers, confirm the pullback is not
       thesis-breaking and risk to the day low is acceptable. Reject candidates
       that don't pass.
-    decision_question_ja: >-
-      明確な週足セットアップ（Stage 2の上昇トレンド、引き締まったベース、または
-      制御されたベースからのStockbee式レンジ拡大）があり、チャートの手動レビューを
-      通過する候補はどれか。エグゾースションハンマーでは、押しが投資仮説を崩すものではなく、
-      当日安値までのリスクが許容範囲かを確認する。通過しない候補は却下する。
+    decision_question_zh: >-
+      哪些候选标的具有清晰的周线形态（Stage 2 上升趋势、紧凑底部、或
+      从受控底部的 Stockbee 式区间扩张）并通过手动图表审核？对于衰竭锤形态，
+      确认回调未破坏投资假设且至当日低点的风险可接受。拒绝未通过的候选标的。
 
   - step: 8
     name: Calculate position size
-    name_ja: ポジションサイズを計算する
+    name_zh: 计算仓位规模
     skill: position-sizer
     consumes:
       - validated_setups
@@ -184,7 +183,7 @@ steps:
 
   - step: 9
     name: Build entry plan
-    name_ja: エントリー計画を作成する
+    name_zh: 制定入场计划
     skill: breakout-trade-planner
     optional: true
     consumes:
@@ -196,7 +195,7 @@ steps:
 
   - step: 10
     name: Register thesis in journal
-    name_ja: 投資仮説を記録する
+    name_zh: 在日志中登记投资假设
     skill: trader-memory-core
     consumes:
       - position_sizing
@@ -208,14 +207,14 @@ steps:
       For each candidate that survived validation, register the thesis with
       entry / stop / target. Confirm risk per trade matches position-sizer
       output and total portfolio heat is within budget.
-    decision_question_ja: >-
-      検証を通過した各候補について、エントリー、ストップ、目標を含む投資仮説を登録する。
-      取引ごとのリスクが position-sizer の出力と一致し、ポートフォリオ全体の
-      リスク量が上限内であることを確認する。
+    decision_question_zh: >-
+      为每个通过验证的候选标的登记包含入场价、止损价和目标价的投资假设。
+      确认每笔交易的风险与 position-sizer 输出一致，且投资组合
+      整体风险敞口在预算范围内。
 
   - step: 11
     name: Run manual execution discipline gate
-    name_ja: 手動執行規律ゲートを実行する
+    name_zh: 执行手动交易纪律关卡
     skill: pre-trade-discipline-gate
     consumes:
       - candidate_journal_entry
@@ -229,10 +228,10 @@ steps:
       Before placing any manual broker order, does each actionable candidate
       pass the written-plan, predefined-stop, position-size, recent-loss,
       market-regime, and circuit-breaker discipline checks?
-    decision_question_ja: >-
-      ブローカーへ手動注文を出す前に、実行可能な各候補は、文章化された計画、事前設定した
-      ストップ、ポジションサイズ、直近損失、市場レジーム、サーキットブレーカーの
-      規律チェックを通過しているか。
+    decision_question_zh: >-
+      在向券商提交手动订单之前，每个可执行的候选标的是否通过了
+      书面计划、预设止损、仓位规模、近期亏损、市场体制和
+      熔断机制的纪律检查？
 
 manual_review:
   - Confirm market-regime-daily exposure_decision allows new risk before acting.
@@ -243,14 +242,14 @@ manual_review:
   - Verify total portfolio heat is within budget before placing any order.
   - Confirm pre_trade_discipline_decision is GO before placing any manual broker order.
   - All orders are placed manually at the broker; no auto-execution.
-manual_review_ja:
-  - 実行前に market-regime-daily の exposure_decision が新規リスクを許可していることを確認する。
-  - 新規候補の抽出やサイズ計算前に circuit_breaker_decision が TRADING_ALLOWED であることを確認する。
-  - スクリーナーを通過していても、週足セットアップが不明確な候補は却下する。
-  - Stockbeeモメンタムバーストの出力は候補生成だけに使い、チャート検証とリスク距離の確認を必須とする。
-  - Stockbeeエグゾースションハンマーの出力は候補生成だけに使い、押しが投資仮説を崩すニュースによるものではないことと、当日安値までのリスクを確認する。
-  - 注文前にポートフォリオ全体のリスク量が上限内であることを確認する。
-  - ブローカーへ手動注文を出す前に pre_trade_discipline_decision が GO であることを確認する。
-  - すべての注文はブローカーで手動入力し、自動執行しない。
+manual_review_zh:
+  - 执行前确认 market-regime-daily 的 exposure_decision 允许承担新风险。
+  - 在筛选或计算新候选标的规模之前，确认 circuit_breaker_decision 为 TRADING_ALLOWED。
+  - 即使通过了筛选器，周线形态不清晰的候选标的也应拒绝。
+  - Stockbee 动量爆发输出仅用于候选生成；必须进行图表验证和风险距离审查。
+  - Stockbee 衰竭锤输出仅用于候选生成；确认回调并非由破坏投资假设的新闻引起，并核实至当日低点的风险。
+  - 下单前确认投资组合整体风险敞口在预算范围内。
+  - 向券商提交手动订单前确认 pre_trade_discipline_decision 为 GO。
+  - 所有订单均在券商处手动输入，不自动执行。
 
 journal_destination: trader-memory-core

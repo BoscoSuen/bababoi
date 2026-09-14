@@ -42,10 +42,10 @@ def _api_values(requirement: str | None, locale: str) -> tuple[str, str, str]:
             "not_required": "--",
             None: "--",
         },
-        "ja": {
-            "required": "必須",
-            "recommended": "推奨",
-            "optional": "任意",
+        "zh": {
+            "required": "必需",
+            "recommended": "推荐",
+            "optional": "可选",
             "not_required": "-",
             None: "-",
         },
@@ -63,13 +63,13 @@ def _catalog(locale: str, requirement: str | None = "required") -> str:
         api_header = "| Skill | FMP | FINVIZ Elite | Alpaca |"
         weekly_description = r"Workflow \| publication helper"
     else:
-        count = "全2個のClaude Trading Skillsを掲載しています。"
-        category_heading = "## 1. テストカテゴリ"
-        category_header = "| スキル | 説明 | API要件 |"
-        category_end = "## どのスキルを使うべき？"
-        api_heading = "## API要件マトリクス"
-        api_header = "| スキル | FMP | FINVIZ Elite | Alpaca |"
-        weekly_description = r"ワークフロー \| 公開補助"
+        count = "本目录收录全部2个Claude Trading Skills。"
+        category_heading = "## 1. 测试类别"
+        category_header = "| 技能 | 说明 | API需求 |"
+        category_end = "## 我应该使用哪个技能？"
+        api_heading = "## API需求矩阵"
+        api_header = "| 技能 | FMP | FINVIZ Elite | Alpaca |"
+        weekly_description = r"工作流 \| 发布辅助"
     values = _api_values(requirement, locale)
     return f"""# Catalog
 
@@ -115,7 +115,7 @@ def _write_project(
     (root / "skills-index.yaml").write_text(
         yaml.safe_dump(payload, sort_keys=False), encoding="utf-8"
     )
-    for locale in ("en", "ja"):
+    for locale in ("en", "zh"):
         path = root / "docs" / locale / "skill-catalog.md"
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(_catalog(locale, requirement), encoding="utf-8")
@@ -190,7 +190,7 @@ def test_plain_display_name_must_exactly_match_after_resolution(tmp_path: Path) 
 
 def test_wrong_locale_link_is_rejected(tmp_path: Path) -> None:
     _write_project(tmp_path)
-    _replace(tmp_path, "ja", "/ja/skills/alpha-skill/", "/en/skills/alpha-skill/")
+    _replace(tmp_path, "zh", "/zh/skills/alpha-skill/", "/en/skills/alpha-skill/")
     with pytest.raises(CatalogError, match="wrong-locale"):
         validate_catalogs(tmp_path)
 
@@ -237,9 +237,9 @@ def test_advertised_count_is_required_once_and_must_match(tmp_path: Path) -> Non
         validate_catalogs(tmp_path)
 
     _write_project(tmp_path)
-    path = tmp_path / "docs" / "ja" / "skill-catalog.md"
+    path = tmp_path / "docs" / "zh" / "skill-catalog.md"
     path.write_text(
-        path.read_text(encoding="utf-8") + "\n全2個のClaude Trading Skills\n",
+        path.read_text(encoding="utf-8") + "\n本目录收录全部2个Claude Trading Skills\n",
         encoding="utf-8",
     )
     with pytest.raises(CatalogError, match="exactly one advertised skill count"):
@@ -308,7 +308,7 @@ def test_extra_table_in_category_is_rejected(tmp_path: Path) -> None:
             "**Beta Skill** | Beta description | No API |",
         ),
         (
-            "ja",
+            "zh",
             "| Beta Skill | - | - | - |",
             "Beta Skill | - | - | - |",
         ),
@@ -318,7 +318,7 @@ def test_extra_table_in_category_is_rejected(tmp_path: Path) -> None:
             "**Beta Skill** | Beta description",
         ),
         (
-            "ja",
+            "zh",
             "| Beta Skill | - | - | - |",
             "Beta Skill | -",
         ),
@@ -365,7 +365,7 @@ def test_recommendation_content_is_outside_completeness_scope(tmp_path: Path) ->
 
 def test_api_value_drift_is_rejected(tmp_path: Path) -> None:
     _write_project(tmp_path)
-    _replace(tmp_path, "ja", "| Alpha Skill | 必須 | - | - |", "| Alpha Skill | 任意 | - | - |")
+    _replace(tmp_path, "zh", "| Alpha Skill | 必需 | - | - |", "| Alpha Skill | 可选 | - | - |")
     with pytest.raises(CatalogError, match="API values"):
         validate_catalogs(tmp_path)
 

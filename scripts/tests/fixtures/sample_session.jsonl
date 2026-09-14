@@ -5,4 +5,4 @@
 {"type":"assistant","message":{"type":"assistant","content":[{"type":"text","text":"The script requires an FMP API key."}]},"timestamp":"2026-02-28T10:02:10+00:00"}
 {"type":"user","message":{"type":"user","content":"Check the breadth chart now"},"userType":"external","isSidechain":true,"timestamp":"2026-02-28T10:03:00+00:00"}
 {"type":"tool_result","message":{"type":"tool_result","content":"exit code: 1\nPermission denied"},"timestamp":"2026-02-28T10:04:00+00:00"}
-{"type":"user","message":{"type":"user","content":"ワークフローを自動化したい"},"userType":"external","timestamp":"2026-02-28T10:10:00+00:00"}
+{"type":"user","message":{"type":"user","content":"我想自动化工作流程"},"userType":"external","timestamp":"2026-02-28T10:10:00+00:00"}

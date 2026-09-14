@@ -16,7 +16,7 @@ import yaml
 
 ROOT = Path(__file__).resolve().parents[2]
 EN_GUIDE = ROOT / "docs" / "en" / "your-first-week.md"
-JA_GUIDE = ROOT / "docs" / "ja" / "your-first-week.md"
+ZH_GUIDE = ROOT / "docs" / "zh" / "your-first-week.md"
 
 MANUAL_JSON_RE = re.compile(
     r"<!-- first-week-manual-json:start -->\s*"
@@ -64,8 +64,8 @@ def _command_tokens(pattern: re.Pattern[str], guide: Path) -> list[str]:
 @pytest.mark.parametrize(
     ("path", "peer", "permalink"),
     [
-        (EN_GUIDE, "/ja/your-first-week/", "/en/your-first-week/"),
-        (JA_GUIDE, "/en/your-first-week/", "/ja/your-first-week/"),
+        (EN_GUIDE, "/zh/your-first-week/", "/en/your-first-week/"),
+        (ZH_GUIDE, "/en/your-first-week/", "/zh/your-first-week/"),
     ],
 )
 def test_frontmatter_contract(path: Path, peer: str, permalink: str) -> None:
@@ -77,17 +77,17 @@ def test_frontmatter_contract(path: Path, peer: str, permalink: str) -> None:
 
 def test_guides_cover_all_seven_days_and_readmes_link_them() -> None:
     english = _read(EN_GUIDE)
-    japanese = _read(JA_GUIDE)
+    chinese = _read(ZH_GUIDE)
 
     for day in range(1, 8):
         assert f"## Day {day} " in english
-        assert f"## {day}日目 " in japanese
+        assert f"## 第 {day} 天 " in chinese
 
     assert "[Your First Week](docs/en/your-first-week.md)" in _read(ROOT / "README.md")
-    assert "[最初の1週間](docs/ja/your-first-week.md)" in _read(ROOT / "README.ja.md")
+    assert "[中文](docs/zh/your-first-week.md)" in _read(ROOT / "README.zh.md")
 
 
-@pytest.mark.parametrize("guide", [EN_GUIDE, JA_GUIDE])
+@pytest.mark.parametrize("guide", [EN_GUIDE, ZH_GUIDE])
 def test_navigator_command_returns_the_documented_no_api_workflow(guide: Path) -> None:
     documented = _command_tokens(NAVIGATOR_COMMAND_RE, guide)
     assert documented[:3] == ["uv", "run", "python"]
@@ -105,7 +105,7 @@ def test_navigator_command_returns_the_documented_no_api_workflow(guide: Path) -
     assert recommendation["no_api_path"] is True
 
 
-@pytest.mark.parametrize("guide", [EN_GUIDE, JA_GUIDE])
+@pytest.mark.parametrize("guide", [EN_GUIDE, ZH_GUIDE])
 def test_manual_journal_json_is_valid_and_complete(guide: Path, tmp_path: Path) -> None:
     text = _read(guide)
     displayed_match = MANUAL_JSON_RE.search(text)
@@ -167,7 +167,7 @@ def test_timestamp_selector_excludes_breadth_history() -> None:
     assert fnmatch.fnmatch("market_breadth_2026-07-22_203519.json", pattern)
     assert not fnmatch.fnmatch("market_breadth_history.json", pattern)
 
-    for guide in (EN_GUIDE, JA_GUIDE):
+    for guide in (EN_GUIDE, ZH_GUIDE):
         text = _read(guide)
         assert f"-name '{pattern}'" in text
         assert "-name 'uptrend_analysis_????-??-??_??????.json'" in text

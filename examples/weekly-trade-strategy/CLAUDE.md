@@ -1,348 +1,348 @@
-# Weekly Trade Strategy Blog - プロジェクトガイド
+# Weekly Trade Strategy Blog - 项目指南
 
-このプロジェクトは、米国株の週間トレード戦略ブログを自動生成するためのシステムです。
+本项目是一个自动生成美股每周交易策略博客的系统。
 
-## プロジェクト構造
+## 项目结构
 
 ```
 weekly-trade-strategy/
-├── charts/              # チャート画像格納フォルダ
-│   └── YYYY-MM-DD/     # 日付ごとのフォルダ
+├── charts/              # 图表图像存放文件夹
+│   └── YYYY-MM-DD/     # 按日期分的文件夹
 │       ├── chart1.jpeg
 │       └── chart2.jpeg
 │
-├── reports/            # 分析レポート格納フォルダ
-│   └── YYYY-MM-DD/    # 日付ごとのフォルダ
+├── reports/            # 分析报告存放文件夹
+│   └── YYYY-MM-DD/    # 按日期分的文件夹
 │       ├── technical-market-analysis.md
 │       ├── us-market-analysis.md
 │       └── market-news-analysis.md
 │
-├── blogs/              # 最終ブログ記事格納フォルダ
+├── blogs/              # 最终博客文章存放文件夹
 │   └── YYYY-MM-DD-weekly-strategy.md
 │
 └── .claude/
-    ├── agents/         # エージェント定義
-    └── skills/         # スキル定義
+    ├── agents/         # 代理定义
+    └── skills/         # 技能定义
 ```
 
-## 週間ブログ作成の標準手順
+## 每周博客创建标准流程
 
-### ステップ0: 準備
+### 步骤0：准备
 
-1. **チャート画像の配置**
+1. **放置图表图像**
    ```bash
-   # 今週の日付でフォルダ作成
+   # 用本周日期创建文件夹
    mkdir -p charts/2025-11-03
 
-   # チャート画像を配置（18枚推奨）
-   # - VIX (週足)
-   # - 米10年債利回り (週足)
-   # - S&P 500 Breadth Index (200日MA + 8日MA)
-   # - Nasdaq 100 (週足)
-   # - S&P 500 (週足)
-   # - Russell 2000 (週足)
-   # - Dow Jones (週足)
-   # - 金先物 (週足)
-   # - 銅先物 (週足)
-   # - 原油 (週足)
-   # - 天然ガス (週足)
-   # - ウランETF (URA, 週足)
-   # - Uptrend Stock Ratio (全市場)
-   # - セクターパフォーマンス (1週間)
-   # - セクターパフォーマンス (1ヶ月)
-   # - インダストリーパフォーマンス (上位/下位)
-   # - 決算カレンダー
-   # - 主要銘柄ヒートマップ
+   # 放置图表图像（推荐18张）
+   # - VIX（周线）
+   # - 美国10年期国债收益率（周线）
+   # - S&P 500 Breadth Index（200日MA + 8日MA）
+   # - Nasdaq 100（周线）
+   # - S&P 500（周线）
+   # - Russell 2000（周线）
+   # - Dow Jones（周线）
+   # - 黄金期货（周线）
+   # - 铜期货（周线）
+   # - 原油（周线）
+   # - 天然气（周线）
+   # - 铀ETF（URA，周线）
+   # - Uptrend Stock Ratio（全市场）
+   # - 板块表现（1周）
+   # - 板块表现（1个月）
+   # - 行业表现（前/后排名）
+   # - 财报日历
+   # - 主要个股热力图
    ```
 
-2. **レポート出力フォルダ作成**
+2. **创建报告输出文件夹**
    ```bash
    mkdir -p reports/2025-11-03
    ```
 
-### ステップ1: Technical Market Analysis
+### 步骤1：Technical Market Analysis
 
-**目的**: チャート画像を分析し、テクニカル指標から市場環境を評価
+**目的**：分析图表图像，从技术指标评估市场环境
 
-**エージェント**: `technical-market-analyst`
+**代理**：`technical-market-analyst`
 
-**入力**:
-- `charts/YYYY-MM-DD/*.jpeg` (全チャート画像)
+**输入**：
+- `charts/YYYY-MM-DD/*.jpeg`（所有图表图像）
 
-**出力**:
+**输出**：
 - `reports/YYYY-MM-DD/technical-market-analysis.md`
 
-**実行コマンド例**:
+**执行命令示例**：
 ```
-今週（2025-11-03）のチャート分析をtechnical-market-analystエージェントで実行してください。
-charts/2025-11-03/にある全てのチャートを分析し、レポートをreports/2025-11-03/technical-market-analysis.mdに保存してください。
+请用technical-market-analyst代理执行本周（2025-11-03）的图表分析。
+分析charts/2025-11-03/中的所有图表，将报告保存到reports/2025-11-03/technical-market-analysis.md。
 ```
 
-**分析内容**:
-- VIX、10年債利回り、Breadth指標の現在値と評価
-- 主要指数（Nasdaq, S&P500, Russell2000, Dow）のテクニカル分析
-- コモディティ（金、銅、原油、ウラン）のトレンド分析
-- セクターローテーション分析
-- シナリオ別の確率評価
+**分析内容**：
+- VIX、10年期国债收益率、Breadth指标的当前值及评估
+- 主要指数（Nasdaq、S&P500、Russell2000、Dow）的技术分析
+- 商品（黄金、铜、原油、铀）的趋势分析
+- 板块轮动分析
+- 各情景概率评估
 
 ---
 
-### ステップ2: US Market Analysis
+### 步骤2：US Market Analysis
 
-**目的**: 市場環境の総合評価とバブルリスク検出
+**目的**：市场环境综合评估和泡沫风险检测
 
-**エージェント**: `us-market-analyst`
+**代理**：`us-market-analyst`
 
-**入力**:
-- `reports/YYYY-MM-DD/technical-market-analysis.md` (ステップ1の結果)
-- 市場データ（VIX, Breadth, 金利等）
+**输入**：
+- `reports/YYYY-MM-DD/technical-market-analysis.md`（步骤1的结果）
+- 市场数据（VIX、Breadth、利率等）
 
-**出力**:
+**输出**：
 - `reports/YYYY-MM-DD/us-market-analysis.md`
 
-**実行コマンド例**:
+**执行命令示例**：
 ```
-us-market-analystエージェントで米国市場の総合分析を実行してください。
-reports/2025-11-03/technical-market-analysis.mdを参照し、
-市場環境とバブルリスクを評価してreports/2025-11-03/us-market-analysis.mdに保存してください。
+请用us-market-analyst代理执行美国市场综合分析。
+参考reports/2025-11-03/technical-market-analysis.md，
+评估市场环境和泡沫风险，保存到reports/2025-11-03/us-market-analysis.md。
 ```
 
-**分析内容**:
-- 現在の市場フェーズ（Risk-On / Base / Caution / Stress）
-- バブル検出スコア（0-16スケール）
-- セクターローテーションパターン
-- ボラティリティレジーム
-- リスク要因とカタリスト
+**分析内容**：
+- 当前市场阶段（Risk-On / Base / Caution / Stress）
+- 泡沫检测评分（0-16量表）
+- 板块轮动模式
+- 波动率状态
+- 风险因素和催化剂
 
 ---
 
-### ステップ3: Market News Analysis
+### 步骤3：Market News Analysis
 
-**目的**: 過去10日間のニュース影響分析と今後7日間のイベント予測
+**目的**：过去10天的新闻影响分析和未来7天的事件预测
 
-**エージェント**: `market-news-analyzer`
+**代理**：`market-news-analyzer`
 
-**入力**:
-- `reports/YYYY-MM-DD/technical-market-analysis.md` (ステップ1の結果)
-- `reports/YYYY-MM-DD/us-market-analysis.md` (ステップ2の結果)
-- 経済カレンダー、決算カレンダー
+**输入**：
+- `reports/YYYY-MM-DD/technical-market-analysis.md`（步骤1的结果）
+- `reports/YYYY-MM-DD/us-market-analysis.md`（步骤2的结果）
+- 经济日历、财报日历
 
-**出力**:
+**输出**：
 - `reports/YYYY-MM-DD/market-news-analysis.md`
 
-**実行コマンド例**:
+**执行命令示例**：
 ```
-market-news-analyzerエージェントでニュースとイベント分析を実行してください。
-過去10日間のニュース影響と今後7日間の重要イベントを分析し、
-reports/2025-11-03/market-news-analysis.mdに保存してください。
+请用market-news-analyzer代理执行新闻和事件分析。
+分析过去10天的新闻影响和未来7天的重要事件，
+保存到reports/2025-11-03/market-news-analysis.md。
 ```
 
-**分析内容**:
-- 過去10日間の主要ニュースと市場への影響
-- 今後7日間の経済指標スケジュール
-- 主要決算発表（時価総額$2B以上）
-- イベント別のシナリオ分析（確率付き）
-- リスクイベントの優先順位付け
+**分析内容**：
+- 过去10天的主要新闻及市场影响
+- 未来7天的经济指标日程
+- 主要财报发布（市值$2B以上）
+- 各事件的情景分析（附概率）
+- 风险事件的优先级排序
 
 ---
 
-### ステップ4: Weekly Blog Generation
+### 步骤4：Weekly Blog Generation
 
-**目的**: 3つのレポートを統合し、兼業トレーダー向けの週間戦略ブログを生成
+**目的**：整合3份报告，生成面向兼职交易者的每周策略博客
 
-**エージェント**: `weekly-trade-blog-writer`
+**代理**：`weekly-trade-blog-writer`
 
-**入力**:
+**输入**：
 - `reports/YYYY-MM-DD/technical-market-analysis.md`
 - `reports/YYYY-MM-DD/us-market-analysis.md`
 - `reports/YYYY-MM-DD/market-news-analysis.md`
-- `blogs/` (前週のブログ記事、連続性チェック用)
+- `blogs/`（上周的博客文章，用于连续性检查）
 
-**出力**:
+**输出**：
 - `blogs/YYYY-MM-DD-weekly-strategy.md`
 
-**実行コマンド例**:
+**执行命令示例**：
 ```
-weekly-trade-blog-writerエージェントで2025年11月3日週のブログ記事を作成してください。
-reports/2025-11-03/配下の3つのレポートを統合し、
-前週のセクター配分との連続性を保ちながら、
-blogs/2025-11-03-weekly-strategy.mdに保存してください。
+请用weekly-trade-blog-writer代理创建2025年11月3日周的博客文章。
+整合reports/2025-11-03/下的3份报告，
+保持与上周板块配分的连续性，
+保存到blogs/2025-11-03-weekly-strategy.md。
 ```
 
-**記事構成** (200-300行):
-1. **3行まとめ** - 市場環境・焦点・戦略
-2. **今週のアクション** - ロット管理、売買レベル、セクター配分、重要イベント
-3. **シナリオ別プラン** - Base/Risk-On/Cautionの3シナリオ
-4. **マーケット状況** - 統一トリガー（10Y/VIX/Breadth）
-5. **コモディティ・セクター戦術** - 金/銅/ウラン/原油
-6. **兼業運用ガイド** - 朝/夜チェックリスト
-7. **リスク管理** - 今週特有のリスク
-8. **まとめ** - 3-5文
+**文章结构**（200-300行）：
+1. **3行摘要** - 市场环境、焦点、策略
+2. **本周行动** - 仓位管理、买卖水平、板块配分、重要事件
+3. **情景别计划** - Base/Risk-On/Caution三种情景
+4. **市场状况** - 统一触发器（10Y/VIX/Breadth）
+5. **商品与板块战术** - 黄金/铜/铀/原油
+6. **兼职操作指南** - 早/晚检查清单
+7. **风险管理** - 本周特有风险
+8. **总结** - 3-5句
 
-**重要な制約**:
-- 前週からのセクター配分変更は**±10-15%以内**（段階的調整）
-- 史上最高値更新中+Baseトリガーの場合、急激なポジション削減は避ける
-- 現金配分は段階的に増加（例: 10% → 20-25% → 30-35%）
+**重要约束**：
+- 相对上周的板块配分变更在**±10-15%以内**（渐进式调整）
+- 历史新高+Base触发器情况下，避免急剧减仓
+- 现金配分渐进增加（例：10% → 20-25% → 30-35%）
 
 ---
 
-### ステップ5（オプション）: Druckenmiller Strategy Planning
+### 步骤5（可选）：Druckenmiller Strategy Planning
 
-**目的**: 3つの分析レポートを統合し、18ヶ月の中長期投資戦略を策定
+**目的**：整合3份分析报告，制定18个月的中长期投资策略
 
-**エージェント**: `druckenmiller-strategy-planner`
+**代理**：`druckenmiller-strategy-planner`
 
-**入力**:
-- `reports/YYYY-MM-DD/technical-market-analysis.md` (ステップ1の結果)
-- `reports/YYYY-MM-DD/us-market-analysis.md` (ステップ2の結果)
-- `reports/YYYY-MM-DD/market-news-analysis.md` (ステップ3の結果)
-- 前回のDruckenmiller戦略レポート（存在する場合）
+**输入**：
+- `reports/YYYY-MM-DD/technical-market-analysis.md`（步骤1的结果）
+- `reports/YYYY-MM-DD/us-market-analysis.md`（步骤2的结果）
+- `reports/YYYY-MM-DD/market-news-analysis.md`（步骤3的结果）
+- 上次的Druckenmiller策略报告（如存在）
 
-**出力**:
+**输出**：
 - `reports/YYYY-MM-DD/druckenmiller-strategy.md`
 
-**実行コマンド例**:
+**执行命令示例**：
 ```
-druckenmiller-strategy-plannerエージェントで2025年11月3日時点の18ヶ月戦略を策定してください。
-reports/2025-11-03/配下の3つのレポートを総合的に分析し、
-Druckenmiller流の戦略フレームワークを適用して、
-reports/2025-11-03/druckenmiller-strategy.mdに保存してください。
+请用druckenmiller-strategy-planner代理制定截至2025年11月3日的18个月策略。
+综合分析reports/2025-11-03/下的3份报告，
+应用Druckenmiller风格的策略框架，
+保存到reports/2025-11-03/druckenmiller-strategy.md。
 ```
 
-**分析フレームワーク**:
+**分析框架**：
 
-1. **Druckenmillerの投資哲学**
-   - マクロ重視の18ヶ月先行分析
-   - 確信度に基づくポジションサイジング
-   - 複数要因が揃った時の集中投資
-   - 素早い損切りと柔軟性
+1. **Druckenmiller的投资哲学**
+   - 宏观重视的18个月前瞻分析
+   - 基于确信度的仓位管理
+   - 多因素汇聚时的集中投资
+   - 快速止损和灵活性
 
-2. **4つのシナリオ分析**（確率付き）
-   - **Base Case** (最高確率シナリオ)
-   - **Bull Case** (楽観シナリオ)
-   - **Bear Case** (リスクシナリオ)
-   - **Tail Risk** (低確率の極端シナリオ)
+2. **4种情景分析**（附概率）
+   - **Base Case**（最高概率情景）
+   - **Bull Case**（乐观情景）
+   - **Bear Case**（风险情景）
+   - **Tail Risk**（低概率极端情景）
 
-3. **各シナリオの構成要素**
-   - 主要カタリスト（政策、景気、地政学）
-   - タイムライン（Q1-Q2、Q3-Q4の展開）
-   - 資産クラス別の影響
-   - 最適ポジショニング戦略
-   - 無効化シグナル（戦略転換のトリガー）
+3. **各情景的构成要素**
+   - 主要催化剂（政策、经济、地缘政治）
+   - 时间线（Q1-Q2、Q3-Q4的展开）
+   - 各资产类别的影响
+   - 最优仓位策略
+   - 失效信号（策略转换触发器）
 
-**レポート構成** (約150-200行):
+**报告结构**（约150-200行）：
 ```markdown
 # Strategic Investment Outlook - [Date]
 
 ## Executive Summary
-[2-3段落：支配的テーマと戦略的ポジショニングの要約]
+[2-3段：主导主题和策略仓位的摘要]
 
 ## Market Context & Current Environment
 ### Macroeconomic Backdrop
-[金融政策、景気サイクル、マクロ指標の現状]
+[货币政策、经济周期、宏观指标现状]
 
 ### Technical Market Structure
-[主要テクニカルレベル、トレンド、パターン]
+[关键技术水平、趋势、形态]
 
 ### Sentiment & Positioning
-[市場センチメント、機関投資家ポジション、逆張り機会]
+[市场情绪、机构投资者仓位、逆向机会]
 
 ## 18-Month Scenario Analysis
 
 ### Base Case Scenario (XX% probability)
-**Narrative:** [最も可能性の高い市場の道筋]
+**Narrative:** [最可能的市场路径]
 **Key Catalysts:**
-- [カタリスト1]
-- [カタリスト2]
+- [催化剂1]
+- [催化剂2]
 **Timeline Markers:**
-- [Q1-Q2の予想展開]
-- [Q3-Q4の予想展開]
+- [Q1-Q2预期展开]
+- [Q3-Q4预期展开]
 **Strategic Positioning:**
-- [資産配分推奨]
-- [具体的なトレードアイデアと確信度]
+- [资产配置建议]
+- [具体交易思路和确信度]
 **Risk Management:**
-- [無効化シグナル]
-- [ストップロス/撤退基準]
+- [失效信号]
+- [止损/退出标准]
 
 ### Bull Case Scenario (XX% probability)
-[Base Caseと同様の構成]
+[与Base Case相同的结构]
 
 ### Bear Case Scenario (XX% probability)
-[Base Caseと同様の構成]
+[与Base Case相同的结构]
 
 ### Tail Risk Scenario (XX% probability)
-[Base Caseと同様の構成]
+[与Base Case相同的结构]
 
 ## Recommended Strategic Actions
 
 ### High Conviction Trades
-[テクニカル、ファンダメンタル、センチメントが揃ったトレード]
+[技术面、基本面、情绪面均汇聚的交易]
 
 ### Medium Conviction Positions
-[良好なリスク/リワードだが要因の整合性が低いポジション]
+[风险收益比良好但因素对齐度较低的仓位]
 
 ### Hedges & Protective Strategies
-[リスク管理ポジションとポートフォリオ保険]
+[风险管理仓位和投资组合保险]
 
 ### Watchlist & Contingent Trades
-[確認待ちまたは特定トリガー待ちのセットアップ]
+[等待确认或特定触发器的设置]
 
 ## Key Monitoring Indicators
-[シナリオ検証/無効化のための追跡指標]
+[情景验证/失效的跟踪指标]
 
 ## Conclusion & Next Review Date
-[最終的な戦略推奨と次回見直し時期]
+[最终策略建议和下次审查时间]
 ```
 
-**重要な特徴**:
-- 週間ブログ（短期戦術）とは異なり、**18ヶ月の中長期戦略**
-- マクロ経済の構造変化や政策転換点を重視
-- 確信度に応じたポジションサイジング（High/Medium/Low）
-- 各シナリオに明確な無効化条件を設定
-- stanley-druckenmiller-investmentスキルを活用
+**重要特点**：
+- 与每周博客（短期战术）不同，这是**18个月的中长期策略**
+- 重视宏观经济的结构变化和政策转折点
+- 按确信度管理仓位大小（High/Medium/Low）
+- 各情景设定明确的失效条件
+- 利用stanley-druckenmiller-investment技能
 
-**実行タイミング**:
-- 週間ブログと同時（四半期ごと推奨）
-- FOMCなど重大イベント後
-- 市場構造の大きな転換点
+**执行时机**：
+- 与每周博客同时（推荐每季度）
+- FOMC等重大事件后
+- 市场结构的重大转折点
 
-**不足レポートの自動生成**:
-上流レポート（ステップ1-3）が存在しない場合、druckenmiller-strategy-plannerは自動的に不足エージェントを呼び出します。
+**缺失报告的自动生成**：
+如果上游报告（步骤1-3）不存在，druckenmiller-strategy-planner会自动调用缺失的代理。
 
 ---
 
-## 一括実行スクリプト（推奨）
+## 批量执行脚本（推荐）
 
 ```bash
-# 日付設定
+# 设置日期
 DATE="2025-11-03"
 
-# ステップ0: フォルダ準備
+# 步骤0：文件夹准备
 mkdir -p charts/$DATE reports/$DATE
 
-# ステップ1-4を一括実行するプロンプト例：
-「$DATE週のトレード戦略ブログを作成してください。
+# 步骤1-4批量执行的提示示例：
+「请创建$DATE周的交易策略博客。
 
-1. technical-market-analystでcharts/$DATE/の全チャートを分析
+1. 用technical-market-analyst分析charts/$DATE/的所有图表
    → reports/$DATE/technical-market-analysis.md
 
-2. us-market-analystで市場環境を総合評価
+2. 用us-market-analyst进行市场环境综合评估
    → reports/$DATE/us-market-analysis.md
 
-3. market-news-analyzerでニュース/イベント分析
+3. 用market-news-analyzer进行新闻/事件分析
    → reports/$DATE/market-news-analysis.md
 
-4. weekly-trade-blog-writerで最終ブログ記事を生成
+4. 用weekly-trade-blog-writer生成最终博客文章
    → blogs/$DATE-weekly-strategy.md
 
-各ステップを順次実行し、レポートを確認してから次に進んでください。」
+请依次执行各步骤，确认报告后再进入下一步。」
 ```
 
 ---
 
-## エージェント間のデータフロー
+## 代理间数据流
 
-### 週間ブログ生成フロー
+### 每周博客生成流程
 
 ```
 charts/YYYY-MM-DD/
@@ -358,97 +358,97 @@ charts/YYYY-MM-DD/
   │            └────────────┴────────────┴─> [weekly-trade-blog-writer]
   │                                                └─> blogs/YYYY-MM-DD-weekly-strategy.md
   │
-  └─> (前週のブログ記事も参照)
-       blogs/YYYY-MM-DD-weekly-strategy.md (先週)
+  └─> (同时参考上周的博客文章)
+       blogs/YYYY-MM-DD-weekly-strategy.md (上周)
 ```
 
-### 中長期戦略レポート生成フロー（オプション）
+### 中长期策略报告生成流程（可选）
 
 ```
 reports/YYYY-MM-DD/
   ├─> technical-market-analysis.md ────┐
   ├─> us-market-analysis.md ───────────┼─> [druckenmiller-strategy-planner]
   └─> market-news-analysis.md ─────────┘      └─> reports/YYYY-MM-DD/druckenmiller-strategy.md
-                                                       (18ヶ月投資戦略)
+                                                       （18个月投资策略）
 ```
 
 ---
 
-## トラブルシューティング
+## 故障排除
 
-### エージェントがチャートを見つけられない
-- `charts/YYYY-MM-DD/` フォルダが存在するか確認
-- チャート画像のファイル形式が`.jpeg`または`.png`か確認
+### 代理找不到图表
+- 确认`charts/YYYY-MM-DD/`文件夹存在
+- 确认图表图像文件格式为`.jpeg`或`.png`
 
-### レポートが生成されない
-- `reports/YYYY-MM-DD/` フォルダが存在するか確認
-- 前のステップのレポートが正常に生成されているか確認
+### 报告未生成
+- 确认`reports/YYYY-MM-DD/`文件夹存在
+- 确认上一步的报告已正常生成
 
-### ブログ記事のセクター配分が急変している
-- 前週のブログ記事が`blogs/`に存在するか確認
-- weekly-trade-blog-writerエージェントの連続性チェック機能が有効か確認
+### 博客文章的板块配分急剧变化
+- 确认上周的博客文章存在于`blogs/`
+- 确认weekly-trade-blog-writer代理的连续性检查功能已启用
 
-### ブログ記事が長すぎる（300行超過）
-- weekly-trade-blog-writerエージェント定義の長さ制限を確認
-- 記事生成後、行数を確認: `wc -l blogs/YYYY-MM-DD-weekly-strategy.md`
-
----
-
-## 推奨ワークフロー
-
-### 日曜夜（日本時間）または金曜夜（米国時間）
-1. 週末にチャートを準備
-2. technical-market-analystを実行
-3. 結果を確認してから次のステップへ
-
-### 月曜朝
-4. us-market-analyst、market-news-analyzerを実行
-5. 3つのレポートをレビュー
-6. weekly-trade-blog-writerでブログ生成
-7. 最終レビューと公開
+### 博客文章过长（超过300行）
+- 确认weekly-trade-blog-writer代理定义中的长度限制
+- 生成后检查行数：`wc -l blogs/YYYY-MM-DD-weekly-strategy.md`
 
 ---
 
-## 各エージェントの詳細仕様
+## 推荐工作流程
+
+### 周日晚（北京时间）或周五晚（美国时间）
+1. 周末准备图表
+2. 执行technical-market-analyst
+3. 确认结果后进入下一步
+
+### 周一早
+4. 执行us-market-analyst和market-news-analyzer
+5. 审阅3份报告
+6. 用weekly-trade-blog-writer生成博客
+7. 最终审阅并发布
+
+---
+
+## 各代理详细规格
 
 ### technical-market-analyst
-- **スキル**: technical-analyst, breadth-chart-analyst, sector-analyst
-- **分析対象**: 週足チャート、Breadth指標、セクターパフォーマンス
-- **出力形式**: Markdown、シナリオ別確率付き
+- **技能**：technical-analyst、breadth-chart-analyst、sector-analyst
+- **分析对象**：周线图表、Breadth指标、板块表现
+- **输出格式**：Markdown，附情景概率
 
 ### us-market-analyst
-- **スキル**: market-environment-analysis, us-market-bubble-detector
-- **分析対象**: 市場フェーズ、バブルスコア、センチメント
-- **出力形式**: Markdown、リスク評価
+- **技能**：market-environment-analysis、us-market-bubble-detector
+- **分析对象**：市场阶段、泡沫评分、情绪
+- **输出格式**：Markdown，附风险评估
 
 ### market-news-analyzer
-- **スキル**: market-news-analyst, economic-calendar-fetcher, earnings-calendar
-- **分析対象**: 過去10日ニュース、今後7日イベント
-- **出力形式**: Markdown、イベント別シナリオ
+- **技能**：market-news-analyst、economic-calendar-fetcher、earnings-calendar
+- **分析对象**：过去10天新闻、未来7天事件
+- **输出格式**：Markdown，附事件情景
 
 ### weekly-trade-blog-writer
-- **入力**: 上記3レポート + 前週ブログ
-- **制約**: 200-300行、段階的調整（±10-15%）
-- **出力形式**: 兼業トレーダー向けMarkdown（5-10分読了）
+- **输入**：上述3份报告 + 上周博客
+- **约束**：200-300行，渐进式调整（±10-15%）
+- **输出格式**：面向兼职交易者的Markdown（5-10分钟阅读）
 
-### druckenmiller-strategy-planner（オプション）
-- **スキル**: stanley-druckenmiller-investment
-- **分析対象**: 18ヶ月中長期マクロ戦略、シナリオ分析
-- **入力**: 上記3レポート（technical, us-market, market-news）
-- **出力形式**: Markdown、4シナリオ（Base/Bull/Bear/Tail Risk）、確率・確信度付き
-- **特徴**: Druckenmiller流の集中投資と素早い損切り、マクロ転換点の識別
-- **実行頻度**: 四半期ごと、またはFOMC等の重大イベント後
-
----
-
-## バージョン管理
-
-- **プロジェクトバージョン**: 1.0
-- **最終更新日**: 2025-11-02
-- **メンテナンス**: このドキュメントは定期的に更新してください
+### druckenmiller-strategy-planner（可选）
+- **技能**：stanley-druckenmiller-investment
+- **分析对象**：18个月中长期宏观策略、情景分析
+- **输入**：上述3份报告（technical、us-market、market-news）
+- **输出格式**：Markdown，4种情景（Base/Bull/Bear/Tail Risk），附概率和确信度
+- **特点**：Druckenmiller风格的集中投资和快速止损，宏观转折点识别
+- **执行频率**：每季度，或FOMC等重大事件后
 
 ---
 
-## 連絡先・フィードバック
+## 版本管理
 
-このワークフローに関する改善提案や問題報告は、プロジェクトのIssueトラッカーに報告してください。
+- **项目版本**：1.0
+- **最后更新日**：2025-11-02
+- **维护**：请定期更新本文档
+
+---
+
+## 联系方式与反馈
+
+有关本工作流程的改进建议或问题报告，请提交到项目的Issue追踪器。

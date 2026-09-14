@@ -188,7 +188,7 @@ jobs:
       - name: Validate skillsets
         run: python3 scripts/validate_skillsets.py
 
-      # 3b. Drift check: docs/{en,ja}/skillsets.md must match what the
+      # 3b. Drift check: docs/{en,zh}/skillsets.md must match what the
       # generator would produce from skillsets/*.yaml. Catches manual edits
       # to the docs and stale docs after manifest changes.
       - name: Skillset docs drift check
@@ -196,25 +196,25 @@ jobs:
 
       # 3a. Skill docs drift check: generator-owned pages (frontmatter
       # `generated: true`) must match generator output, and every skill must
-      # have EN+JA pages. Hand-maintained pages (generated:false/absent or
+      # have EN+ZH pages. Hand-maintained pages (generated:false/absent or
       # HAND_WRITTEN) are existence/marker-checked only — never content-
       # compared, never reverted.
       - name: Skill docs drift check
         run: python3 scripts/generate_skill_docs.py --check
 
-      # 3. Drift check: docs/{en,ja}/workflows.md must match what the
+      # 3. Drift check: docs/{en,zh}/workflows.md must match what the
       # generator would produce from workflows/*.yaml. Catches manual edits
       # to the docs and stale docs after manifest changes.
       - name: Workflow docs drift check
         run: python3 scripts/generate_workflow_docs.py --check
 
       # 4. README catalog drift check: the catalog sections in README.md and
-      # README.ja.md (between skills-index sentinel markers) must match what
+      # README.zh.md (between skills-index sentinel markers) must match what
       # the generator would produce from skills-index.yaml.
       - name: README catalog drift check
         run: python3 scripts/generate_catalog_from_index.py --check
 
-      # 4b. Quality dashboard drift check: docs/{en,ja}/quality-dashboard.md
+      # 4b. Quality dashboard drift check: docs/{en,zh}/quality-dashboard.md
       # must match what the generator would produce from the deterministic
       # SSoT inputs + committed runtime snapshot. Catches manual edits to the
       # pages and stale pages after an SSoT input changes.

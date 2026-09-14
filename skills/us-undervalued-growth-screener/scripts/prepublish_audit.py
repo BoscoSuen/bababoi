@@ -200,10 +200,10 @@ def audit_publication(
         "say continue",
         "send continue",
         "tell me continue",
-        "続きと送",
-        "続けてと送",
-        "次のターンで",
-        "正式ランキングではなく暫定",
+        "发送继续",
+        "请继续发送",
+        "下一轮再",
+        "不是正式排名而是暂定",
         "temporary partial result",
     )
     lower_md = report_markdown.lower()

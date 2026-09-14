@@ -3,7 +3,7 @@ layout: default
 title: English
 nav_order: 1
 has_children: true
-lang_peer: /ja/
+lang_peer: /zh/
 permalink: /en/
 ---
 
@@ -53,7 +53,7 @@ Describe what you are looking for in natural language, and receive structured re
   <div class="step">
     <span class="step-number">2</span>
     <h4>Describe</h4>
-    <p>Tell Claude what you are looking for in natural language -- English or Japanese. No special syntax required.</p>
+    <p>Tell Claude what you are looking for in natural language -- English or Chinese. No special syntax required.</p>
   </div>
   <div class="step">
     <span class="step-number">3</span>
@@ -68,7 +68,7 @@ Describe what you are looking for in natural language, and receive structured re
 
 | Skill | Highlights | API |
 |-------|-----------|-----|
-| [FinViz Screener]({{ '/en/skills/finviz-screener/' | relative_url }}) | Translate natural language into FinViz filter URLs. 500+ filter codes, Japanese/English input, opens results in Chrome | No API needed |
+| [FinViz Screener]({{ '/en/skills/finviz-screener/' | relative_url }}) | Translate natural language into FinViz filter URLs. 500+ filter codes, Chinese/English input, opens results in Chrome | No API needed |
 | [CANSLIM Screener]({{ '/en/skills/canslim-screener/' | relative_url }}) | Full 7-component CANSLIM scoring (C, A, N, S, L, I, M) with composite 0-100 ratings and bear market protection | FMP Required |
 | [VCP Screener]({{ '/en/skills/vcp-screener/' | relative_url }}) | Detect Minervini's Volatility Contraction Pattern automatically. 3-phase pipeline with trade setups and pivot points | FMP Required |
 | [Theme Detector]({{ '/en/skills/theme-detector/' | relative_url }}) | Identify bullish and bearish market themes with 3-dimensional scoring: Heat, Lifecycle, and Confidence | Optional |

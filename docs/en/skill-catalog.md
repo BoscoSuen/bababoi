@@ -3,7 +3,7 @@ layout: default
 title: Skill Catalog
 parent: English
 nav_order: 2
-lang_peer: /ja/skill-catalog/
+lang_peer: /zh/skill-catalog/
 permalink: /en/skill-catalog/
 ---
 
@@ -132,7 +132,7 @@ A comprehensive catalog of all 75 Claude Trading Skills organized by category. B
 | **[VCP Screener]({{ '/en/skills/vcp-screener/' | relative_url }})** | Detects Mark Minervini's Volatility Contraction Pattern. 3-phase pipeline: Pre-filter, Trend Template, VCP Detection with pivot points and trade setups | <span class="badge badge-api">Polygon Required</span> |
 | **[Stockbee Momentum Burst Screener]({{ '/en/skills/stockbee-momentum-burst-screener/' | relative_url }})** | Stockbee-style short-term momentum burst screening: 4% breakout, dollar breakout, and range-expansion triggers scored 0-100 (A/B/Watch) with setup-quality and risk-distance filters. Candidate generation only — routes survivors to technical-analyst and position-sizer | <span class="badge badge-api">FMP Required</span> <span class="badge badge-optional">Local JSON Optional</span> |
 | **[Stockbee Exhaustion Hammer Screener]({{ '/en/skills/stockbee-exhaustion-hammer-screener/' | relative_url }})** | Stockbee-style selling-exhaustion hammer screening for liquid stocks with prior momentum, pullback depth, undercut/reclaim behavior, long lower-wick reversal geometry, and risk-distance filters. Candidate generation only | <span class="badge badge-api">FMP Required</span> <span class="badge badge-optional">Local JSON Optional</span> |
-| **[Finviz Screener]({{ '/en/skills/finviz-screener/' | relative_url }})** | Translates natural language (Japanese/English) into FinViz filter URLs. 500+ filter codes across fundamentals, technicals, and descriptives. **Theme cross-screening** (30+ themes × 268 sub-themes) for narrative-based searches like "AI × Logistics" or "Data Centers × Power". Opens results in Chrome | <span class="badge badge-free">No API</span> <span class="badge badge-optional">FINVIZ Optional</span> |
+| **[Finviz Screener]({{ '/en/skills/finviz-screener/' | relative_url }})** | Translates natural language (Chinese/English) into FinViz filter URLs. 500+ filter codes across fundamentals, technicals, and descriptives. **Theme cross-screening** (30+ themes × 268 sub-themes) for narrative-based searches like "AI × Logistics" or "Data Centers × Power". Opens results in Chrome | <span class="badge badge-free">No API</span> <span class="badge badge-optional">FINVIZ Optional</span> |
 | **Value Dividend Screener** | Multi-phase dividend stock screening: value characteristics (P/E, P/B), income (yield), growth (3-year trends), sustainability, and quality scoring | <span class="badge badge-api">FMP Required</span> <span class="badge badge-optional">FINVIZ Optional</span> |
 | **[US Undervalued Growth Screener]({{ '/en/skills/us-undervalued-growth-screener/' | relative_url }})** | Claude Code-native GARP screen for US small/mid caps: direct-FMP discovery pipeline with local cache, FY1 estimate normalization, verified liquidity, forward same-basis valuation, SBC-adjusted FCF, prepublication audit, and a self-contained evidence bundle | <span class="badge badge-optional">FMP Recommended</span> |
 | **Dividend Growth Pullback Screener** | Finds dividend growth stocks (12%+ annual growth, 1.5%+ yield) at oversold technical levels (RSI <= 40). Two-stage FINVIZ + FMP pipeline | <span class="badge badge-api">FMP Required</span> <span class="badge badge-optional">FINVIZ Optional</span> |

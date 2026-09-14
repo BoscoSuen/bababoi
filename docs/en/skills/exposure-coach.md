@@ -4,7 +4,7 @@ title: "Exposure Coach"
 grand_parent: English
 parent: Skill Guides
 nav_order: 11
-lang_peer: /ja/skills/exposure-coach/
+lang_peer: /zh/skills/exposure-coach/
 permalink: /en/skills/exposure-coach/
 ---
 

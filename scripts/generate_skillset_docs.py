@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate docs/{en,ja}/skillsets.md from skillsets/*.yaml manifests.
+"""Generate docs/{en,zh}/skillsets.md from skillsets/*.yaml manifests.
 
 Idempotent — same input produces byte-identical output. Run via:
 
@@ -55,37 +55,36 @@ LABELS: dict[str, dict[str, str]] = {
         "related_workflows": "Related workflows",
         "none": "(none)",
     },
-    "ja": {
-        "page_title": "スキルセット",
+    "zh": {
+        "page_title": "技能集",
         "page_intro": (
-            "個人トレーダー OS の目的別スキルセット群です。スキルセットは"
-            "カテゴリ単位のスキル束（必須 / 推奨 / 任意）で、それを運用化する"
-            "ワークフローに紐づきます（「この目的のために何を入れるか」の層）。"
+            "个人交易者操作系统的目标导向技能集合。技能集是"
+            "按类别组织的技能包（必需 / 推荐 / 可选），并关联到将其运营化的"
+            "工作流（“为这个目标需要安装什么”的层次）。"
             "[`skillsets/`](https://github.com/tradermonty/claude-trading-skills/tree/main/skillsets) "
-            "以下の manifest が正本で、本ページはそこから自動生成されます。\n\n"
-            "**翻訳方針:** 本ページは見出しラベルのみ日本語化しています。"
-            "manifest 本文（`when_to_use` / `when_not_to_use` 等）は"
-            "英語正本をそのまま表示します。本文の日本語化は将来の対応予定です（manifest 側に "
-            "`*_ja` フィールドを追加するか、別のローカライズ層を設ける方向で検討中）。"
+            "下的 manifest 为权威来源，本页面由此自动生成。\n\n"
+            "**翻译说明：** 本页面仅对标题标签进行了中文化。"
+            "manifest 正文（`when_to_use` / `when_not_to_use` 等）"
+            "直接显示英文原文。正文的中文化为后续计划（在 manifest 中"
+            "添加 `*_zh` 字段，或设置独立的本地化层）。"
         ),
         "auto_generated_note": (
-            "このページは `scripts/generate_skillset_docs.py` によって自動生成されます。"
-            "手動編集しないでください。"
+            "本页面由 `scripts/generate_skillset_docs.py` 自动生成。请勿手动编辑。"
         ),
-        "summary_table_title": "スキルセット一覧",
-        "col_skillset": "スキルセット",
-        "col_timeframe": "タイムフレーム",
-        "col_api": "API プロファイル",
-        "col_difficulty": "難易度",
-        "col_related_workflows": "関連ワークフロー",
-        "when_to_use": "使用するとき",
-        "when_not_to_use": "使用してはいけないとき",
-        "target_users": "対象ユーザー",
-        "required_skills": "必須スキル",
-        "recommended_skills": "推奨スキル",
-        "optional_skills": "任意スキル",
-        "related_workflows": "関連ワークフロー",
-        "none": "（なし）",
+        "summary_table_title": "技能集一览",
+        "col_skillset": "技能集",
+        "col_timeframe": "时间框架",
+        "col_api": "API 配置",
+        "col_difficulty": "难度",
+        "col_related_workflows": "关联工作流",
+        "when_to_use": "适用场景",
+        "when_not_to_use": "不适用场景",
+        "target_users": "目标用户",
+        "required_skills": "必需技能",
+        "recommended_skills": "推荐技能",
+        "optional_skills": "可选技能",
+        "related_workflows": "关联工作流",
+        "none": "（无）",
     },
 }
 
@@ -96,17 +95,17 @@ layout: default
 title: Skillsets
 parent: English
 nav_order: 5
-lang_peer: /ja/skillsets/
+lang_peer: /zh/skillsets/
 permalink: /en/skillsets/
 ---
 """,
-    "ja": """---
+    "zh": """---
 layout: default
-title: スキルセット
-parent: 日本語
+title: 技能集
+parent: 中文
 nav_order: 5
 lang_peer: /en/skillsets/
-permalink: /ja/skillsets/
+permalink: /zh/skillsets/
 ---
 """,
 }
@@ -246,7 +245,7 @@ def default_output_path(project_root: Path, lang: str) -> Path:
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
-        description="Generate docs/{en,ja}/skillsets.md from skillsets/*.yaml manifests."
+        description="Generate docs/{en,zh}/skillsets.md from skillsets/*.yaml manifests."
     )
     parser.add_argument(
         "--project-root",
@@ -256,7 +255,7 @@ def main(argv: list[str] | None = None) -> int:
     )
     parser.add_argument(
         "--lang",
-        choices=["en", "ja", "all"],
+        choices=["en", "zh", "all"],
         default="all",
         help="Which language to generate (default: all)",
     )
@@ -264,7 +263,7 @@ def main(argv: list[str] | None = None) -> int:
         "--output",
         type=Path,
         default=None,
-        help="Override output path (only valid with --lang en or --lang ja)",
+        help="Override output path (only valid with --lang en or --lang zh)",
     )
     parser.add_argument(
         "--check",
@@ -274,7 +273,7 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     if args.output and args.lang == "all":
-        print("--output requires --lang en or --lang ja, not all", file=sys.stderr)
+        print("--output requires --lang en or --lang zh, not all", file=sys.stderr)
         return 2
 
     skillsets_dir = args.project_root / "skillsets"
@@ -287,7 +286,7 @@ def main(argv: list[str] | None = None) -> int:
         print(f"ERROR: no skillset manifests found under {skillsets_dir}", file=sys.stderr)
         return 1
 
-    langs = ["en", "ja"] if args.lang == "all" else [args.lang]
+    langs = ["en", "zh"] if args.lang == "all" else [args.lang]
     drift = False
 
     for lang in langs:

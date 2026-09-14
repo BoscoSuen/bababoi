@@ -339,18 +339,18 @@ def test_render_english_includes_summary_and_skill_table(tmp_path: Path) -> None
     assert "beta" in page
 
 
-def test_render_japanese_frontmatter_and_labels(tmp_path: Path) -> None:
+def test_render_chinese_frontmatter_and_labels(tmp_path: Path) -> None:
     root = make_project(tmp_path)
     m = compute_metrics(root)
-    page = render_page(m, "ja")
-    assert "parent: 日本語" in page
+    page = render_page(m, "zh")
+    assert "parent: 中文" in page
     assert "nav_order: 3" in page
-    assert "permalink: /ja/quality-dashboard/" in page
+    assert "permalink: /zh/quality-dashboard/" in page
     assert "lang_peer: /en/quality-dashboard/" in page
-    assert "本セクションは" in page
-    assert "ライフサイクル" in page
-    assert "テストカバレッジ" in page
-    assert "依存関係" in page
+    assert "质量仪表盘" in page
+    assert "生命周期" in page
+    assert "测试覆盖率" in page
+    assert "依赖" in page
     assert "Alpha" in page
     assert "production" not in page.replace("`production`", "").replace("production ", "")
 
@@ -362,14 +362,14 @@ def test_render_english_frontmatter(tmp_path: Path) -> None:
     assert "parent: English" in page
     assert "nav_order: 3" in page
     assert "permalink: /en/quality-dashboard/" in page
-    assert "lang_peer: /ja/quality-dashboard/" in page
+    assert "lang_peer: /zh/quality-dashboard/" in page
     assert "generated: true" in page
 
 
 def test_render_metadata_never_omits_absolute_path(tmp_path: Path) -> None:
     root = make_project(tmp_path)
     m = compute_metrics(root)
-    for page in (render_page(m, "en"), render_page(m, "ja")):
+    for page in (render_page(m, "en"), render_page(m, "zh")):
         assert "/Users/" not in page
 
 
@@ -390,7 +390,7 @@ def test_main_generates_both_pages(tmp_path: Path) -> None:
     rc = _run_main(root)
     assert rc == 0
     assert (root / "docs/en/quality-dashboard.md").is_file()
-    assert (root / "docs/ja/quality-dashboard.md").is_file()
+    assert (root / "docs/zh/quality-dashboard.md").is_file()
 
 
 def test_check_passes_when_files_match(tmp_path: Path) -> None:

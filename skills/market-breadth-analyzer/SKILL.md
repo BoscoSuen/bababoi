@@ -22,11 +22,11 @@ Quantify market breadth health using a data-driven 6-component scoring system (0
 - User wants to know if the market is narrowing (fewer stocks participating)
 - User asks about equity exposure levels based on breadth conditions
 
-**Japanese:**
-- 「マーケットブレッドスはどうですか？」「市場の参加率は？」
-- 「上昇は広がっている？」「一部の銘柄だけの上昇？」
-- ブレッドス指標に基づくエクスポージャー判断
-- 市場の健康度をデータで確認したい
+**Chinese:**
+- "市场广度怎么样？" "市场参与度如何？"
+- "上涨是否广泛？" "只是少数个股在涨？"
+- 基于广度指标的敞口判断
+- 想用数据确认市场健康度
 
 ## Prerequisites
 

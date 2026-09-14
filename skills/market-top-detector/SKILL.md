@@ -25,13 +25,13 @@ Unlike the Bubble Detector (macro/multi-month evaluation), this skill focuses on
 - User asks about reducing equity exposure timing
 - User wants to assess correction probability for the next 2-8 weeks
 
-**Japanese:**
-- 「天井が近い？」「今は利確すべき？」
-- ディストリビューションデーの蓄積を懸念
-- ディフェンシブセクターがグロースをアウトパフォーム
-- 先導株が崩れ始めているが指数はまだ持ちこたえている
-- エクスポージャー縮小のタイミング判断
-- 今後2〜8週間の調整確率を評価したい
+**Chinese:**
+- "快到顶部了吗？" "现在该止盈吗？"
+- 担心分配日累积
+- 防御性板块跑赢成长股
+- 领涨股开始走弱但指数仍在支撑
+- 判断缩减敞口的时机
+- 评估未来2至8周的调整概率
 
 ## Prerequisites
 

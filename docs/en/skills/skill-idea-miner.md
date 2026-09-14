@@ -4,7 +4,7 @@ title: "Skill Idea Miner"
 grand_parent: English
 parent: Skill Guides
 nav_order: 39
-lang_peer: /ja/skills/skill-idea-miner/
+lang_peer: /zh/skills/skill-idea-miner/
 permalink: /en/skills/skill-idea-miner/
 ---
 
@@ -76,7 +76,7 @@ Mine Claude Code session logs for skill idea candidates. Use when running the we
    - Skill usage frequency (`skills/*/` path references)
    - Error patterns (non-zero exit codes, `is_error` flags, exception keywords)
    - Repetitive tool sequences (3+ tools repeated 3+ times)
-   - Automation request keywords (English and Japanese)
+   - Automation request keywords (English and Chinese)
    - Unresolved requests (5+ minute gap after user message)
 6. Invoke Claude CLI headless for idea abstraction
 7. Output `raw_candidates.yaml`

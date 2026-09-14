@@ -1,6 +1,6 @@
 ---
 name: kanchi-dividend-sop
-description: Convert Kanchi-style dividend investing into a repeatable US-stock operating procedure. Use when users ask for かんち式配当投資, dividend screening, dividend growth quality checks, PERxPBR adaptation for US sectors, pullback limit-order planning, or one-page stock memo creation. Covers screening, deep dive, entry planning, and post-purchase monitoring cadence.
+description: Convert Kanchi-style dividend investing into a repeatable US-stock operating procedure. Use when users ask for Kanchi式股息投资, dividend screening, dividend growth quality checks, PERxPBR adaptation for US sectors, pullback limit-order planning, or one-page stock memo creation. Covers screening, deep dive, entry planning, and post-purchase monitoring cadence.
 ---
 
 # Kanchi Dividend Sop

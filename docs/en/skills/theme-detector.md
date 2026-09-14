@@ -4,7 +4,7 @@ title: Theme Detector
 grand_parent: English
 parent: Skill Guides
 nav_order: 4
-lang_peer: /ja/skills/theme-detector/
+lang_peer: /zh/skills/theme-detector/
 permalink: /en/skills/theme-detector/
 ---
 

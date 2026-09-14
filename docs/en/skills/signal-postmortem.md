@@ -4,7 +4,7 @@ title: "Signal Postmortem"
 grand_parent: English
 parent: Skill Guides
 nav_order: 11
-lang_peer: /ja/skills/signal-postmortem/
+lang_peer: /zh/skills/signal-postmortem/
 permalink: /en/skills/signal-postmortem/
 ---
 

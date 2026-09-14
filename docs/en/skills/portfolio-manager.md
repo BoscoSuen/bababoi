@@ -4,7 +4,7 @@ title: "Portfolio Manager"
 grand_parent: English
 parent: Skill Guides
 nav_order: 35
-lang_peer: /ja/skills/portfolio-manager/
+lang_peer: /zh/skills/portfolio-manager/
 permalink: /en/skills/portfolio-manager/
 ---
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate the versioned EN/JA Navigator intent-routing benchmark."""
+"""Validate the versioned EN/ZH Navigator intent-routing benchmark."""
 
 from __future__ import annotations
 
@@ -40,7 +40,7 @@ EXPECTED_METRICS = {
 }
 REQUIRED_TRANSFORMATIONS = {
     "en": {"case", "punctuation", "word_order", "orthographic"},
-    "ja": {"punctuation", "word_order", "orthographic", "ja_particle", "ja_conjugation"},
+    "zh": {"punctuation", "word_order", "orthographic", "zh_measure_word", "zh_aspect"},
 }
 
 
@@ -71,8 +71,8 @@ def load_benchmark(path: Path) -> dict[str, Any]:
         if case_id in seen:
             raise BenchmarkError(f"duplicate case id: {case_id}")
         seen.add(case_id)
-        if case["language"] not in {"en", "ja"}:
-            raise BenchmarkError(f"{case_id}: language must be en or ja")
+        if case["language"] not in {"en", "zh"}:
+            raise BenchmarkError(f"{case_id}: language must be en or zh")
         if case["label"] not in ALLOWED_LABELS:
             raise BenchmarkError(f"{case_id}: unsupported label {case['label']!r}")
         if not isinstance(case["query"], str) or not case["query"].strip():
@@ -271,7 +271,7 @@ def evaluate_benchmark(benchmark: dict[str, Any], metadata: dict[str, Any]) -> d
         workflow["id"]: {"positive_cases": 0, "hard_negative_cases": 0}
         for workflow in metadata["workflows"]
     }
-    transformations: dict[str, set[str]] = {"en": set(), "ja": set()}
+    transformations: dict[str, set[str]] = {"en": set(), "zh": set()}
 
     predicted_candidate_total = 0
     expected_candidate_total = 0
@@ -375,9 +375,9 @@ def evaluate_benchmark(benchmark: dict[str, Any], metadata: dict[str, Any]) -> d
         failures.append(f"metrics {metrics!r} do not match baseline {benchmark['baseline']!r}")
 
     for name, coverage in persona_coverage.items():
-        if coverage["positive_languages"] != {"en", "ja"}:
+        if coverage["positive_languages"] != {"en", "zh"}:
             failures.append(f"{name}: missing bilingual positive coverage")
-        if coverage["hard_negative_languages"] != {"en", "ja"}:
+        if coverage["hard_negative_languages"] != {"en", "zh"}:
             failures.append(f"{name}: missing bilingual hard-negative coverage")
         if coverage["neighbor_cases"] < 1:
             failures.append(f"{name}: missing neighboring-intent coverage")

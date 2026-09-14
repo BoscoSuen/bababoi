@@ -1,7 +1,7 @@
 # FinViz Screener Filter Reference
 
 
-This reference maps FinViz screener filter codes to their meanings and natural-language keywords (English + Japanese). Claude uses this document to translate user intent into valid FinViz filter codes.
+This reference maps FinViz screener filter codes to their meanings and natural-language keywords (English + Chinese). Claude uses this document to translate user intent into valid FinViz filter codes.
 
 
 ---
@@ -64,20 +64,20 @@ Common signals:
 
 | Code | Meaning | Natural Language Keywords |
 |------|---------|---------------------------|
-| `ta_topgainers` | Top Gainers | gainers, 値上がり上位 |
-| `ta_toplosers` | Top Losers | losers, 値下がり上位 |
-| `ta_newhigh` | New High | new high, 新高値 |
-| `ta_newlow` | New Low | new low, 新安値 |
-| `ta_mostvolatile` | Most Volatile | volatile, 高ボラ |
-| `ta_mostactive` | Most Active | active, 活発 |
-| `ta_unusualvolume` | Unusual Volume | unusual volume, 異常出来高 |
-| `ta_overbought` | Overbought | overbought, 買われすぎ |
-| `ta_oversold` | Oversold | oversold, 売られすぎ |
-| `ta_downgrades` | Downgrades | downgrade, 格下げ |
-| `ta_upgrades` | Upgrades | upgrade, 格上げ |
+| `ta_topgainers` | Top Gainers | gainers, 涨幅居前 |
+| `ta_toplosers` | Top Losers | losers, 跌幅居前 |
+| `ta_newhigh` | New High | new high, 新高 |
+| `ta_newlow` | New Low | new low, 新低 |
+| `ta_mostvolatile` | Most Volatile | volatile, 高波动 |
+| `ta_mostactive` | Most Active | active, 活跃 |
+| `ta_unusualvolume` | Unusual Volume | unusual volume, 异常成交量 |
+| `ta_overbought` | Overbought | overbought, 超买 |
+| `ta_oversold` | Oversold | oversold, 超卖 |
+| `ta_downgrades` | Downgrades | downgrade, 下调评级 |
+| `ta_upgrades` | Upgrades | upgrade, 上调评级 |
 | `ta_earnbefore` | Earnings Before | earnings before market |
 | `ta_earnafter` | Earnings After | earnings after market |
-| `n_majornews` | Major News | major news, 重大ニュース |
+| `n_majornews` | Major News | major news, 重大新闻 |
 | `ta_p_wedgeup` | Wedge Up |  |
 | `ta_p_wedgedown` | Wedge Down |  |
 | `ta_p_tri_ascending` | Triangle Ascending |  |
@@ -98,13 +98,13 @@ Common signals:
 
 | Code | Meaning | Natural Language Keywords |
 |------|---------|---------------------------|
-| `111` | Overview — ticker, company, sector, industry, country, market cap, P/E, price, change, volume | overview, 概要, 一覧 |
-| `121` | Valuation — market cap, P/E, Forward P/E, PEG, P/S, P/B, P/Cash, P/FCF, EPS, dividend yield | valuation, バリュエーション, 割安度 |
-| `131` | Ownership — market cap, outstanding shares, float, insider/institutional ownership, short float | ownership, 所有, 株主構成 |
-| `141` | Performance — performance periods (day to 10Y), volatility, RSI, SMA | performance, パフォーマンス, 騰落率 |
-| `152` | Custom — user-defined columns | custom, カスタム |
-| `161` | Financial — market cap, dividend yield, ROA, ROE, ROI, ratios, margins | financial, 財務, ファイナンシャル |
-| `171` | Technical — RSI, SMA20/50/200, 52W High/Low, pattern, candlestick, beta, ATR | technical, テクニカル, チャート指標 |
+| `111` | Overview — ticker, company, sector, industry, country, market cap, P/E, price, change, volume | overview, 概览, 列表 |
+| `121` | Valuation — market cap, P/E, Forward P/E, PEG, P/S, P/B, P/Cash, P/FCF, EPS, dividend yield | valuation, 估值, 低估程度 |
+| `131` | Ownership — market cap, outstanding shares, float, insider/institutional ownership, short float | ownership, 持股, 股东构成 |
+| `141` | Performance — performance periods (day to 10Y), volatility, RSI, SMA | performance, 表现, 涨跌幅 |
+| `152` | Custom — user-defined columns | custom, 自定义 |
+| `161` | Financial — market cap, dividend yield, ROA, ROE, ROI, ratios, margins | financial, 财务, 金融指标 |
+| `171` | Technical — RSI, SMA20/50/200, 52W High/Low, pattern, candlestick, beta, ATR | technical, 技术面, 图表指标 |
 
 ---
 
@@ -114,29 +114,29 @@ Common signals:
 
 | Code | Meaning | Natural Language Keywords |
 |------|---------|---------------------------|
-| `ticker` | Ticker A→Z | ticker, ティッカー |
+| `ticker` | Ticker A→Z | ticker, 股票代码 |
 | `-ticker` | Ticker Z→A |  |
-| `company` | Company name A→Z | company, 会社名 |
-| `sector` | Sector | sector, セクター |
-| `industry` | Industry | industry, 業種 |
-| `country` | Country | country, 国 |
-| `marketcap` | Market Cap (ascending) | market cap, 時価総額, 小さい順 |
-| `-marketcap` | Market Cap (descending) | 時価総額大きい順 |
+| `company` | Company name A→Z | company, 公司名 |
+| `sector` | Sector | sector, 板块 |
+| `industry` | Industry | industry, 行业 |
+| `country` | Country | country, 国家 |
+| `marketcap` | Market Cap (ascending) | market cap, 市值, 从小到大 |
+| `-marketcap` | Market Cap (descending) | 市值从大到小 |
 | `pe` | P/E (ascending) | PE, PER |
 | `-pe` | P/E (descending) |  |
 | `forwardpe` | Forward P/E (ascending) | forward PE |
 | `eps` | EPS (ascending) | EPS |
-| `dividendyield` | Dividend Yield (ascending) | dividend, 配当, 利回り |
-| `-dividendyield` | Dividend Yield (descending) | 高配当順 |
-| `price` | Price (ascending) | price, 株価 |
+| `dividendyield` | Dividend Yield (ascending) | dividend, 股息, 收益率 |
+| `-dividendyield` | Dividend Yield (descending) | 高股息排序 |
+| `price` | Price (ascending) | price, 股价 |
 | `-price` | Price (descending) |  |
-| `change` | Change (ascending) | change, 変動率 |
+| `change` | Change (ascending) | change, 变动率 |
 | `-change` | Change (descending) |  |
-| `volume` | Volume (ascending) | volume, 出来高 |
-| `-volume` | Volume (descending) | 出来高大きい順 |
-| `recom` | Analyst Recommendation | recommendation, アナリスト推奨 |
-| `earningsdate` | Earnings Date | earnings date, 決算日 |
-| `targetprice` | Target Price | target price, 目標株価 |
+| `volume` | Volume (ascending) | volume, 成交量 |
+| `-volume` | Volume (descending) | 成交量从大到小 |
+| `recom` | Analyst Recommendation | recommendation, 分析师推荐 |
+| `earningsdate` | Earnings Date | earnings date, 财报日 |
+| `targetprice` | Target Price | target price, 目標股价 |
 | `shortfloat` | Short Float | short float |
 | `averagevolume` | Average Volume | average volume |
 | `relativevolume` | Relative Volume | relative volume |
@@ -154,8 +154,8 @@ Common signals:
 |------|---------|---------------------------|
 | `exch_amex` | AMEX | AMEX |
 | `exch_cboe` | CBOE | CBOE |
-| `exch_nasd` | NASDAQ | NASDAQ, ナスダック |
-| `exch_nyse` | NYSE | NYSE, ニューヨーク証券取引所 |
+| `exch_nasd` | NASDAQ | NASDAQ, 纳斯达克 |
+| `exch_nyse` | NYSE | NYSE, 纽约证券交易所 |
 
 ### Index (`idx_`)
 
@@ -163,38 +163,38 @@ Common signals:
 | Code | Meaning | Natural Language Keywords |
 |------|---------|---------------------------|
 | `idx_sp500` | S&P 500 | S&P 500, S&P500 |
-| `idx_dji` | Dow Jones | Dow, ダウ, ダウ工業 |
-| `idx_ndx` | NASDAQ 100 | NASDAQ 100, ナスダック100 |
-| `idx_rut` | Russell 2000 | Russell 2000, ラッセル2000, 小型株指数 |
+| `idx_dji` | Dow Jones | Dow, 道琼斯, 道指 |
+| `idx_ndx` | NASDAQ 100 | NASDAQ 100, 纳斯达克100 |
+| `idx_rut` | Russell 2000 | Russell 2000, 罗素2000, 小盘股指数 |
 
 ### Sector (`sec_`)
 
 
 | Code | Meaning | Natural Language Keywords |
 |------|---------|---------------------------|
-| `sec_basicmaterials` | Basic Materials | basic materials, 素材, 原材料 |
-| `sec_communicationservices` | Communication Services | communication, 通信, メディア |
-| `sec_consumercyclical` | Consumer Cyclical | consumer cyclical, 一般消費財, 景気敏感消費 |
-| `sec_consumerdefensive` | Consumer Defensive | consumer defensive, 生活必需品, ディフェンシブ消費 |
-| `sec_energy` | Energy | energy, エネルギー, 石油 |
-| `sec_financial` | Financial | financial, 金融, 銀行 |
-| `sec_healthcare` | Healthcare | healthcare, ヘルスケア, 医療 |
-| `sec_industrials` | Industrials | industrials, 資本財, 産業 |
-| `sec_realestate` | Real Estate | real estate, 不動産, REIT |
-| `sec_technology` | Technology | technology, テクノロジー, ハイテク, IT |
-| `sec_utilities` | Utilities | utilities, 公益, 電力, ガス |
+| `sec_basicmaterials` | Basic Materials | basic materials, 原材料, 基础材料 |
+| `sec_communicationservices` | Communication Services | communication, 通信, 媒体 |
+| `sec_consumercyclical` | Consumer Cyclical | consumer cyclical, 可选消费, 周期性消费 |
+| `sec_consumerdefensive` | Consumer Defensive | consumer defensive, 必选消费, 防御性消费 |
+| `sec_energy` | Energy | energy, 能源, 石油 |
+| `sec_financial` | Financial | financial, 金融, 银行 |
+| `sec_healthcare` | Healthcare | healthcare, 医疗保健, 医疗 |
+| `sec_industrials` | Industrials | industrials, 工业, 制造 |
+| `sec_realestate` | Real Estate | real estate, 房地产, REIT |
+| `sec_technology` | Technology | technology, 科技, 高科技, IT |
+| `sec_utilities` | Utilities | utilities, 公用事业, 电力, 燃气 |
 
 ### Market Cap (`cap_`)
 
 
 | Code | Meaning | Natural Language Keywords |
 |------|---------|---------------------------|
-| `cap_mega` | Mega ($200B+) | mega cap, メガキャップ, 超大型 |
-| `cap_large` | Large ($10B–$200B) | large cap, ラージキャップ, 大型 |
-| `cap_mid` | Mid ($2B–$10B) | mid cap, ミッドキャップ, 中型 |
-| `cap_small` | Small ($300M–$2B) | small cap, スモールキャップ, 小型 |
-| `cap_micro` | Micro ($50M–$300M) | micro cap, マイクロキャップ, 超小型 |
-| `cap_nano` | Nano (under $50M) | nano cap, ナノキャップ |
+| `cap_mega` | Mega ($200B+) | mega cap, 超大盘, 超大型 |
+| `cap_large` | Large ($10B–$200B) | large cap, 大盘, 大型 |
+| `cap_mid` | Mid ($2B–$10B) | mid cap, 中盘, 中型 |
+| `cap_small` | Small ($300M–$2B) | small cap, 小盘, 小型 |
+| `cap_micro` | Micro ($50M–$300M) | micro cap, 微盘, 超小型 |
+| `cap_nano` | Nano (under $50M) | nano cap, 纳米盘 |
 | `cap_largeover` | +Large ($10B+) | large+, 大型以上 |
 | `cap_midover` | +Mid ($2B+) | mid+, 中型以上 |
 | `cap_smallover` | +Small ($300M+) | small+, 小型以上 |
@@ -212,29 +212,29 @@ Common countries:
 
 | Code | Meaning | Natural Language Keywords |
 |------|---------|---------------------------|
-| `geo_usa` | USA | USA, アメリカ, 米国 |
-| `geo_notusa` | Foreign (ex-USA) | foreign, 外国, 海外, ADR |
-| `geo_asia` | Asia | Asia, アジア |
-| `geo_europe` | Europe | Europe, ヨーロッパ, 欧州 |
-| `geo_latinamerica` | Latin America | Latin America, 中南米 |
+| `geo_usa` | USA | USA, 美国家 |
+| `geo_notusa` | Foreign (ex-USA) | foreign, 外国家, 海外, ADR |
+| `geo_asia` | Asia | Asia, 亚洲 |
+| `geo_europe` | Europe | Europe, 欧洲 |
+| `geo_latinamerica` | Latin America | Latin America, 拉丁美洲 |
 | `geo_bric` | BRIC | BRIC |
-| `geo_china` | China | China, 中国 |
+| `geo_china` | China | China, 中国家 |
 | `geo_chinahongkong` | China & Hong Kong |  |
 | `geo_japan` | Japan | Japan, 日本 |
-| `geo_india` | India | India, インド |
-| `geo_unitedkingdom` | United Kingdom | UK, イギリス |
-| `geo_canada` | Canada | Canada, カナダ |
-| `geo_germany` | Germany | Germany, ドイツ |
-| `geo_france` | France | France, フランス |
-| `geo_brazil` | Brazil | Brazil, ブラジル |
-| `geo_southkorea` | South Korea | South Korea, 韓国 |
+| `geo_india` | India | India, 印度 |
+| `geo_unitedkingdom` | United Kingdom | UK, 英国 |
+| `geo_canada` | Canada | Canada, 加拿大 |
+| `geo_germany` | Germany | Germany, 德国 |
+| `geo_france` | France | France, 法国 |
+| `geo_brazil` | Brazil | Brazil, 巴西 |
+| `geo_southkorea` | South Korea | South Korea, 韩国家 |
 | `geo_taiwan` | Taiwan | Taiwan, 台湾 |
-| `geo_israel` | Israel | Israel, イスラエル |
-| `geo_australia` | Australia | Australia, オーストラリア |
-| `geo_switzerland` | Switzerland | Switzerland, スイス |
-| `geo_netherlands` | Netherlands | Netherlands, オランダ |
-| `geo_ireland` | Ireland | Ireland, アイルランド |
-| `geo_singapore` | Singapore | Singapore, シンガポール |
+| `geo_israel` | Israel | Israel, 以色列 |
+| `geo_australia` | Australia | Australia, 澳大利亚 |
+| `geo_switzerland` | Switzerland | Switzerland, 瑞士 |
+| `geo_netherlands` | Netherlands | Netherlands, 荷兰 |
+| `geo_ireland` | Ireland | Ireland, 爱尔兰 |
+| `geo_singapore` | Singapore | Singapore, 新加坡 |
 
 Additional countries: Argentina, Bahamas, Belgium, BeNeLux, Bermuda, Cayman Islands, Chile, Colombia, Cyprus, Denmark, Finland, Greece, Hong Kong, Hungary, Iceland, Indonesia, Italy, Jordan, Kazakhstan, Luxembourg, Malaysia, Malta, Mexico, Monaco, New Zealand, Norway, Panama, Peru, Philippines, Portugal, Russia, South Africa, Spain, Sweden, Thailand, Turkey, UAE, Uruguay, Vietnam
 
@@ -246,7 +246,7 @@ Additional countries: Argentina, Bahamas, Belgium, BeNeLux, Bermuda, Cayman Isla
 |------|---------|---------------------------|
 | `ipodate_today` | Today | IPO today, 今日IPO |
 | `ipodate_yesterday` | Yesterday |  |
-| `ipodate_prevweek` | In the last week | recent IPO, 最近のIPO |
+| `ipodate_prevweek` | In the last week | recent IPO, 近期IPO |
 | `ipodate_prevmonth` | In the last month |  |
 | `ipodate_prevquarter` | In the last quarter |  |
 | `ipodate_prevyear` | In the last year |  |
@@ -254,7 +254,7 @@ Additional countries: Argentina, Bahamas, Belgium, BeNeLux, Bermuda, Cayman Isla
 | `ipodate_prev3yrs` | In the last 3 years |  |
 | `ipodate_prev5yrs` | In the last 5 years |  |
 | `ipodate_more1` | More than a year ago |  |
-| `ipodate_more5` | More than 5 years ago | established, 安定企業 |
+| `ipodate_more5` | More than 5 years ago | established, 成熟企业 |
 | `ipodate_more10` | More than 10 years ago |  |
 | `ipodate_more15` | More than 15 years ago |  |
 | `ipodate_more20` | More than 20 years ago |  |
@@ -265,21 +265,21 @@ Additional countries: Argentina, Bahamas, Belgium, BeNeLux, Bermuda, Cayman Isla
 
 | Code | Meaning | Natural Language Keywords |
 |------|---------|---------------------------|
-| `earningsdate_today` | Today | earnings today, 今日決算 |
-| `earningsdate_todaybefore` | Today Before Market Open | 寄り前決算 |
-| `earningsdate_todayafter` | Today After Market Close | 引け後決算 |
-| `earningsdate_tomorrow` | Tomorrow | earnings tomorrow, 明日決算 |
+| `earningsdate_today` | Today | earnings today, 今日财报 |
+| `earningsdate_todaybefore` | Today Before Market Open | 盘前财报 |
+| `earningsdate_todayafter` | Today After Market Close | 盘后财报 |
+| `earningsdate_tomorrow` | Tomorrow | earnings tomorrow, 明日财报 |
 | `earningsdate_tomorrowbefore` | Tomorrow Before Market Open |  |
 | `earningsdate_tomorrowafter` | Tomorrow After Market Close |  |
-| `earningsdate_yesterday` | Yesterday | 昨日決算 |
+| `earningsdate_yesterday` | Yesterday | 昨日财报 |
 | `earningsdate_yesterdaybefore` | Yesterday Before Market Open |  |
 | `earningsdate_yesterdayafter` | Yesterday After Market Close |  |
-| `earningsdate_thisweek` | This Week | earnings this week, 今週決算 |
-| `earningsdate_nextweek` | Next Week | earnings next week, 来週決算 |
-| `earningsdate_prevweek` | Previous Week | 先週決算 |
-| `earningsdate_nextdays5` | Next 5 Days | 今後5日以内決算 |
-| `earningsdate_prevdays5` | Previous 5 Days | 過去5日決算 |
-| `earningsdate_thismonth` | This Month | earnings this month, 今月決算 |
+| `earningsdate_thisweek` | This Week | earnings this week, 本周财报 |
+| `earningsdate_nextweek` | Next Week | earnings next week, 下周财报 |
+| `earningsdate_prevweek` | Previous Week | 上周财报 |
+| `earningsdate_nextdays5` | Next 5 Days | 未来5日内财报 |
+| `earningsdate_prevdays5` | Previous 5 Days | 过去5日财报 |
+| `earningsdate_thismonth` | This Month | earnings this month, 本月财报 |
 
 ---
 
@@ -354,7 +354,7 @@ Special: `fa_ps_low` (Low <1), `fa_ps_high` (High >10)
 
 Pattern: `fa_pb_u{N}` (under N), `fa_pb_o{N}` (over N), `fa_pb_{from}to{to}` (range, e.g., `fa_pb_1to3`). Range: 1–10.
 
-Special: `fa_pb_low` (Low <1, 簿価割れ), `fa_pb_high` (High >5)
+Special: `fa_pb_low` (Low <1, 破净), `fa_pb_high` (High >5)
 
 
 ### P/Cash (`fa_pc_`)
@@ -438,7 +438,7 @@ Pattern: `fa_div_o{N}` (over N%), `fa_div_{from}to{to}` (range, e.g., `fa_div_3t
 | Code | Meaning | Natural Language Keywords |
 |------|---------|---------------------------|
 | `fa_div_none` | None (0%) | no dividend, 無配 |
-| `fa_div_pos` | Positive (>0%) | has dividend, 配当あり |
+| `fa_div_pos` | Positive (>0%) | has dividend, 有股息 |
 | `fa_div_high` | High (>5%) | high dividend, 高配当 |
 | `fa_div_veryhigh` | Very High (>10%) | very high dividend, 超高配当 |
 | `fa_div_o1` | Over 1% | 配当1%以上 |
@@ -492,9 +492,9 @@ All EPS growth filters follow the same pattern: `neg` (negative), `pos` (positiv
 | Code | Meaning | Natural Language Keywords |
 |------|---------|---------------------------|
 | `fa_epsqoq_*` | EPS Growth Q/Q | EPS QoQ, 四半期EPS成長, 増益 |
-| `fa_epsyoy_*` | EPS Growth This Year | EPS this year, 今年のEPS成長 |
-| `fa_epsyoy1_*` | EPS Growth Next Year | EPS next year, 来年のEPS成長予想 |
-| `fa_epsyoyttm_*` | EPS Growth TTM | EPS TTM, 直近12ヶ月EPS成長 |
+| `fa_epsyoy_*` | EPS Growth This Year | EPS this year, 今年EPS增长 |
+| `fa_epsyoy1_*` | EPS Growth Next Year | EPS next year, 明年EPS增长预期 |
+| `fa_epsyoyttm_*` | EPS Growth TTM | EPS TTM, 近12个月EPS增长 |
 | `fa_eps3years_*` | EPS Growth Past 3 Years | 3Y EPS成長 |
 | `fa_eps5years_*` | EPS Growth Past 5 Years | 5Y EPS成長 |
 | `fa_estltgrowth_*` | EPS Growth Next 5 Years | 5Y EPS成長予想, 長期成長 |
@@ -521,7 +521,7 @@ Same pattern as EPS Growth: `neg`, `pos`, `poslow`, `high`, `o{N}`, `u{N}`.
 | Code | Meaning | Natural Language Keywords |
 |------|---------|---------------------------|
 | `fa_salesqoq_*` | Sales Growth Q/Q | 売上QoQ, 増収 |
-| `fa_salesyoyttm_*` | Sales Growth TTM | 売上TTM, 直近12ヶ月売上成長 |
+| `fa_salesyoyttm_*` | Sales Growth TTM | 营收TTM, 近12个月营收增长 |
 | `fa_sales3years_*` | Sales Growth Past 3 Years | 3Y売上成長 |
 | `fa_sales5years_*` | Sales Growth Past 5 Years | 5Y売上成長 |
 
@@ -540,9 +540,9 @@ Same pattern as EPS Growth: `neg`, `pos`, `poslow`, `high`, `o{N}`, `u{N}`.
 
 | Code | Meaning | Natural Language Keywords |
 |------|---------|---------------------------|
-| `fa_epsrev_bp` | Both Positive (>0%) | positive surprise, ポジティブサプライズ, 決算好調 |
+| `fa_epsrev_bp` | Both Positive (>0%) | positive surprise, 正面惊喜, 财报良好 |
 | `fa_epsrev_bm` | Both Met (0%) | met estimates, 予想一致 |
-| `fa_epsrev_bn` | Both Negative (<0%) | negative surprise, ネガティブサプライズ, 決算不振 |
+| `fa_epsrev_bn` | Both Negative (<0%) | negative surprise, 负面惊喜, 财报不佳 |
 
 ### Profitability — ROE, ROA, ROIC
 
@@ -554,9 +554,9 @@ Special labels: `verypos` (ROE >30%, ROA >15%, ROIC >25%), `veryneg` (ROE <-15%,
 
 | Code | Meaning | Natural Language Keywords |
 |------|---------|---------------------------|
-| `fa_roe_*` | Return on Equity | ROE, 自己資本利益率 |
+| `fa_roe_*` | Return on Equity | ROE, 净资产收益率 |
 | `fa_roa_*` | Return on Assets | ROA, 総資産利益率 |
-| `fa_roi_*` | Return on Invested Capital (ROIC) | ROI, ROIC, 投下資本利益率 |
+| `fa_roi_*` | Return on Invested Capital (ROIC) | ROI, ROIC, 投入资本回报率 |
 
 **Example codes:**
 
@@ -626,11 +626,11 @@ N range: 0–90 (5-point intervals).
 |------|---------|---------------------------|
 | `ta_rsi_ob90` | Overbought (90) | extremely overbought, 超過熱 |
 | `ta_rsi_ob80` | Overbought (80) | overbought, 過熱 |
-| `ta_rsi_ob70` | Overbought (70) | overbought, 買われすぎ |
+| `ta_rsi_ob70` | Overbought (70) | overbought, 超买 |
 | `ta_rsi_ob60` | Overbought (60) |  |
 | `ta_rsi_os40` | Oversold (40) | slightly oversold |
-| `ta_rsi_os30` | Oversold (30) | oversold, 売られすぎ |
-| `ta_rsi_os20` | Oversold (20) | deeply oversold, 深い売られすぎ |
+| `ta_rsi_os30` | Oversold (30) | oversold, 超卖 |
+| `ta_rsi_os20` | Oversold (20) | deeply oversold, 深度超卖 |
 | `ta_rsi_os10` | Oversold (10) | extremely oversold |
 | `ta_rsi_nob60` | Not Overbought (<60) |  |
 | `ta_rsi_nob50` | Not Overbought (<50) |  |
@@ -657,20 +657,20 @@ Each SMA has the following options:
 
 | Code | Meaning | Natural Language Keywords |
 |------|---------|---------------------------|
-| `ta_sma20_pa` | Price Above SMA20 | above 20MA, 20日線の上 |
-| `ta_sma20_pb` | Price Below SMA20 | below 20MA, 20日線の下 |
+| `ta_sma20_pa` | Price Above SMA20 | above 20MA, 20日线之上 |
+| `ta_sma20_pb` | Price Below SMA20 | below 20MA, 20日线之下 |
 | `ta_sma20_pca` | Price Crossed Above SMA20 | break above 20MA, 20日線突破 |
-| `ta_sma20_pcb` | Price Crossed Below SMA20 | break below 20MA, 20日線割れ |
-| `ta_sma50_pa` | Price Above SMA50 | above 50MA, 50日線の上 |
-| `ta_sma50_pb` | Price Below SMA50 | below 50MA, 50日線の下 |
+| `ta_sma20_pcb` | Price Crossed Below SMA20 | break below 20MA, 跌破20日线 |
+| `ta_sma50_pa` | Price Above SMA50 | above 50MA, 50日线之上 |
+| `ta_sma50_pb` | Price Below SMA50 | below 50MA, 50日线之下 |
 | `ta_sma50_pca` | Price Crossed Above SMA50 | break above 50MA, 50日線突破 |
-| `ta_sma50_pcb` | Price Crossed Below SMA50 | break below 50MA, 50日線割れ |
-| `ta_sma200_pa` | Price Above SMA200 | above 200MA, 200日線の上, 長期上昇 |
-| `ta_sma200_pb` | Price Below SMA200 | below 200MA, 200日線の下, 長期下落 |
-| `ta_sma200_pca` | Price Crossed Above SMA200 | break above 200MA, ゴールデンクロス |
-| `ta_sma200_pcb` | Price Crossed Below SMA200 | break below 200MA, デッドクロス |
-| `ta_sma200_sa50` | SMA200 Above SMA50 | death cross, デッドクロス配置 |
-| `ta_sma200_sb50` | SMA200 Below SMA50 | golden cross, ゴールデンクロス配置 |
+| `ta_sma50_pcb` | Price Crossed Below SMA50 | break below 50MA, 跌破50日线 |
+| `ta_sma200_pa` | Price Above SMA200 | above 200MA, 200日线之上, 长期上升 |
+| `ta_sma200_pb` | Price Below SMA200 | below 200MA, 200日线之下, 长期下跌 |
+| `ta_sma200_pca` | Price Crossed Above SMA200 | break above 200MA, 金叉 |
+| `ta_sma200_pcb` | Price Crossed Below SMA200 | break below 200MA, 死叉 |
+| `ta_sma200_sa50` | SMA200 Above SMA50 | death cross, 死叉排列 |
+| `ta_sma200_sb50` | SMA200 Below SMA50 | golden cross, 金叉排列 |
 | `ta_sma50_cross200a` | SMA50 Crossed SMA200 Above | golden cross発生 |
 | `ta_sma50_cross200b` | SMA50 Crossed SMA200 Below | death cross発生 |
 
@@ -703,8 +703,8 @@ Same pattern as Change: `ta_changeopen_u{N}` / `ta_changeopen_d{N}`. N = 1–20.
 
 | Code | Meaning | Natural Language Keywords |
 |------|---------|---------------------------|
-| `ta_changeopen_u` | Up from Open | 始値から上昇 |
-| `ta_changeopen_d` | Down from Open | 始値から下落 |
+| `ta_changeopen_u` | Up from Open | 高于开盘价 |
+| `ta_changeopen_d` | Down from Open | 低于开盘价 |
 | `ta_changeopen_u5` | Up 5% from Open |  |
 | `ta_changeopen_d5` | Down 5% from Open |  |
 
@@ -723,8 +723,8 @@ Ranges above low: same pattern
 - `-alx` (above low, custom): `ta_highlow52w_{from}to{to}-alx` = {from}–{to}% above 52-week low
 
 Examples:
-- `ta_highlow52w_10to30-bhx` = 52-week high から 10-30% 下落
-- `ta_highlow52w_10to30-alx` = 52-week low から 10-30% 上昇
+- `ta_highlow52w_10to30-bhx` = 52周高点回落10-30%
+- `ta_highlow52w_10to30-alx` = 52周低点反弹10-30%
 
 This syntax is generated by FinViz's custom range UI (requires `&ft=4` in URL for custom filter type). Not registered in the finviz Python library.
 
@@ -732,8 +732,8 @@ This syntax is generated by FinViz's custom range UI (requires `&ft=4` in URL fo
 
 | Strategy | Suffix | Use When | Example |
 |---|---|---|---|
-| Pullback buy (押し目買い) | `-bhx` | Growth + quality stocks in temporary correction. Uptrend intact. | `ta_highlow52w_10to30-bhx` with `fa_epsqoq_pos` |
-| Reversal / deep value (リバーサル) | `-alx` | Turnaround or bottom-fishing plays. Higher risk of continued decline. | `ta_highlow52w_10to30-alx` with `fa_pb_u1` |
+| Pullback buy (逢低买入) | `-bhx` | Growth + quality stocks in temporary correction. Uptrend intact. | `ta_highlow52w_10to30-bhx` with `fa_epsqoq_pos` |
+| Reversal / deep value (反转) | `-alx` | Turnaround or bottom-fishing plays. Higher risk of continued decline. | `ta_highlow52w_10to30-alx` with `fa_pb_u1` |
 
 Rule of thumb: Pair `-bhx` with growth/quality filters (EPS growth, sales growth). Pair `-alx` with deep value filters (low P/B, low EV/EBITDA).
 
@@ -742,8 +742,8 @@ Rule of thumb: Pair `-bhx` with growth/quality filters (EPS growth, sales growth
 
 | Code | Meaning | Natural Language Keywords |
 |------|---------|---------------------------|
-| `ta_highlow52w_nh` | New High | 52-week high, 52週高値, 新高値 |
-| `ta_highlow52w_nl` | New Low | 52-week low, 52週安値, 新安値 |
+| `ta_highlow52w_nh` | New High | 52-week high, 52週高値, 新高 |
+| `ta_highlow52w_nl` | New Low | 52-week low, 52週安値, 新低 |
 | `ta_highlow52w_b0to3h` | 0-3% Below High | near high, 高値付近 |
 | `ta_highlow52w_b0to5h` | 0-5% Below High | near high |
 | `ta_highlow52w_b0to10h` | 0-10% Below High | close to high |
@@ -771,8 +771,8 @@ Custom range also supported: `ta_highlow20d_{from}to{to}-bhx` / `-alx` (see 52-W
 
 | Code | Meaning | Natural Language Keywords |
 |------|---------|---------------------------|
-| `ta_highlow20d_nh` | 20-Day New High | 20日新高値 |
-| `ta_highlow20d_nl` | 20-Day New Low | 20日新安値 |
+| `ta_highlow20d_nh` | 20-Day New High | 20日新高 |
+| `ta_highlow20d_nl` | 20-Day New Low | 20日新低 |
 | `ta_highlow20d_b0to5h` | 0-5% Below 20D High | 20日高値付近 |
 
 ### 50-Day High/Low (`ta_highlow50d_`)
@@ -785,8 +785,8 @@ Same pattern as 20-Day High/Low. `nh`, `nl`, `b{range}h`, `a{range}h`.
 
 | Code | Meaning | Natural Language Keywords |
 |------|---------|---------------------------|
-| `ta_highlow50d_nh` | 50-Day New High | 50日新高値 |
-| `ta_highlow50d_nl` | 50-Day New Low | 50日新安値 |
+| `ta_highlow50d_nh` | 50-Day New High | 50日新高 |
+| `ta_highlow50d_nl` | 50-Day New Low | 50日新低 |
 
 ### All-Time High/Low (`ta_alltime_`)
 
@@ -802,9 +802,9 @@ Same structure as 52-Week High/Low. Ranges up to 500% above low. Custom range al
 | `ta_alltime_nl` | All-Time Low | all-time low, 史上最安値 |
 | `ta_alltime_b0to3h` | 0-3% Below ATH | ATH付近 |
 | `ta_alltime_b0to5h` | 0-5% Below ATH | ATH付近 |
-| `ta_alltime_b10h` | 10%+ Below ATH | ATHから10%下落 |
-| `ta_alltime_b20h` | 20%+ Below ATH | ATHから20%下落 |
-| `ta_alltime_b50h` | 50%+ Below ATH | ATHから半値 |
+| `ta_alltime_b10h` | 10%+ Below ATH | ATH回落10% |
+| `ta_alltime_b20h` | 20%+ Below ATH | ATH回落20% |
+| `ta_alltime_b50h` | 50%+ Below ATH | ATH腰斩 |
 
 ### Performance (`ta_perf_`)
 
@@ -859,8 +859,8 @@ Pattern: `ta_gap_u{N}` (gap up N%), `ta_gap_d{N}` (gap down N%). N = 0–20.
 
 | Code | Meaning | Natural Language Keywords |
 |------|---------|---------------------------|
-| `ta_gap_u` | Gap Up | gap up, ギャップアップ |
-| `ta_gap_d` | Gap Down | gap down, ギャップダウン |
+| `ta_gap_u` | Gap Up | gap up, 跳空高开 |
+| `ta_gap_d` | Gap Down | gap down, 跳空低开 |
 | `ta_gap_u0` | Gap Up 0%+ |  |
 | `ta_gap_u3` | Gap Up 3%+ |  |
 | `ta_gap_u5` | Gap Up 5%+ | big gap up |
@@ -879,10 +879,10 @@ Pattern: `ta_beta_u{N}` (under N), `ta_beta_o{N}` (over N). Also ranges: `0to0.5
 | Code | Meaning | Natural Language Keywords |
 |------|---------|---------------------------|
 | `ta_beta_u0` | Beta Under 0 | negative beta |
-| `ta_beta_u0.5` | Beta Under 0.5 | low beta, 低ベータ, ディフェンシブ |
+| `ta_beta_u0.5` | Beta Under 0.5 | low beta, 低Beta, 防御性 |
 | `ta_beta_u1` | Beta Under 1 | below market |
 | `ta_beta_o1` | Beta Over 1 | above market |
-| `ta_beta_o1.5` | Beta Over 1.5 | high beta, 高ベータ |
+| `ta_beta_o1.5` | Beta Over 1.5 | high beta, 高Beta |
 | `ta_beta_o2` | Beta Over 2 | very high beta |
 | `ta_beta_o3` | Beta Over 3 | extremely high beta |
 
@@ -941,15 +941,15 @@ Pattern: `ta_averagetruerange_o{N}` (over N), `ta_averagetruerange_u{N}` (under 
 |------|---------|---------------------------|
 | `ta_pattern_channel` | Channel |  |
 | `ta_pattern_channel2` | Channel (Strong) |  |
-| `ta_pattern_channeldown` | Channel Down | falling channel, 下降チャネル |
+| `ta_pattern_channeldown` | Channel Down | falling channel, 下降通道 |
 | `ta_pattern_channeldown2` | Channel Down (Strong) |  |
-| `ta_pattern_channelup` | Channel Up | rising channel, 上昇チャネル |
+| `ta_pattern_channelup` | Channel Up | rising channel, 上升通道 |
 | `ta_pattern_channelup2` | Channel Up (Strong) |  |
-| `ta_pattern_doublebottom` | Double Bottom | double bottom, ダブルボトム |
-| `ta_pattern_doubletop` | Double Top | double top, ダブルトップ |
-| `ta_pattern_headandshoulders` | Head & Shoulders | H&S, ヘッドアンドショルダー |
+| `ta_pattern_doublebottom` | Double Bottom | double bottom, 双底 |
+| `ta_pattern_doubletop` | Double Top | double top, 双顶 |
+| `ta_pattern_headandshoulders` | Head & Shoulders | H&S, 头肩顶 |
 | `ta_pattern_headandshouldersinv` | Head & Shoulders Inverse | inverse H&S, 逆H&S |
-| `ta_pattern_horizontal` | Horizontal S/R | horizontal channel, レンジ |
+| `ta_pattern_horizontal` | Horizontal S/R | horizontal channel, 横盘 |
 | `ta_pattern_horizontal2` | Horizontal S/R (Strong) |  |
 | `ta_pattern_multiplebottom` | Multiple Bottom | multiple bottom |
 | `ta_pattern_multipletop` | Multiple Top | multiple top |
@@ -974,14 +974,14 @@ Pattern: `ta_averagetruerange_o{N}` (over N), `ta_averagetruerange_u{N}` (under 
 | Code | Meaning | Natural Language Keywords |
 |------|---------|---------------------------|
 | `ta_candlestick_d` | Doji | doji, 十字線 |
-| `ta_candlestick_dd` | Dragonfly Doji | dragonfly doji, トンボ |
+| `ta_candlestick_dd` | Dragonfly Doji | dragonfly doji, 蜻蜓十字 |
 | `ta_candlestick_gd` | Gravestone Doji | gravestone doji |
-| `ta_candlestick_h` | Hammer | hammer, ハンマー |
+| `ta_candlestick_h` | Hammer | hammer, 锤子线 |
 | `ta_candlestick_ih` | Inverted Hammer | inverted hammer |
-| `ta_candlestick_lls` | Long Lower Shadow | long lower shadow, 下ヒゲ |
-| `ta_candlestick_lus` | Long Upper Shadow | long upper shadow, 上ヒゲ |
-| `ta_candlestick_mb` | Marubozu Black | marubozu black, 陰の丸坊主 |
-| `ta_candlestick_mw` | Marubozu White | marubozu white, 陽の丸坊主 |
+| `ta_candlestick_lls` | Long Lower Shadow | long lower shadow, 下影线 |
+| `ta_candlestick_lus` | Long Upper Shadow | long upper shadow, 上影线 |
+| `ta_candlestick_mb` | Marubozu Black | marubozu black, 阴线光头光脚 |
+| `ta_candlestick_mw` | Marubozu White | marubozu white, 阳线光头光脚 |
 | `ta_candlestick_stb` | Spinning Top Black | spinning top black |
 | `ta_candlestick_stw` | Spinning Top White | spinning top white |
 
@@ -1004,7 +1004,7 @@ Pattern: `sh_avgvol_o{N}` (over NK), `sh_avgvol_u{N}` (under NK). Also ranges: `
 | `sh_avgvol_o100` | Over 100K |  |
 | `sh_avgvol_o200` | Over 200K | min volume, 流動性確保 |
 | `sh_avgvol_o500` | Over 500K |  |
-| `sh_avgvol_o1000` | Over 1M | high volume, 高出来高 |
+| `sh_avgvol_o1000` | Over 1M | high volume, 高成交量 |
 | `sh_avgvol_o2000` | Over 2M | very high volume |
 | `sh_avgvol_100to500` | 100K to 500K |  |
 | `sh_avgvol_500to1000` | 500K to 1M |  |
@@ -1021,10 +1021,10 @@ Pattern: `sh_relvol_o{N}` (over N), `sh_relvol_u{N}` (under N). N = 0.1–10.
 | `sh_relvol_u1` | Under 1 | below avg volume |
 | `sh_relvol_o1` | Over 1 | above avg volume |
 | `sh_relvol_o1.5` | Over 1.5 | elevated volume |
-| `sh_relvol_o2` | Over 2 | volume surge, 出来高急増 |
+| `sh_relvol_o2` | Over 2 | volume surge, 成交量急増 |
 | `sh_relvol_o3` | Over 3 | very high relative vol |
 | `sh_relvol_o5` | Over 5 | extreme volume |
-| `sh_relvol_o10` | Over 10 | unusual volume, 異常出来高 |
+| `sh_relvol_o10` | Over 10 | unusual volume, 异常成交量 |
 
 ### Current Volume (`sh_curvol_`)
 
@@ -1040,7 +1040,7 @@ Pattern: `sh_price_u{N}` (under $N), `sh_price_o{N}` (over $N). Also ranges: `1t
 
 | Code | Meaning | Natural Language Keywords |
 |------|---------|---------------------------|
-| `sh_price_u1` | Under $1 | penny stock, ペニーストック |
+| `sh_price_u1` | Under $1 | penny stock, 仙股 |
 | `sh_price_u5` | Under $5 | low price, 低価格 |
 | `sh_price_u10` | Under $10 |  |
 | `sh_price_u20` | Under $20 |  |
@@ -1062,7 +1062,7 @@ Pattern: `sh_float_u{N}` (under NM), `sh_float_o{N}` (over NM). Also percentage:
 | Code | Meaning | Natural Language Keywords |
 |------|---------|---------------------------|
 | `sh_float_u1` | Under 1M | very low float |
-| `sh_float_u5` | Under 5M | low float, 低フロート |
+| `sh_float_u5` | Under 5M | low float, 低流通 |
 | `sh_float_u10` | Under 10M |  |
 | `sh_float_u20` | Under 20M |  |
 | `sh_float_o50` | Over 50M |  |
@@ -1080,11 +1080,11 @@ Pattern: `sh_float_u{N}` (under NM), `sh_float_o{N}` (over NM). Also percentage:
 | Code | Meaning | Natural Language Keywords |
 |------|---------|---------------------------|
 | `sh_short_low` | Low (<5%) | low short interest |
-| `sh_short_high` | High (>20%) | heavily shorted, 空売り大量 |
+| `sh_short_high` | High (>20%) | heavily shorted, 大量做空 |
 | `sh_short_u5` | Under 5% |  |
 | `sh_short_u10` | Under 10% |  |
 | `sh_short_o5` | Over 5% | some short interest |
-| `sh_short_o10` | Over 10% | high short, ショートスクイーズ候補 |
+| `sh_short_o10` | Over 10% | high short, 轧空候选 |
 | `sh_short_o15` | Over 15% |  |
 | `sh_short_o20` | Over 20% | heavily shorted |
 | `sh_short_o25` | Over 25% | very heavily shorted |
@@ -1115,11 +1115,11 @@ Pattern: `sh_outstanding_u{N}` (under NM), `sh_outstanding_o{N}` (over NM).
 
 | Code | Meaning | Natural Language Keywords |
 |------|---------|---------------------------|
-| `sh_opt_option` | Optionable | optionable, オプション取引可能 |
-| `sh_opt_short` | Shortable | shortable, 空売り可能 |
-| `sh_opt_notoption` | Not Optionable | オプション不可 |
-| `sh_opt_notshort` | Not Shortable | 空売り不可 |
-| `sh_opt_optionshort` | Optionable and Shortable | オプション・空売り両方可能 |
+| `sh_opt_option` | Optionable | optionable, 可交易期权 |
+| `sh_opt_short` | Shortable | shortable, 可做空 |
+| `sh_opt_notoption` | Not Optionable | 不可交易期权 |
+| `sh_opt_notshort` | Not Shortable | 不可做空 |
+| `sh_opt_optionshort` | Optionable and Shortable | 期权和做空均可 |
 | `sh_opt_optionnotshort` | Optionable and Not Shortable |  |
 | `sh_opt_notoptionshort` | Not Optionable and Shortable |  |
 | `sh_opt_notoptionnotshort` | Not Optionable and Not Shortable |  |
@@ -1135,10 +1135,10 @@ Pattern: `sh_insiderown_o{N}` (over N%). Special: `low` (<5%), `high` (>30%), `v
 | `sh_insiderown_low` | Low (<5%) | low insider |
 | `sh_insiderown_high` | High (>30%) | insider owned |
 | `sh_insiderown_veryhigh` | Very High (>50%) | majority insider |
-| `sh_insiderown_o10` | Over 10% | インサイダー保有10%+ |
+| `sh_insiderown_o10` | Over 10% | 内部人持股10%+ |
 | `sh_insiderown_o20` | Over 20% |  |
 | `sh_insiderown_o30` | Over 30% |  |
-| `sh_insiderown_o50` | Over 50% | 過半数インサイダー |
+| `sh_insiderown_o50` | Over 50% | 内部人持股过半 |
 | `sh_insiderown_o70` | Over 70% |  |
 | `sh_insiderown_o90` | Over 90% |  |
 
@@ -1152,9 +1152,9 @@ Special: `pos` (>0%), `neg` (<0%), `verypos` (>20%), `veryneg` (<20%)
 
 | Code | Meaning | Natural Language Keywords |
 |------|---------|---------------------------|
-| `sh_insidertrans_pos` | Positive (>0%) | insider buying, インサイダー買い |
-| `sh_insidertrans_neg` | Negative (<0%) | insider selling, インサイダー売り |
-| `sh_insidertrans_verypos` | Very Positive (>20%) | heavy insider buying, インサイダー大量買い |
+| `sh_insidertrans_pos` | Positive (>0%) | insider buying, 内部人买入 |
+| `sh_insidertrans_neg` | Negative (<0%) | insider selling, 内部人卖出 |
+| `sh_insidertrans_verypos` | Very Positive (>20%) | heavy insider buying, 内部人大量买入 |
 | `sh_insidertrans_veryneg` | Very Negative (<20%) | heavy insider selling |
 
 ### Institutional Ownership (`sh_instown_`)
@@ -1175,7 +1175,7 @@ Special: `pos` (>0%), `neg` (<0%), `verypos` (>20%), `veryneg` (<20%)
 
 | Code | Meaning | Natural Language Keywords |
 |------|---------|---------------------------|
-| `sh_insttrans_pos` | Positive (>0%) | institutional buying, 機関買い |
+| `sh_insttrans_pos` | Positive (>0%) | institutional buying, 机构买入 |
 | `sh_insttrans_neg` | Negative (<0%) | institutional selling |
 
 ---
@@ -1186,15 +1186,15 @@ Special: `pos` (>0%), `neg` (<0%), `verypos` (>20%), `veryneg` (<20%)
 
 | Code | Meaning | Natural Language Keywords |
 |------|---------|---------------------------|
-| `an_recom_strongbuy` | Strong Buy (1) | strong buy, 強い買い推奨 |
-| `an_recom_buybetter` | Buy or better (1-2) | buy, 買い推奨 |
+| `an_recom_strongbuy` | Strong Buy (1) | strong buy, 强烈买入 |
+| `an_recom_buybetter` | Buy or better (1-2) | buy, 买入推荐 |
 | `an_recom_buy` | Buy (2) |  |
-| `an_recom_holdbetter` | Hold or better (1-3) | hold, ホールド以上 |
+| `an_recom_holdbetter` | Hold or better (1-3) | hold, 持有以上 |
 | `an_recom_hold` | Hold (3) |  |
 | `an_recom_holdworse` | Hold or worse (3-5) |  |
 | `an_recom_sell` | Sell (4) |  |
-| `an_recom_sellworse` | Sell or worse (4-5) | sell, 売り推奨 |
-| `an_recom_strongsell` | Strong Sell (5) | strong sell, 強い売り |
+| `an_recom_sellworse` | Sell or worse (4-5) | sell, 卖出推荐 |
+| `an_recom_strongsell` | Strong Sell (5) | strong sell, 强烈卖出 |
 
 ---
 
@@ -1204,8 +1204,8 @@ Special: `pos` (>0%), `neg` (<0%), `verypos` (>20%), `veryneg` (<20%)
 
 | Code | Meaning | Natural Language Keywords |
 |------|---------|---------------------------|
-| `targetprice_above` | Above Price | target above, 目標株価以上 |
-| `targetprice_below` | Below Price | target below, 目標株価以下 |
+| `targetprice_above` | Above Price | target above, 目標股价以上 |
+| `targetprice_below` | Below Price | target below, 目標股价以下 |
 | `targetprice_a5` | 5% Above Price |  |
 | `targetprice_a10` | 10% Above Price |  |
 | `targetprice_a20` | 20% Above Price | 割安, 上昇余地 |
@@ -1227,7 +1227,7 @@ Special: `pos` (>0%), `neg` (<0%), `verypos` (>20%), `veryneg` (<20%)
 
 | Code | Meaning | Natural Language Keywords |
 |------|---------|---------------------------|
-| `news_date_today` | Today | news today, 今日のニュース |
+| `news_date_today` | Today | news today, 今日新闻 |
 | `news_date_todayafter` | Aftermarket Today |  |
 | `news_date_yesterday` | Yesterday |  |
 | `news_date_yesterdayafter` | In the Aftermarket Yesterday |  |
@@ -1238,7 +1238,7 @@ Special: `pos` (>0%), `neg` (<0%), `verypos` (>20%), `veryneg` (<20%)
 | `news_date_prevhours1` | In the last hour | 直近1時間 |
 | `news_date_prevhours24` | In the last 24 hours | 直近24時間 |
 | `news_date_prevdays7` | In the last 7 days | 直近1週間 |
-| `news_date_prevmonth` | In the last month | 直近1ヶ月 |
+| `news_date_prevmonth` | In the last month | 近1个月 |
 
 ---
 
@@ -1266,42 +1266,42 @@ f=theme_artificialintelligence%7Ccybersecurity,subtheme_aicloud%7Caicompute,cap_
 | `agingpopulationlongevity` | Aging Population & Longevity |  |
 | `agriculturefoodtech` | Agriculture & FoodTech |  |
 | `artificialintelligence` | Artificial Intelligence | AI, 人工知能 |
-| `autonomoussystems` | Autonomous Systems | autonomous, 自律システム |
-| `bigdata` | Big Data | big data, ビッグデータ |
+| `autonomoussystems` | Autonomous Systems | autonomous, 自动驾驶系统 |
+| `bigdata` | Big Data | big data, 大数据 |
 | `biometrics` | Biometrics |  |
-| `cloudcomputing` | Cloud Computing | cloud, クラウド |
+| `cloudcomputing` | Cloud Computing | cloud, 云计算 |
 | `commoditiesagriculture` | Commodities - Agriculture |  |
 | `commoditiesenergy` | Commodities - Energy |  |
 | `commoditiesmetals` | Commodities - Metals |  |
 | `consumergoods` | Consumer Goods |  |
-| `cryptoblockchain` | Crypto & Blockchain | crypto, 暗号通貨, ブロックチェーン |
-| `cybersecurity` | Cybersecurity | cybersecurity, サイバーセキュリティ |
+| `cryptoblockchain` | Crypto & Blockchain | crypto, 加密货币, 区块链 |
+| `cybersecurity` | Cybersecurity | cybersecurity, 网络安全 |
 | `defenseaerospace` | Defense & Aerospace |  |
 | `digitalentertainment` | Digital Entertainment |  |
 | `ecommerce` | E-commerce | e-commerce, EC |
 | `educationtechnology` | Education Technology |  |
 | `electricvehicles` | Electric Vehicles | EV, 電気自動車 |
-| `energyrenewable` | Energy - Renewable | renewable, 再生可能エネルギー |
+| `energyrenewable` | Energy - Renewable | renewable, 可再生能源 |
 | `energytraditional` | Energy - Traditional |  |
 | `environmentalsustainability` | Environmental Sustainability |  |
-| `fintech` | FinTech | fintech, フィンテック |
-| `hardware` | Hardware | hardware, ハードウェア |
-| `healthcarebiotech` | Healthcare & Biotech | biotech, バイオテック |
+| `fintech` | FinTech | fintech, 金融科技 |
+| `hardware` | Hardware | hardware, 硬件 |
+| `healthcarebiotech` | Healthcare & Biotech | biotech, 生物科技 |
 | `healthyfoodnutrition` | Healthy Food & Nutrition |  |
 | `industrialautomation` | Industrial Automation |  |
 | `internetofthings` | Internet of Things | IoT |
 | `nanotechnology` | Nanotechnology |  |
-| `quantumcomputing` | Quantum Computing | quantum, 量子コンピューティング |
+| `quantumcomputing` | Quantum Computing | quantum, 量子计算 |
 | `realestatereits` | Real Estate & REITs | REITs, 不動産投資信託 |
-| `robotics` | Robotics | robotics, ロボティクス |
+| `robotics` | Robotics | robotics, 机器人 |
 | `semiconductors` | Semiconductors | semiconductors, 半導体 |
 | `smarthome` | Smart Home |  |
 | `socialmedia` | Social Media |  |
-| `software` | Software | software, ソフトウェア |
+| `software` | Software | software, 软件 |
 | `spacetech` | Space Tech | space, 宇宙 |
 | `telecommunications` | Telecommunications |  |
 | `transportationlogistics` | Transportation & Logistics |  |
-| `virtualaugmentedreality` | Virtual & Augmented Reality | VR, AR, メタバース |
+| `virtualaugmentedreality` | Virtual & Augmented Reality | VR, AR, 元宇宙 |
 | `wearables` | Wearables |  |
 
 ### Sub-theme (`subtheme_`) — 268 sub-themes
@@ -1794,28 +1794,28 @@ Pattern: `etf_fundflows_{period}o{N}` / `etf_fundflows_{period}u{N}`. Periods: `
 
 | Code | Meaning | Natural Language Keywords |
 |------|---------|---------------------------|
-| `ind_stocksonly` | Stocks only (ex-Funds) | funds除外, 株式のみ |
+| `ind_stocksonly` | Stocks only (ex-Funds) | 排除基金, 仅股票 |
 | `ind_exchangetradedfund` | Exchange Traded Fund | ETF |
 | `ind_semiconductors` | Semiconductors | 半導体 |
-| `ind_softwareapplication` | Software - Application | アプリ |
-| `ind_softwareinfrastructure` | Software - Infrastructure | インフラソフト |
-| `ind_biotechnology` | Biotechnology | バイオテクノロジー |
+| `ind_softwareapplication` | Software - Application | 应用软件 |
+| `ind_softwareinfrastructure` | Software - Infrastructure | 基础设施软件 |
+| `ind_biotechnology` | Biotechnology | 生物科技 |
 | `ind_banksregional` | Banks - Regional | 地銀 |
-| `ind_banksdiversified` | Banks - Diversified | メガバンク |
-| `ind_oilgasep` | Oil & Gas E&P | 石油ガス探鉱 |
+| `ind_banksdiversified` | Banks - Diversified | 大型银行 |
+| `ind_oilgasep` | Oil & Gas E&P | 油气勘探 |
 | `ind_oilgasintegrated` | Oil & Gas Integrated | 統合石油 |
 | `ind_reitindustrial` | REIT - Industrial | 物流REIT |
 | `ind_reitresidential` | REIT - Residential | 住宅REIT |
 | `ind_utilitiesregulatedelectric` | Utilities - Regulated Electric | 規制電力 |
-| `ind_insurancepropertycasualty` | Insurance - Property & Casualty | 損保 |
-| `ind_capitalmarkets` | Capital Markets | 資本市場 |
-| `ind_drugmanufacturersgeneral` | Drug Manufacturers - General | 大手製薬 |
-| `ind_medicaldevices` | Medical Devices | 医療機器 |
-| `ind_aerospacedefense` | Aerospace & Defense | 航空宇宙・防衛 |
-| `ind_restaurants` | Restaurants | 外食 |
-| `ind_internetretail` | Internet Retail | ネット通販 |
-| `ind_gold` | Gold | 金鉱 |
-| `ind_steel` | Steel | 鉄鋼 |
+| `ind_insurancepropertycasualty` | Insurance - Property & Casualty | 财产险 |
+| `ind_capitalmarkets` | Capital Markets | 资本市场 |
+| `ind_drugmanufacturersgeneral` | Drug Manufacturers - General | 大型制药 |
+| `ind_medicaldevices` | Medical Devices | 医疗器械 |
+| `ind_aerospacedefense` | Aerospace & Defense | 航空航天·国防 |
+| `ind_restaurants` | Restaurants | 餐饮 |
+| `ind_internetretail` | Internet Retail | 电商零售 |
+| `ind_gold` | Gold | 金矿 |
+| `ind_steel` | Steel | 钢铁 |
 
 For the complete list of 150 industry codes, use the finviz screener dropdown or the `finviz` Python library.
 
@@ -1826,7 +1826,7 @@ For the complete list of 150 industry codes, use the finviz screener dropdown or
 ## Common Screening Recipes
 
 
-### High Dividend Value (高配当バリュー)
+### High Dividend Value (高股息价值)
 
 ```
 
@@ -1848,7 +1848,7 @@ f=cap_small,fa_epsqoq_o25,fa_salesqoq_o15,fa_roe_o15,sh_avgvol_o200
 Small-cap with 25%+ quarterly EPS growth, 15%+ sales growth, 15%+ ROE, adequate liquidity.
 
 
-### Oversold Large-Cap (売られすぎ大型株)
+### Oversold Large-Cap (超卖大型株)
 
 ```
 
@@ -1859,7 +1859,7 @@ f=cap_largeover,ta_rsi_os30,ta_sma200_pa,fa_pe_profitable,sh_avgvol_o500
 Large-cap+ with RSI below 30 but still above 200-day MA, profitable, liquid.
 
 
-### Breakout Candidates (ブレイクアウト候補)
+### Breakout Candidates (突破候选)
 
 ```
 
@@ -1870,7 +1870,7 @@ f=cap_midover,ta_highlow52w_b0to5h,sh_relvol_o1.5,ta_sma50_pa,sh_avgvol_o300
 Mid-cap+ within 5% of 52-week high, above-average volume, above 50-day MA.
 
 
-### Insider Buying (インサイダー買い)
+### Insider Buying (内部人买入)
 
 ```
 
@@ -1881,7 +1881,7 @@ f=cap_smallover,sh_insidertrans_verypos,fa_pe_profitable,sh_avgvol_o100
 Small-cap+ with very positive insider transactions, profitable, minimum volume.
 
 
-### Short Squeeze Candidates (ショートスクイーズ候補)
+### Short Squeeze Candidates (轧空候选)
 
 ```
 
@@ -1903,7 +1903,7 @@ f=fa_div_o2,fa_divgrowth_3yo10,fa_payoutratio_u60,fa_roe_o15,cap_midover,geo_usa
 2%+ yield, 3Y dividend growth 10%+, payout under 60%, ROE 15%+, mid-cap+ US stocks.
 
 
-### Deep Value (ディープバリュー)
+### Deep Value (深度价值)
 
 ```
 
@@ -1914,7 +1914,7 @@ f=fa_pb_u1,fa_pe_u10,fa_curratio_o1.5,fa_netmargin_pos,sh_avgvol_o100,cap_smallo
 P/B under 1, P/E under 10, current ratio over 1.5, profitable, liquid.
 
 
-### Momentum Leaders (モメンタムリーダー)
+### Momentum Leaders (动量领先)
 
 ```
 
@@ -1925,7 +1925,7 @@ f=ta_perf_13wup,ta_perf_26wup,ta_sma50_pa,ta_sma200_pa,sh_relvol_o1,cap_midover
 Up over 13 and 26 weeks, above 50 and 200 MA, above-average volume, mid-cap+.
 
 
-### Fallen Angels (急落後リバウンド候補)
+### Fallen Angels (急跌后反弹候选)
 
 ```
 
@@ -1936,7 +1936,7 @@ f=cap_largeover,ta_highlow52w_b20h,ta_rsi_os40,fa_pe_profitable,sh_avgvol_o500
 Large-cap+ down 20%+ from 52W high, RSI under 40, profitable, liquid.
 
 
-### AI Theme (AIテーマ)
+### AI Theme (AI主题)
 
 ```
 --themes "artificialintelligence" --filters "cap_midover,ta_perf_13wup"
@@ -1945,7 +1945,7 @@ Large-cap+ down 20%+ from 52W high, RSI under 40, profitable, liquid.
 
 AI-themed stocks, mid-cap+, up this quarter.
 
-### AI Cloud + Compute Sub-themes (AIクラウド＆コンピュート)
+### AI Cloud + Compute Sub-themes (AI云与计算)
 
 ```
 --themes "artificialintelligence" --subthemes "aicloud,aicompute" --filters "cap_midover"

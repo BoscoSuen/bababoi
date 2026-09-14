@@ -21,12 +21,12 @@ from generate_skill_docs import (
     _split_sections,
     _title_case,
     api_badges,
-    api_badges_ja,
+    api_badges_zh,
     generate_en_full_page,
     generate_en_page,
     generate_index_table_row,
-    generate_ja_full_page,
-    generate_ja_page,
+    generate_zh_full_page,
+    generate_zh_page,
     main,
     parse_api_requirements,
     parse_cli_examples,
@@ -220,24 +220,24 @@ class TestApiBadges:
         assert "Alpaca Required" in badges
 
 
-class TestApiBadgesJa:
-    def test_no_api_ja(self):
-        assert "API不要" in api_badges_ja(None)
+class TestApiBadgesZh:
+    def test_no_api_zh(self):
+        assert "无需API" in api_badges_zh(None)
 
-    def test_fmp_required_ja(self):
-        badges = api_badges_ja({"fmp": "✅ Required", "finviz": "❌", "alpaca": "❌"})
-        assert "FMP必須" in badges
+    def test_fmp_required_zh(self):
+        badges = api_badges_zh({"fmp": "✅ Required", "finviz": "❌", "alpaca": "❌"})
+        assert "FMP必需" in badges
         assert "badge-api" in badges
 
-    def test_optional_ja(self):
-        badges = api_badges_ja({"fmp": "🟡 Optional", "finviz": "🟡 Optional", "alpaca": "❌"})
-        assert "API不要" in badges
-        assert "FMP任意" in badges
-        assert "FINVIZ任意" in badges
+    def test_optional_zh(self):
+        badges = api_badges_zh({"fmp": "🟡 Optional", "finviz": "🟡 Optional", "alpaca": "❌"})
+        assert "无需API" in badges
+        assert "FMP可选" in badges
+        assert "FINVIZ可选" in badges
 
-    def test_alpaca_required_ja(self):
-        badges = api_badges_ja({"fmp": "❌", "finviz": "❌", "alpaca": "✅ Required"})
-        assert "Alpaca必須" in badges
+    def test_alpaca_required_zh(self):
+        badges = api_badges_zh({"fmp": "❌", "finviz": "❌", "alpaca": "✅ Required"})
+        assert "Alpaca必需" in badges
 
 
 # ---------------------------------------------------------------------------
@@ -258,11 +258,11 @@ class TestGenerateIndexTableRow:
         row = generate_index_table_row(hw, "desc", None, "en")
         assert "★" in row
 
-    def test_ja_row_uses_ja_badges(self):
+    def test_zh_row_uses_zh_badges(self):
         api = {"fmp": "✅ Required", "finviz": "❌", "alpaca": "❌"}
-        row = generate_index_table_row("test-skill", "desc", api, "ja")
-        assert "FMP必須" in row
-        assert "/ja/skills/test-skill/" in row
+        row = generate_index_table_row("test-skill", "desc", api, "zh")
+        assert "FMP必需" in row
+        assert "/zh/skills/test-skill/" in row
 
     def test_long_description_truncated(self):
         long_desc = "A" * 200
@@ -336,21 +336,21 @@ class TestGenerateEnPage:
         assert "test_runner.py" in page
 
 
-class TestGenerateJaPage:
-    def test_contains_ja_frontmatter(self, tmp_skill):
+class TestGenerateZhPage:
+    def test_contains_zh_frontmatter(self, tmp_skill):
         data = parse_skill_md(tmp_skill / "skills" / "test-skill" / "SKILL.md")
-        page = generate_ja_page("test-skill", data, None, 11)
-        assert "grand_parent: 日本語" in page
-        assert "parent: スキルガイド" in page
+        page = generate_zh_page("test-skill", data, None, 11)
+        assert "grand_parent: 中文" in page
+        assert "parent: 技能指南" in page
 
     def test_contains_translation_banner(self, tmp_skill):
         data = parse_skill_md(tmp_skill / "skills" / "test-skill" / "SKILL.md")
-        page = generate_ja_page("test-skill", data, None, 11)
-        assert "not yet been translated" in page
+        page = generate_zh_page("test-skill", data, None, 11)
+        assert "尚未翻译为中文" in page
 
     def test_links_to_en_version(self, tmp_skill):
         data = parse_skill_md(tmp_skill / "skills" / "test-skill" / "SKILL.md")
-        page = generate_ja_page("test-skill", data, None, 11)
+        page = generate_zh_page("test-skill", data, None, 11)
         assert "/en/skills/test-skill/" in page
 
 
@@ -363,7 +363,7 @@ class TestMain:
     def test_generates_pages(self, tmp_skill, tmp_claude_md):
         docs_dir = tmp_skill / "docs"
         (docs_dir / "en" / "skills").mkdir(parents=True)
-        (docs_dir / "ja" / "skills").mkdir(parents=True)
+        (docs_dir / "zh" / "skills").mkdir(parents=True)
 
         result = main(
             [
@@ -377,7 +377,7 @@ class TestMain:
         )
         assert result == 0
         assert (docs_dir / "en" / "skills" / "test-skill.md").exists()
-        assert (docs_dir / "ja" / "skills" / "test-skill.md").exists()
+        assert (docs_dir / "zh" / "skills" / "test-skill.md").exists()
 
     def test_skips_hand_written(self, tmp_skill, tmp_claude_md):
         # Create a skill that matches HAND_WRITTEN
@@ -387,7 +387,7 @@ class TestMain:
 
         docs_dir = tmp_skill / "docs"
         (docs_dir / "en" / "skills").mkdir(parents=True)
-        (docs_dir / "ja" / "skills").mkdir(parents=True)
+        (docs_dir / "zh" / "skills").mkdir(parents=True)
 
         main(
             [
@@ -410,7 +410,7 @@ class TestMain:
         docs_dir = tmp_skill / "docs"
         en_path = docs_dir / "en" / "skills" / "test-skill.md"
         en_path.parent.mkdir(parents=True)
-        (docs_dir / "ja" / "skills").mkdir(parents=True)
+        (docs_dir / "zh" / "skills").mkdir(parents=True)
         en_path.write_text("old hand-maintained content")
 
         main(
@@ -429,14 +429,14 @@ class TestMain:
     def test_main_updates_index(self, tmp_skill, tmp_claude_md):
         docs_dir = tmp_skill / "docs"
         en_index = docs_dir / "en" / "skills" / "index.md"
-        ja_index = docs_dir / "ja" / "skills" / "index.md"
+        zh_index = docs_dir / "zh" / "skills" / "index.md"
         en_index.parent.mkdir(parents=True)
-        ja_index.parent.mkdir(parents=True)
+        zh_index.parent.mkdir(parents=True)
         en_index.write_text(
             "## Guides\n\n| Skill | Desc | API |\n|---|---|---|\n| old | old | old |\n\nFooter\n"
         )
-        ja_index.write_text(
-            "## ガイド\n\n| スキル | 概要 | API |\n|---|---|---|\n| old | old | old |\n\nFooter\n"
+        zh_index.write_text(
+            "## 指南\n\n| 技能 | 概述 | API |\n|---|---|---|\n| old | old | old |\n\nFooter\n"
         )
 
         main(
@@ -454,7 +454,7 @@ class TestMain:
         assert "old | old" not in en_content
         assert "Footer" in en_content
 
-        ja_content = ja_index.read_text()
+        ja_content = zh_index.read_text()
         assert "Test Skill" in ja_content
 
     def test_skips_dir_without_skill_md(self, tmp_skill, tmp_claude_md):
@@ -463,7 +463,7 @@ class TestMain:
 
         docs_dir = tmp_skill / "docs"
         (docs_dir / "en" / "skills").mkdir(parents=True)
-        (docs_dir / "ja" / "skills").mkdir(parents=True)
+        (docs_dir / "zh" / "skills").mkdir(parents=True)
 
         main(
             [
@@ -498,18 +498,18 @@ class TestOwnershipGuardAndCheck:
     def test_new_page_stamped_generated_true(self, tmp_skill, tmp_claude_md):
         docs_dir = tmp_skill / "docs"
         (docs_dir / "en" / "skills").mkdir(parents=True)
-        (docs_dir / "ja" / "skills").mkdir(parents=True)
+        (docs_dir / "zh" / "skills").mkdir(parents=True)
         main(_base_args(tmp_skill, tmp_claude_md))
         en = docs_dir / "en" / "skills" / "test-skill.md"
-        ja = docs_dir / "ja" / "skills" / "test-skill.md"
+        zh = docs_dir / "zh" / "skills" / "test-skill.md"
         assert _doc_is_generated(en) is True
-        assert _doc_is_generated(ja) is True
+        assert _doc_is_generated(zh) is True
 
     def test_overwrite_skips_protected_generated_false(self, tmp_skill, tmp_claude_md):
         docs_dir = tmp_skill / "docs"
         en = docs_dir / "en" / "skills" / "test-skill.md"
         en.parent.mkdir(parents=True)
-        (docs_dir / "ja" / "skills").mkdir(parents=True)
+        (docs_dir / "zh" / "skills").mkdir(parents=True)
         body = "---\ntitle: x\ngenerated: false\n---\nhand body\n"
         en.write_text(body)
         main(_base_args(tmp_skill, tmp_claude_md) + ["--overwrite"])
@@ -519,7 +519,7 @@ class TestOwnershipGuardAndCheck:
         docs_dir = tmp_skill / "docs"
         en = docs_dir / "en" / "skills" / "test-skill.md"
         en.parent.mkdir(parents=True)
-        (docs_dir / "ja" / "skills").mkdir(parents=True)
+        (docs_dir / "zh" / "skills").mkdir(parents=True)
         en.write_text("---\ntitle: x\ngenerated: true\n---\nstale generated body\n")
         main(_base_args(tmp_skill, tmp_claude_md) + ["--overwrite"])
         out = en.read_text()
@@ -531,7 +531,7 @@ class TestOwnershipGuardAndCheck:
         docs_dir = tmp_skill / "docs"
         en = docs_dir / "en" / "skills" / "test-skill.md"
         en.parent.mkdir(parents=True)
-        (docs_dir / "ja" / "skills").mkdir(parents=True)
+        (docs_dir / "zh" / "skills").mkdir(parents=True)
         en.write_text("hand body, no marker")
         main(_base_args(tmp_skill, tmp_claude_md) + ["--overwrite", "--force"])
         out = en.read_text()
@@ -544,7 +544,7 @@ class TestOwnershipGuardAndCheck:
         (hw / "SKILL.md").write_text("---\nname: backtest-expert\ndescription: t\n---\n")
         docs_dir = tmp_skill / "docs"
         (docs_dir / "en" / "skills").mkdir(parents=True)
-        (docs_dir / "ja" / "skills").mkdir(parents=True)
+        (docs_dir / "zh" / "skills").mkdir(parents=True)
         main(_base_args(tmp_skill, tmp_claude_md))
         assert not (docs_dir / "en" / "skills" / "backtest-expert.md").exists()
 
@@ -554,7 +554,7 @@ class TestOwnershipGuardAndCheck:
         (hw / "SKILL.md").write_text("---\nname: backtest-expert\ndescription: t\n---\n")
         docs_dir = tmp_skill / "docs"
         (docs_dir / "en" / "skills").mkdir(parents=True)
-        (docs_dir / "ja" / "skills").mkdir(parents=True)
+        (docs_dir / "zh" / "skills").mkdir(parents=True)
         main(_base_args(tmp_skill, tmp_claude_md) + ["--force"])
         assert (docs_dir / "en" / "skills" / "backtest-expert.md").exists()
 
@@ -565,38 +565,38 @@ class TestOwnershipGuardAndCheck:
         docs_dir = tmp_skill / "docs"
         en = docs_dir / "en" / "skills" / "backtest-expert.md"
         en.parent.mkdir(parents=True)
-        (docs_dir / "ja" / "skills").mkdir(parents=True)
+        (docs_dir / "zh" / "skills").mkdir(parents=True)
         en.write_text("hand-written guide body")
         main(_base_args(tmp_skill, tmp_claude_md) + ["--overwrite"])
         assert en.read_text() == "hand-written guide body"
 
-    def test_mixed_ownership_en_owned_ja_protected(self, tmp_skill, tmp_claude_md):
+    def test_mixed_ownership_en_owned_zh_protected(self, tmp_skill, tmp_claude_md):
         docs_dir = tmp_skill / "docs"
         en = docs_dir / "en" / "skills" / "test-skill.md"
-        ja = docs_dir / "ja" / "skills" / "test-skill.md"
+        zh = docs_dir / "zh" / "skills" / "test-skill.md"
         en.parent.mkdir(parents=True)
-        ja.parent.mkdir(parents=True)
+        zh.parent.mkdir(parents=True)
         en.write_text("---\ntitle: x\ngenerated: true\n---\nstale en\n")
-        ja_body = "---\ntitle: x\n---\n# 手動翻訳された日本語ページ\n"
-        ja.write_text(ja_body)
+        zh_body = "---\ntitle: x\n---\n# 手动翻译的中文页面\n"
+        zh.write_text(zh_body)
         main(_base_args(tmp_skill, tmp_claude_md) + ["--overwrite"])
         assert "stale en" not in en.read_text()
         assert "Test Skill" in en.read_text()
-        assert ja.read_text() == ja_body  # JA hand-translation byte-unchanged
+        assert zh.read_text() == zh_body  # ZH hand-translation byte-unchanged
 
     def test_brand_new_one_side_non_hand_written(self, tmp_skill, tmp_claude_md):
         docs_dir = tmp_skill / "docs"
         en = docs_dir / "en" / "skills" / "test-skill.md"
-        ja = docs_dir / "ja" / "skills" / "test-skill.md"
+        zh = docs_dir / "zh" / "skills" / "test-skill.md"
         en.parent.mkdir(parents=True)
-        ja.parent.mkdir(parents=True)
-        ja_body = "---\ntitle: x\n---\n# 既存の手動翻訳\n"
-        ja.write_text(ja_body)
+        zh.parent.mkdir(parents=True)
+        zh_body = "---\ntitle: x\n---\n# 已有的手动翻译\n"
+        zh.write_text(zh_body)
         # EN missing, JA exists & protected, NORMAL run (no --overwrite)
         main(_base_args(tmp_skill, tmp_claude_md))
         assert en.exists()
         assert _doc_is_generated(en) is True
-        assert ja.read_text() == ja_body  # JA untouched
+        assert zh.read_text() == zh_body  # ZH untouched
 
     def test_check_protects_hand_written_even_with_generated_true(self, tmp_skill, tmp_claude_md):
         # A HAND_WRITTEN page is ALWAYS protected, even if it carries
@@ -607,37 +607,37 @@ class TestOwnershipGuardAndCheck:
         (hw / "SKILL.md").write_text("---\nname: backtest-expert\ndescription: t\n---\n")
         docs_dir = tmp_skill / "docs"
         en = docs_dir / "en" / "skills" / "backtest-expert.md"
-        ja = docs_dir / "ja" / "skills" / "backtest-expert.md"
+        zh = docs_dir / "zh" / "skills" / "backtest-expert.md"
         en.parent.mkdir(parents=True)
-        ja.parent.mkdir(parents=True)
+        zh.parent.mkdir(parents=True)
         en.write_text("---\ntitle: x\ngenerated: true\n---\nwildly divergent hand body\n")
-        ja.write_text("---\ntitle: x\ngenerated: true\n---\n手動の全く違う本文\n")
+        zh.write_text("---\ntitle: x\ngenerated: true\n---\n完全不同的手动正文\n")
         # tmp_skill always creates skills/test-skill too; give it protected
         # pages so existence checks don't trip (focus is the HW assertion).
         (docs_dir / "en" / "skills" / "test-skill.md").write_text("protected en\n")
-        (docs_dir / "ja" / "skills" / "test-skill.md").write_text("protected ja\n")
+        (docs_dir / "zh" / "skills" / "test-skill.md").write_text("protected zh\n")
         rc = main(_base_args(tmp_skill, tmp_claude_md) + ["--check"])
         assert rc == 0
 
     def test_check_passes_when_protected_body_differs(self, tmp_skill, tmp_claude_md):
         docs_dir = tmp_skill / "docs"
         en = docs_dir / "en" / "skills" / "test-skill.md"
-        ja = docs_dir / "ja" / "skills" / "test-skill.md"
+        zh = docs_dir / "zh" / "skills" / "test-skill.md"
         en.parent.mkdir(parents=True)
-        ja.parent.mkdir(parents=True)
+        zh.parent.mkdir(parents=True)
         en.write_text("wildly different EN, no marker\n")
-        ja.write_text("全く違う日本語、マーカーなし\n")
+        zh.write_text("完全不同的中文，无标记\n")
         rc = main(_base_args(tmp_skill, tmp_claude_md) + ["--check"])
         assert rc == 0
 
     def test_check_fails_on_generated_true_drift(self, tmp_skill, tmp_claude_md, capsys):
         docs_dir = tmp_skill / "docs"
         en = docs_dir / "en" / "skills" / "test-skill.md"
-        ja = docs_dir / "ja" / "skills" / "test-skill.md"
+        zh = docs_dir / "zh" / "skills" / "test-skill.md"
         en.parent.mkdir(parents=True)
-        ja.parent.mkdir(parents=True)
+        zh.parent.mkdir(parents=True)
         en.write_text("---\ntitle: x\ngenerated: true\n---\nstale owned body\n")
-        ja.write_text("---\ntitle: x\n---\nhand ja\n")
+        zh.write_text("---\ntitle: x\n---\nhand zh\n")
         rc = main(_base_args(tmp_skill, tmp_claude_md) + ["--check"])
         assert rc == 1
         assert "DRIFT:" in capsys.readouterr().err
@@ -645,7 +645,7 @@ class TestOwnershipGuardAndCheck:
     def test_check_fails_on_missing_page(self, tmp_skill, tmp_claude_md, capsys):
         docs_dir = tmp_skill / "docs"
         (docs_dir / "en" / "skills").mkdir(parents=True)
-        (docs_dir / "ja" / "skills").mkdir(parents=True)
+        (docs_dir / "zh" / "skills").mkdir(parents=True)
         # neither EN nor JA exists for test-skill
         rc = main(_base_args(tmp_skill, tmp_claude_md) + ["--check"])
         assert rc == 1
@@ -654,11 +654,11 @@ class TestOwnershipGuardAndCheck:
     def test_check_reports_invalid_marker(self, tmp_skill, tmp_claude_md, capsys):
         docs_dir = tmp_skill / "docs"
         en = docs_dir / "en" / "skills" / "test-skill.md"
-        ja = docs_dir / "ja" / "skills" / "test-skill.md"
+        zh = docs_dir / "zh" / "skills" / "test-skill.md"
         en.parent.mkdir(parents=True)
-        ja.parent.mkdir(parents=True)
+        zh.parent.mkdir(parents=True)
         en.write_text("---\ntitle: x\ngenerated: maybe\n---\nbody\n")
-        ja.write_text("---\ntitle: x\n---\nbody\n")
+        zh.write_text("---\ntitle: x\n---\nbody\n")
         rc = main(_base_args(tmp_skill, tmp_claude_md) + ["--check"])
         assert rc == 1
         assert "invalid 'generated:' marker" in capsys.readouterr().err
@@ -666,7 +666,7 @@ class TestOwnershipGuardAndCheck:
     def test_check_passes_clean_after_generate(self, tmp_skill, tmp_claude_md):
         docs_dir = tmp_skill / "docs"
         (docs_dir / "en" / "skills").mkdir(parents=True)
-        (docs_dir / "ja" / "skills").mkdir(parents=True)
+        (docs_dir / "zh" / "skills").mkdir(parents=True)
         main(_base_args(tmp_skill, tmp_claude_md))
         rc = main(_base_args(tmp_skill, tmp_claude_md) + ["--check"])
         assert rc == 0
@@ -674,14 +674,14 @@ class TestOwnershipGuardAndCheck:
     def test_check_performs_no_writes(self, tmp_skill, tmp_claude_md):
         docs_dir = tmp_skill / "docs"
         en = docs_dir / "en" / "skills" / "test-skill.md"
-        ja = docs_dir / "ja" / "skills" / "test-skill.md"
+        zh = docs_dir / "zh" / "skills" / "test-skill.md"
         en.parent.mkdir(parents=True)
-        ja.parent.mkdir(parents=True)
+        zh.parent.mkdir(parents=True)
         en.write_text("protected en\n")
-        ja.write_text("protected ja\n")
-        before = (en.read_text(), ja.read_text(), en.stat().st_mtime_ns)
+        zh.write_text("protected zh\n")
+        before = (en.read_text(), zh.read_text(), en.stat().st_mtime_ns)
         main(_base_args(tmp_skill, tmp_claude_md) + ["--check"])
-        assert (en.read_text(), ja.read_text(), en.stat().st_mtime_ns) == before
+        assert (en.read_text(), zh.read_text(), en.stat().st_mtime_ns) == before
         # No index/catalog created as a side effect of --check
         assert not (docs_dir / "en" / "skills" / "index.md").exists()
 
@@ -759,13 +759,13 @@ class TestUpdateIndexPages:
 # ---------------------------------------------------------------------------
 
 
-class TestGenerateJaPageBadges:
-    def test_ja_badges_used(self, tmp_skill):
-        """Verify JA page uses api_badges_ja (FMP必須) not api_badges (FMP Required)."""
+class TestGenerateZhPageBadges:
+    def test_zh_badges_used(self, tmp_skill):
+        """Verify ZH page uses api_badges_zh (FMP必需) not api_badges (FMP Required)."""
         data = parse_skill_md(tmp_skill / "skills" / "test-skill" / "SKILL.md")
         api = {"fmp": "✅ Required", "finviz": "❌", "alpaca": "❌"}
-        page = generate_ja_page("test-skill", data, api, 11)
-        assert "FMP必須" in page
+        page = generate_zh_page("test-skill", data, api, 11)
+        assert "FMP必需" in page
         assert "FMP Required" not in page
 
 
@@ -798,15 +798,15 @@ class TestButtons:
         assert "Download Skill Package" not in result
         assert "View Source on GitHub" in result
 
-    def test_buttons_ja(self, tmp_path):
-        """JA buttons use Japanese text."""
+    def test_buttons_zh(self, tmp_path):
+        """ZH buttons use Chinese text."""
         pkg_dir = tmp_path / "skill-packages"
         pkg_dir.mkdir()
         (pkg_dir / "my-skill.skill").write_text("zip content")
 
-        result = _generate_buttons("my-skill", pkg_dir, "ja")
-        assert "スキルパッケージをダウンロード (.skill)" in result
-        assert "GitHubでソースを見る" in result
+        result = _generate_buttons("my-skill", pkg_dir, "zh")
+        assert "下载技能包 (.skill)" in result
+        assert "在GitHub上查看源码" in result
 
     def test_buttons_none_still_shows_source(self):
         """When skill_packages_dir is None, Source button still appears."""
@@ -814,11 +814,11 @@ class TestButtons:
         assert "View Source on GitHub" in result
         assert "Download Skill Package" not in result
 
-    def test_buttons_none_ja_still_shows_source(self):
-        """When skill_packages_dir is None, JA Source button still appears."""
-        result = _generate_buttons("my-skill", None, "ja")
-        assert "GitHubでソースを見る" in result
-        assert "スキルパッケージをダウンロード" not in result
+    def test_buttons_none_zh_still_shows_source(self):
+        """When skill_packages_dir is None, ZH Source button still appears."""
+        result = _generate_buttons("my-skill", None, "zh")
+        assert "在GitHub上查看源码" in result
+        assert "下载技能包" not in result
 
 
 # ---------------------------------------------------------------------------
@@ -900,10 +900,10 @@ class TestGenerateEnFullPage:
         assert "View Source on GitHub" in page
 
 
-class TestGenerateJaFullPage:
-    def test_ja_full_page_has_ja_headings(self, tmp_skill):
+class TestGenerateZhFullPage:
+    def test_zh_full_page_has_zh_headings(self, tmp_skill):
         data = parse_skill_md(tmp_skill / "skills" / "test-skill" / "SKILL.md")
-        page = generate_ja_full_page(
+        page = generate_zh_full_page(
             "test-skill",
             data,
             None,
@@ -912,23 +912,23 @@ class TestGenerateJaFullPage:
             {"references": ["methodology.md"], "scripts": ["test_runner.py"]},
         )
         for heading in [
-            "## 1. 概要",
+            "## 1. 概述",
             "## 2. 前提条件",
-            "## 3. クイックスタート",
-            "## 4. 仕組み",
-            "## 5. 使用例",
-            "## 6. 出力の読み方",
-            "## 7. Tips & ベストプラクティス",
-            "## 8. 他スキルとの連携",
-            "## 9. トラブルシューティング",
-            "## 10. リファレンス",
+            "## 3. 快速开始",
+            "## 4. 工作原理",
+            "## 5. 使用示例",
+            "## 6. 理解输出",
+            "## 7. 技巧与最佳实践",
+            "## 8. 与其他技能组合",
+            "## 9. 故障排除",
+            "## 10. 参考",
         ]:
-            assert heading in page, f"Missing JA heading: {heading}"
+            assert heading in page, f"Missing ZH heading: {heading}"
 
-    def test_ja_full_page_has_ja_badges(self, tmp_skill):
+    def test_zh_full_page_has_zh_badges(self, tmp_skill):
         data = parse_skill_md(tmp_skill / "skills" / "test-skill" / "SKILL.md")
         api = {"fmp": "✅ Required", "finviz": "❌", "alpaca": "❌"}
-        page = generate_ja_full_page(
+        page = generate_zh_full_page(
             "test-skill",
             data,
             api,
@@ -936,12 +936,12 @@ class TestGenerateJaFullPage:
             11,
             {"references": [], "scripts": []},
         )
-        assert "FMP必須" in page
+        assert "FMP必需" in page
         assert "FMP Required" not in page
 
-    def test_ja_full_page_has_todo_translation(self, tmp_skill):
+    def test_zh_full_page_has_todo_translation(self, tmp_skill):
         data = parse_skill_md(tmp_skill / "skills" / "test-skill" / "SKILL.md")
-        page = generate_ja_full_page(
+        page = generate_zh_full_page(
             "test-skill",
             data,
             None,
@@ -949,7 +949,7 @@ class TestGenerateJaFullPage:
             11,
             {"references": [], "scripts": []},
         )
-        assert "<!-- TODO: 翻訳 -->" in page
+        assert "<!-- TODO: 翻译 -->" in page
 
 
 # ---------------------------------------------------------------------------
@@ -959,7 +959,7 @@ class TestGenerateJaFullPage:
 
 class TestExtractCatalogSlugs:
     def test_extracts_linked_slugs(self):
-        text = "| [Name](/en/skills/my-skill/) | desc |\n| [Other](/ja/skills/other-one/) | x |"
+        text = "| [Name](/en/skills/my-skill/) | desc |\n| [Other](/zh/skills/other-one/) | x |"
         slugs = _extract_catalog_slugs(text)
         assert "my-skill" in slugs
         assert "other-one" in slugs
@@ -992,23 +992,23 @@ class TestUpdateCatalogApiMatrix:
         )
         return catalog
 
-    def _make_ja_catalog(self, docs_dir):
-        """Create a minimal JA catalog with an API要件マトリクス."""
-        ja_dir = docs_dir / "ja"
-        ja_dir.mkdir(parents=True, exist_ok=True)
-        catalog = ja_dir / "skill-catalog.md"
+    def _make_zh_catalog(self, docs_dir):
+        """Create a minimal ZH catalog with an API需求矩阵."""
+        zh_dir = docs_dir / "zh"
+        zh_dir.mkdir(parents=True, exist_ok=True)
+        catalog = zh_dir / "skill-catalog.md"
         catalog.write_text(
             textwrap.dedent("""\
-            # スキル一覧
+            # 技能目录
 
-            ## API要件マトリクス
+            ## API需求矩阵
 
-            | スキル | FMP | FINVIZ Elite | Alpaca |
+            | 技能 | FMP | FINVIZ Elite | Alpaca |
             |--------|-----|-------------|--------|
-            | Existing Skill | 必須 | - | - |
-            | その他すべてのスキル | - | - | - |
+            | Existing Skill | 必需 | - | - |
+            | 所有其他技能 | - | - | - |
 
-            「-」は不要を意味します。
+            "-"表示不需要。
             """)
         )
         return catalog
@@ -1045,9 +1045,9 @@ class TestUpdateCatalogApiMatrix:
         # Should still have exactly one "Existing Skill" row
         assert content.count("Existing Skill") == 1
 
-    def test_ja_inserts_before_aggregate_row(self, tmp_path):
+    def test_zh_inserts_before_aggregate_row(self, tmp_path):
         docs_dir = tmp_path / "docs"
-        catalog = self._make_ja_catalog(docs_dir)
+        catalog = self._make_zh_catalog(docs_dir)
 
         all_skills = [
             (
@@ -1059,13 +1059,13 @@ class TestUpdateCatalogApiMatrix:
         update_catalog_api_matrix(docs_dir, all_skills)
         content = catalog.read_text()
         lines = content.splitlines()
-        # Find "New Skill" and "その他すべてのスキル"
+        # Find "New Skill" and "其他所有技能"
         new_idx = None
         agg_idx = None
         for i, line in enumerate(lines):
             if "New Skill" in line:
                 new_idx = i
-            if "その他すべてのスキル" in line:
+            if "所有其他技能" in line:
                 agg_idx = i
         assert new_idx is not None, "New Skill row not found"
         assert agg_idx is not None, "Aggregate row not found"
@@ -1108,9 +1108,9 @@ class TestUpdateCatalogApiMatrix:
         # my-skill is in category table but NOT in matrix — should be added to matrix
         assert content.count("My Skill") == 2  # once in category, once in matrix
 
-    def test_ja_skips_all_dash_skill(self, tmp_path):
+    def test_zh_skips_all_dash_skill(self, tmp_path):
         docs_dir = tmp_path / "docs"
-        catalog = self._make_ja_catalog(docs_dir)
+        catalog = self._make_zh_catalog(docs_dir)
 
         all_skills = [
             (
@@ -1121,7 +1121,7 @@ class TestUpdateCatalogApiMatrix:
         ]
         update_catalog_api_matrix(docs_dir, all_skills)
         content = catalog.read_text()
-        # free-skill should not be added to JA because all values are "-"
+        # free-skill should not be added to ZH because all values are "-"
         assert "Free Skill" not in content
 
 

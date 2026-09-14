@@ -1,7 +1,7 @@
 """Report generation for IBD Distribution Day Monitor.
 
 - UTF-8 only (encoding="utf-8")
-- JSON uses ensure_ascii=False so Japanese explanations are preserved as-is.
+- JSON uses ensure_ascii=False so Chinese explanations are preserved as-is.
 - Sensitive keys are redacted via lowercase comparison (H4).
 """
 

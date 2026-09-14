@@ -1,4 +1,4 @@
-"""Generate `docs/en/quality-dashboard.md` and `docs/ja/quality-dashboard.md`.
+"""Generate `docs/en/quality-dashboard.md` and `docs/zh/quality-dashboard.md`.
 
 The dashboard summarises the catalog's quality posture for the docs site. It
 must read **only committed artifacts** so regeneration is deterministic in CI;
@@ -249,17 +249,17 @@ def _frontmatter(lang: str) -> str:
             "title: Quality Dashboard\n"
             "nav_order: 3\n"
             "permalink: /en/quality-dashboard/\n"
-            "lang_peer: /ja/quality-dashboard/\n"
+            "lang_peer: /zh/quality-dashboard/\n"
             "generated: true\n"
             "---\n"
         )
     return (
         "---\n"
         "layout: page\n"
-        "parent: 日本語\n"
-        "title: 品質ダッシュボード\n"
+        "parent: 中文\n"
+        "title: 质量仪表盘\n"
         "nav_order: 3\n"
-        "permalink: /ja/quality-dashboard/\n"
+        "permalink: /zh/quality-dashboard/\n"
         "lang_peer: /en/quality-dashboard/\n"
         "generated: true\n"
         "---\n"
@@ -314,52 +314,52 @@ L = {
         "docs_drift": "Docs drift",
         "nav_drift": "Navigator drift",
     },
-    "ja": {
-        "title": "品質ダッシュボード",
-        "notice": "本セクションは `scripts/generate_quality_dashboard.py` により自動生成されます。手動編集しないでください。",
-        "as_of": "スナップショット基準日:",
-        "lifecycle": "ライフサイクル",
-        "coverage": "テストカバレッジ",
-        "replay": "E2E リプレイ",
-        "deps": "依存関係",
-        "beta_pipeline": "ベータパイプライン",
-        "per_skill": "スキル別ステータス",
-        "runtime": "ランタイム指標（スナップショット）",
-        "total": "合計",
-        "production": "本番",
-        "beta": "ベータ",
-        "knowledge_only": "知識のみ",
-        "executable": "実行可能",
-        "with_tests": "テストあり",
-        "without_tests": "テストなし",
-        "agg_target": "全体カバレッジ目標",
-        "agg_floor": "全体カバレッジ下限",
-        "agg_waiver": "全体カバレッジ免除下限",
-        "allowed_failures": "許容失敗",
-        "target_zero": "目標 0",
-        "covered_workflows": "E2E リプレイでカバーされたワークフロー",
-        "provider": "プロバイダ",
-        "count": "件数",
-        "none_provider": "オフライン（外部データなし）",
-        "other_external_provider": "その他の外部プロバイダ",
-        "beta_skill": "スキル",
-        "beta_days": "ベータ経過日数",
-        "skill": "スキル",
-        "status": "ステータス",
-        "exec_col": "実行可能",
-        "tests_col": "テスト",
-        "coverage_col": "カバレッジ",
-        "yes": "はい",
-        "no": "いいえ",
-        "other": "その他",
-        "metric": "指標",
-        "value": "値",
-        "dual_axis": "Dual-axis スコア分布",
-        "issues": "高深刻度の未解決 Issue",
-        "last_ci": "直近の成功 CI",
-        "pkg_drift": "パッケージ差分",
-        "docs_drift": "ドキュメント差分",
-        "nav_drift": "ナビゲータ差分",
+    "zh": {
+        "title": "质量仪表盘",
+        "notice": "本部分由 `scripts/generate_quality_dashboard.py` 自动生成。请勿手动编辑。",
+        "as_of": "快照基准日：",
+        "lifecycle": "生命周期",
+        "coverage": "测试覆盖率",
+        "replay": "E2E 回放",
+        "deps": "依赖关系",
+        "beta_pipeline": "Beta 管道",
+        "per_skill": "技能状态明细",
+        "runtime": "运行时指标（快照）",
+        "total": "合计",
+        "production": "生产",
+        "beta": "Beta",
+        "knowledge_only": "仅知识库",
+        "executable": "可执行",
+        "with_tests": "有测试",
+        "without_tests": "无测试",
+        "agg_target": "总体覆盖率目标",
+        "agg_floor": "总体覆盖率下限",
+        "agg_waiver": "总体覆盖率豁免下限",
+        "allowed_failures": "允许失败数",
+        "target_zero": "目标 0",
+        "covered_workflows": "E2E 回放覆盖的工作流",
+        "provider": "提供商",
+        "count": "数量",
+        "none_provider": "离线（无外部数据）",
+        "other_external_provider": "其他外部提供商",
+        "beta_skill": "技能",
+        "beta_days": "Beta 经过天数",
+        "skill": "技能",
+        "status": "状态",
+        "exec_col": "可执行",
+        "tests_col": "测试",
+        "coverage_col": "覆盖率",
+        "yes": "是",
+        "no": "否",
+        "other": "其他",
+        "metric": "指标",
+        "value": "值",
+        "dual_axis": "Dual-axis 分数分布",
+        "issues": "高严重度未解决 Issue",
+        "last_ci": "最近成功 CI",
+        "pkg_drift": "包差异",
+        "docs_drift": "文档差异",
+        "nav_drift": "导航器差异",
     },
 }
 
@@ -515,7 +515,7 @@ def main(argv: list[str] | None = None) -> int:
     )
     parser.add_argument(
         "--lang",
-        choices=("en", "ja", "all"),
+        choices=("en", "zh", "all"),
         default="all",
         help="Which page(s) to regenerate (default: both).",
     )
@@ -532,7 +532,7 @@ def main(argv: list[str] | None = None) -> int:
         return 1
 
     metrics = compute_metrics(root)
-    langs = ("en", "ja") if args.lang == "all" else (args.lang,)
+    langs = ("en", "zh") if args.lang == "all" else (args.lang,)
 
     drift: list[str] = []
     for lang in langs:

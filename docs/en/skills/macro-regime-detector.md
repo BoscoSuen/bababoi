@@ -4,7 +4,7 @@ title: "Macro Regime Detector"
 grand_parent: English
 parent: Skill Guides
 nav_order: 29
-lang_peer: /ja/skills/macro-regime-detector/
+lang_peer: /zh/skills/macro-regime-detector/
 permalink: /en/skills/macro-regime-detector/
 ---
 

@@ -4,7 +4,7 @@ title: "Intraday Market Monitor"
 grand_parent: English
 parent: Skill Guides
 nav_order: 37
-lang_peer: /ja/skills/intraday-market-monitor/
+lang_peer: /zh/skills/intraday-market-monitor/
 permalink: /en/skills/intraday-market-monitor/
 generated: true
 ---

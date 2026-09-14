@@ -1,7 +1,7 @@
 schema_version: 1
 id: stockbee-20pct-study-daily
 display_name: Stockbee 20% Study Daily
-display_name_ja: Stockbee 20%値動き日次研究
+display_name_zh: Stockbee 20% 波动每日研究
 cadence: daily
 estimated_minutes: 30
 target_users:
@@ -15,18 +15,18 @@ when_to_run: >-
   Run after the US market close, or during historical research backfills, to
   identify +20%/-20% movers, classify event context, update matured outcomes,
   and accumulate a model book of explosive market moves.
-when_to_run_ja: >-
-  米国市場の取引終了後、または過去データの補完調査時に実行する。+20% / -20% の
-  値動きを検出し、イベントの背景を分類し、観測期間を終えた結果を更新して、
-  急激な市場変動のモデルブックを蓄積する。
+when_to_run_zh: >-
+  在美股收盘后或历史数据补充研究时执行。检测 +20% / -20% 的
+  价格波动，分类事件背景，更新已到期的观察结果，
+  积累极端市场波动的模型手册。
 when_not_to_run: >-
   Do not use as a buy/sell signal workflow or automatic execution system. Do
   not promote new rules from small samples, current-only universes, or events
   without survivorship-bias and data-quality notes.
-when_not_to_run_ja: >-
-  売買シグナルや自動執行のワークフローとして使用しない。少数サンプル、
-  現在の銘柄集合だけを使った分析、または生存者バイアスとデータ品質の注記がない
-  イベントから新しいルールを採用しない。
+when_not_to_run_zh: >-
+  不用作买卖信号或自动执行工作流。不从少量样本、
+  仅限当前标的集合的分析或缺少生存偏差和数据质量注记的
+  事件中采纳新规则。
 
 required_skills:
   - stockbee-20pct-study
@@ -67,7 +67,7 @@ artifacts:
 steps:
   - step: 1
     name: Scan daily +20% and -20% movers
-    name_ja: 日次で+20% / -20%変動銘柄を抽出する
+    name_zh: 每日筛选 +20% / -20% 波动标的
     skill: stockbee-20pct-study
     produces:
       - twenty_pct_mover_events
@@ -75,7 +75,7 @@ steps:
 
   - step: 2
     name: Classify catalyst, chart context, theme cluster, and risk flags
-    name_ja: カタリスト、チャート状況、テーマ群、リスクフラグを分類する
+    name_zh: 分类催化剂、图表状况、主题集群和风险标记
     skill: stockbee-20pct-study
     consumes:
       - twenty_pct_mover_events
@@ -85,7 +85,7 @@ steps:
 
   - step: 3
     name: Update matured forward outcomes for prior 20% study records
-    name_ja: 過去の20%研究記録について観測期間後の結果を更新する
+    name_zh: 更新历史 20% 研究记录的到期后结果
     skill: stockbee-20pct-study
     consumes:
       - classified_event_study
@@ -95,7 +95,7 @@ steps:
 
   - step: 4
     name: Summarize cohorts and export edge hints
-    name_ja: コホートを要約してエッジ候補を出力する
+    name_zh: 汇总队列并输出优势候选
     skill: stockbee-20pct-study
     consumes:
       - matured_event_outcomes
@@ -107,13 +107,13 @@ steps:
       Which 20% mover patterns have enough sample size, stable outcome behavior,
       and execution realism to promote into edge research rather than journal-only
       observation?
-    decision_question_ja: >-
-      20%変動パターンのうち、記録だけの観察ではなくエッジ研究へ進めるのに十分な
-      サンプル数、安定した結果傾向、現実的な執行可能性を備えるものはどれか。
+    decision_question_zh: >-
+      20% 波动模式中，哪些具有足够的样本量、稳定的结果趋势和
+      现实的可执行性，可从纯观察记录推进至优势研究？
 
   - step: 5
     name: Log accepted lessons
-    name_ja: 採用した学びを記録する
+    name_zh: 记录已采纳的经验教训
     skill: trader-memory-core
     optional: true
     consumes:
@@ -125,8 +125,8 @@ steps:
     decision_question: >-
       Which findings are accepted as operating-rule candidates, which are rejected,
       and which remain pending more examples?
-    decision_question_ja: >-
-      どの知見を運用ルール候補として採用し、どれを却下し、どれを追加事例待ちにするか。
+    decision_question_zh: >-
+      哪些发现应作为操作规则候选采纳，哪些拒绝，哪些待更多案例？
 
 manual_review:
   - Inspect representative winner and failure charts before accepting any pattern.
@@ -134,11 +134,11 @@ manual_review:
   - Mark current-universe backfills as survivorship-biased unless delisted symbols are included.
   - Require explicit sample-size thresholds before promoting a cohort rule.
   - Feed accepted lessons into monthly-performance-review rather than changing rules ad hoc.
-manual_review_ja:
-  - パターンを採用する前に、代表的な成功例と失敗例のチャートを確認する。
-  - 観察、研究仮説、実行可能な売買計画を区別する。
-  - 上場廃止銘柄を含まない現在の銘柄集合による過去分析は、生存者バイアスありと明記する。
-  - コホートのルールを採用する前に、明示したサンプル数の基準を満たすことを求める。
-  - ルールを場当たり的に変更せず、採用した学びを monthly-performance-review に引き渡す。
+manual_review_zh:
+  - 采纳模式之前，审查代表性的成功和失败图表。
+  - 区分观察、研究假设和可执行的交易计划。
+  - 不含退市标的的当前集合的历史分析须标注存在生存偏差。
+  - 采纳队列规则之前，须满足明确的样本量阈值。
+  - 不临时更改规则，将已采纳的经验教训传递至 monthly-performance-review。
 
 journal_destination: trader-memory-core

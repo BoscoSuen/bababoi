@@ -4,14 +4,14 @@ title: FinViz Screener
 grand_parent: English
 parent: Skill Guides
 nav_order: 1
-lang_peer: /ja/skills/finviz-screener/
+lang_peer: /zh/skills/finviz-screener/
 permalink: /en/skills/finviz-screener/
 ---
 
 # FinViz Screener
 {: .no_toc }
 
-Translate natural language stock screening requests into FinViz screener filter URLs and open them in Chrome. Supports both Japanese and English input.
+Translate natural language stock screening requests into FinViz screener filter URLs and open them in Chrome. Supports both Chinese and English input.
 {: .fs-6 .fw-300 }
 
 [Download Skill Package (.skill)](https://github.com/tradermonty/claude-trading-skills/raw/main/skill-packages/finviz-screener.skill){: .btn .btn-primary .fs-5 .mb-4 .mb-md-0 .mr-2 }
@@ -28,11 +28,11 @@ Translate natural language stock screening requests into FinViz screener filter 
 
 ## 1. Overview
 
-FinViz Screener bridges the gap between what you want to find and how FinViz expects filter codes. Instead of memorizing codes like `fa_epsqoq_o25` or `ta_sma200_pa`, describe your criteria in plain English (or Japanese) and Claude builds the URL for you.
+FinViz Screener bridges the gap between what you want to find and how FinViz expects filter codes. Instead of memorizing codes like `fa_epsqoq_o25` or `ta_sma200_pa`, describe your criteria in plain English (or Chinese) and Claude builds the URL for you.
 
 **What it solves:**
 - Eliminates the need to learn 500+ FinViz filter codes
-- Handles bilingual input (Japanese and English)
+- Handles bilingual input (Chinese and English)
 - Auto-detects FINVIZ Elite from environment variables
 - Validates all filter tokens to prevent URL injection
 - Opens results directly in Chrome with OS-appropriate fallbacks
@@ -167,16 +167,16 @@ Find small cap stocks making new 52-week highs on high relative volume
 
 ---
 
-### Example 7: Japanese Input
+### Example 7: Chinese Input
 
 **Prompt:**
 ```
-配当利回り5%以上でROE15%以上の大型株を探して
+寻找股息率5%以上且ROE15%以上的大盘股
 ```
 
 **Filter codes:** `fa_div_o5,fa_roe_o15,cap_large`
 
-**Why useful:** Demonstrates full Japanese language support. Claude parses Japanese financial terms and maps them to the same FinViz filter codes, making the skill accessible to bilingual users.
+**Why useful:** Demonstrates full Chinese language support. Claude parses Chinese financial terms and maps them to the same FinViz filter codes, making the skill accessible to bilingual users.
 
 ---
 
@@ -373,7 +373,7 @@ The FinViz results page itself shows stocks in a sortable table. Use the view se
 - **Start broad, then narrow.** Begin with 2-3 filters and add more only if the result set is too large. Over-filtering can eliminate good candidates.
 - **Use `--view` strategically.** The `valuation` view is best for dividend/value screens; `technical` view works best for momentum and breakout screens.
 - **Check the `--order` option.** Sorting by the metric most relevant to your strategy (e.g., `dividendyield`, `-marketcap`, `change`) surfaces the best candidates first.
-- **Japanese users:** The skill handles full-width characters and Japanese financial terminology natively. No translation step needed.
+- **Chinese users:** The skill handles Chinese characters and Chinese financial terminology natively. No translation step needed.
 
 ---
 

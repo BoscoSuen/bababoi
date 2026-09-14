@@ -12,5 +12,5 @@ nav_exclude: true
 
 <div class="lang-selector">
   <a href="{{ '/en/' | relative_url }}" class="lang-btn lang-btn-en">English Documentation</a>
-  <a href="{{ '/ja/' | relative_url }}" class="lang-btn lang-btn-ja">日本語ドキュメント</a>
+  <a href="{{ '/zh/' | relative_url }}" class="lang-btn lang-btn-zh">中文文档</a>
 </div>

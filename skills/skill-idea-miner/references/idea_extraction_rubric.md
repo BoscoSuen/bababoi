@@ -40,8 +40,8 @@ Keyword detection in user messages:
 **English keywords:**
 - `skill`, `create`, `automate`, `workflow`, `pipeline`, `generate`, `template`, `script`
 
-**Japanese keywords:**
-- `スキル`, `作成`, `自動化`, `ワークフロー`, `パイプライン`, `生成`, `テンプレート`
+**Chinese keywords:**
+- `技能`, `创建`, `自动化`, `工作流`, `管道`, `生成`, `模板`
 
 - **Matching:** Case-insensitive, partial word match
 - **Interpretation:** Direct user intent to automate; highest signal value

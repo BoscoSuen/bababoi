@@ -4,7 +4,7 @@ title: "Edge Hint Extractor"
 grand_parent: English
 parent: Skill Guides
 nav_order: 20
-lang_peer: /ja/skills/edge-hint-extractor/
+lang_peer: /zh/skills/edge-hint-extractor/
 permalink: /en/skills/edge-hint-extractor/
 ---
 

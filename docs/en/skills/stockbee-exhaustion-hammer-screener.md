@@ -4,7 +4,7 @@ title: "Stockbee Exhaustion Hammer Screener"
 grand_parent: English
 parent: Skill Guides
 nav_order: 51
-lang_peer: /ja/skills/stockbee-exhaustion-hammer-screener/
+lang_peer: /zh/skills/stockbee-exhaustion-hammer-screener/
 permalink: /en/skills/stockbee-exhaustion-hammer-screener/
 generated: false
 ---

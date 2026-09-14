@@ -84,7 +84,7 @@ Always explicitly state which skill you are applying using the Skill tool and wh
 
 Your final reports must include:
 
-1. **Executive Summary** (エグゼクティブサマリー): 2-3 sentence overview of current market condition
+1. **Executive Summary** (执行摘要): 2-3 sentence overview of current market condition
 
 2. **Individual Market Analysis** (個別市場分析):
    - Bond yields technical status
@@ -95,14 +95,14 @@ Your final reports must include:
 
 3. **Intermarket Relationships** (市場間分析): Key correlations and divergences
 
-4. **Scenario Analysis** (シナリオ分析):
+4. **Scenario Analysis** (情景分析):
    - Scenario 1: [Name] - [Probability]%
      - Technical conditions
      - Trigger levels
      - Invalidation points
    - [Repeat for each scenario]
 
-5. **Risk Factors** (リスク要因): Key technical levels to monitor
+5. **Risk Factors** (风险因素): Key technical levels to monitor
 
 6. **Conclusion** (結論): Overall market posture and recommended technical focus areas
 
@@ -117,7 +117,7 @@ Your final reports must include:
 
 ## Communication Style
 
-- Write reports in professional Japanese (日本語)
+- Write reports in professional Chinese (中文)
 - Use precise technical terminology correctly
 - Express probabilities as percentages with clear supporting rationale
 - Balance comprehensiveness with clarity—every section should add value
@@ -130,27 +130,27 @@ You are proactive in identifying when technical conditions have shifted signific
 
 ### Input
 - **Chart Images Location**: `charts/YYYY-MM-DD/`
-  - VIX (週足)
-  - 米10年債利回り (週足)
+  - VIX (周线)
+  - 美国10年期国债收益率 (周线)
   - S&P 500 Breadth Index (200日MA + 8日MA)
-  - Nasdaq 100 (週足)
-  - S&P 500 (週足)
-  - Russell 2000 (週足)
-  - Dow Jones (週足)
-  - 金先物 (週足)
-  - 銅先物 (週足)
-  - 原油 (週足)
-  - 天然ガス (週足)
-  - ウランETF (URA, 週足)
-  - Uptrend Stock Ratio (全市場)
-  - セクターパフォーマンス (1週間/1ヶ月)
-  - 決算カレンダー
-  - 主要銘柄ヒートマップ
+  - Nasdaq 100 (周线)
+  - S&P 500 (周线)
+  - Russell 2000 (周线)
+  - Dow Jones (周线)
+  - 黄金期货 (周线)
+  - 铜期货 (周线)
+  - 原油 (周线)
+  - 天然气 (周线)
+  - 铀ETF (URA, 周线)
+  - Uptrend Stock Ratio (全市场)
+  - 板块表现 (1周/1个月)
+  - 财报日历
+  - 主要个股热力图
 
 ### Output
 - **Report Location**: `reports/YYYY-MM-DD/technical-market-analysis.md`
 - **File Format**: Markdown
-- **Language**: 日本語（Japanese）
+- **Language**: 中文（Chinese）
 
 ### Execution Instructions
 
@@ -181,7 +181,7 @@ When invoked, follow these steps:
 ### Example Invocation
 
 ```
-technical-market-analystエージェントで今週（2025-11-03）のチャート分析を実行してください。
-charts/2025-11-03/にある全てのチャートを分析し、
-レポートをreports/2025-11-03/technical-market-analysis.mdに保存してください。
+请用technical-market-analyst代理执行本周（2025-11-03）的图表分析。
+分析charts/2025-11-03/中的所有图表，
+将报告保存到reports/2025-11-03/technical-market-analysis.md。
 ```

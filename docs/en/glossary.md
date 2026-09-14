@@ -3,7 +3,7 @@ layout: default
 title: Glossary
 parent: English
 nav_order: 7
-lang_peer: /ja/glossary/
+lang_peer: /zh/glossary/
 permalink: /en/glossary/
 ---
 

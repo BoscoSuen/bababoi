@@ -2,7 +2,7 @@
 
 A sample agent application that combines 5 trading skills into a unified daily market dashboard, powered by **Streamlit** and **Claude Agent SDK**.
 
-> **[日本語はこちら](#daily-market-dashboard-日本語)**
+> **[中文版请见下方](#daily-market-dashboard-中文)**
 
 ## What It Does
 
@@ -47,8 +47,8 @@ cp .env.example .env
 # Generate today's dashboard
 python3 generate_dashboard.py --project-root ../..
 
-# Generate in Japanese
-python3 generate_dashboard.py --project-root ../.. --lang ja
+# Generate in Chinese
+python3 generate_dashboard.py --project-root ../.. --lang zh
 
 # Launch the app
 streamlit run app.py
@@ -56,7 +56,7 @@ streamlit run app.py
 
 ## Features
 
-- **Language Selection** — Switch between English and Japanese via the sidebar radio button before regenerating the dashboard
+- **Language Selection** — Switch between English and Chinese via the sidebar radio button before regenerating the dashboard
 - **Dashboard + Chat Tabs** — View the latest dashboard directly, or switch to Chat for interactive Q&A
 - **Regenerate Button** — One-click dashboard refresh from the sidebar (runs all 5 skills in ~80s)
 - **Knowledge-Aware Chat** — The agent automatically searches `knowledge/` for relevant dashboard data
@@ -105,77 +105,77 @@ daily-market-dashboard/
 
 ---
 
-# Daily Market Dashboard (日本語)
+# Daily Market Dashboard (中文)
 
-Streamlit と Claude Agent SDK を活用した、5つのトレーディングスキルを統合するデイリーマーケットダッシュボードのサンプルアプリケーションです。
+基于 Streamlit 和 Claude Agent SDK 的示例应用，集成 5 个交易技能生成统一的每日市场仪表板。
 
-## 概要
+## 概述
 
-1. **ダッシュボードタブ** — 5スキルを並行実行して生成した市場概況を表示
-2. **チャットタブ** — ダッシュボードデータについて AI アドバイザーに質問・相談
+1. **仪表板标签** — 并行运行 5 个技能，生成市场概览
+2. **聊天标签** — 就仪表板数据向 AI 顾问提问交流
 
-### 使用スキル
+### 使用的技能
 
-| スキル | 測定内容 |
-|--------|----------|
-| FTD Detector | フォロースルーデー（市場底値確認シグナル） |
-| Uptrend Analyzer | 上昇トレンド総合スコア (0-100) |
-| Market Breadth Analyzer | 市場の広がり総合スコア (0-100) |
-| Theme Detector | 強気/弱気セクターテーマとライフサイクル分析 |
-| VCP Screener | ボラティリティ収縮パターン候補銘柄 |
+| 技能 | 测量内容 |
+|------|----------|
+| FTD Detector | Follow-Through Day 信号（市场底部确认） |
+| Uptrend Analyzer | 上升趋势综合分数 (0-100) |
+| Market Breadth Analyzer | 市场广度综合分数 (0-100) |
+| Theme Detector | 看多/看空板块主题及生命周期分析 |
+| VCP Screener | 波动率收缩形态候选标的 |
 
-> **注記**: Market Top Detector と Economic Calendar はインタラクティブな実行が必要なため、自動生成対象外です。チャットタブで `/market-top-detector` や `/economic-calendar-fetcher` を実行してください。
+> **注意**: Market Top Detector 和 Economic Calendar 需要交互式执行，不在自动生成范围内。请在聊天标签中运行 `/market-top-detector` 或 `/economic-calendar-fetcher`。
 
-## 必要環境
+## 环境要求
 
 - Python 3.11+
 - [Claude Agent SDK](https://docs.anthropic.com/en/docs/agent-sdk)
-- Anthropic API キー **または** Claude サブスクリプション（`claude` CLI でログイン済み）
-- **API キー不要** — 3スキル (Uptrend, Breadth, Theme) は公開データのみ。FTD Detector と VCP Screener は `FMP_API_KEY` なしでは N/A 表示（任意、無料枠で十分）
-- サードパーティ Python パッケージ（`requirements.txt` で一括インストール）: `requests`, `pandas`, `numpy`, `yfinance`, `finvizfinance`, `beautifulsoup4`, `lxml`, `pyyaml`
+- Anthropic API 密钥 **或** Claude 订阅（已通过 `claude` CLI 登录）
+- **无需 API 密钥** — 3 个技能 (Uptrend, Breadth, Theme) 仅使用公开数据。FTD Detector 和 VCP Screener 在没有 `FMP_API_KEY` 时显示 N/A（可选，免费额度即可满足）
+- 第三方 Python 包（通过 `requirements.txt` 安装）: `requests`, `pandas`, `numpy`, `yfinance`, `finvizfinance`, `beautifulsoup4`, `lxml`, `pyyaml`
 
-## クイックスタート
+## 快速开始
 
 ```bash
 cd examples/daily-market-dashboard
 
-# 依存パッケージのインストール
+# 安装依赖
 pip install -r requirements.txt
 
-# (任意) API キーを設定
+# （可选）配置 API 密钥
 cp .env.example .env
-# Claude サブスクリプション利用の場合、ANTHROPIC_API_KEY は省略可
+# 使用 Claude 订阅时，ANTHROPIC_API_KEY 可省略
 
-# ダッシュボード生成（英語）
+# 生成仪表板（英文）
 python3 generate_dashboard.py --project-root ../..
 
-# ダッシュボード生成（日本語）
-python3 generate_dashboard.py --project-root ../.. --lang ja
+# 生成仪表板（中文）
+python3 generate_dashboard.py --project-root ../.. --lang zh
 
-# アプリ起動
+# 启动应用
 streamlit run app.py
 ```
 
-## 主な機能
+## 主要功能
 
-- **言語切替** — サイドバーのラジオボタンで English / 日本語 を選択してダッシュボードを再生成
-- **Dashboard + Chat タブ** — 最新ダッシュボードの直接閲覧と、対話型 Q&A の切替
-- **ワンクリック再生成** — サイドバーの「ダッシュボード再生成」ボタンで全5スキルを実行（約80秒）
-- **ナレッジ連携チャット** — エージェントが `knowledge/` 内のダッシュボードデータを自動検索して回答
-- **自動クリーンアップ** — 3日以上前のダッシュボードを自動削除
+- **语言切换** — 通过侧栏单选按钮在 English / 中文 之间切换后重新生成仪表板
+- **仪表板 + 聊天标签** — 直接查看最新仪表板，或切换到聊天进行交互式问答
+- **一键重新生成** — 点击侧栏"重新生成仪表板"按钮运行全部 5 个技能（约 80 秒）
+- **知识关联聊天** — Agent 自动搜索 `knowledge/` 中的仪表板数据进行回答
+- **自动清理** — 自动删除 3 天前的仪表板
 
-## 定時実行 (macOS)
+## 定时执行 (macOS)
 
 ```bash
 cd examples/daily-market-dashboard
 
-# logs ディレクトリを作成
+# 创建 logs 目录
 mkdir -p logs
 
-# launchd エージェントをインストール
+# 安装 launchd agent
 sed "s|\$HOME|$HOME|g; s|\$REPO_ROOT|$(cd ../.. && pwd)|g; s|\$PROJECT_DIR|$(pwd)|g" \
   launchd/com.trading.daily-dashboard.plist > ~/Library/LaunchAgents/com.trading.daily-dashboard.plist
 launchctl load ~/Library/LaunchAgents/com.trading.daily-dashboard.plist
 ```
 
-毎朝 6:30 に `generate_dashboard.py` を自動実行します。ログは `logs/` に出力されます。
+每天早上 6:30 自动执行 `generate_dashboard.py`。日志输出到 `logs/`。

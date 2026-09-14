@@ -3,14 +3,13 @@
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-JA_PAGE = ROOT / "docs" / "ja" / "skills" / "fxmacrodata-calendar.md"
+ZH_PAGE = ROOT / "docs" / "zh" / "skills" / "fxmacrodata-calendar.md"
 
 
-def test_fxmacrodata_ja_page_is_a_real_translation() -> None:
-    text = JA_PAGE.read_text(encoding="utf-8")
+def test_fxmacrodata_zh_page_exists_with_chinese_content() -> None:
+    text = ZH_PAGE.read_text(encoding="utf-8")
 
     assert "generated: false" in text
-    assert "not yet been translated into Japanese" not in text
-    assert "## 1. 概要" in text
-    assert "## 4. ワークフロー" in text
-    assert "経済指標" in text
+    assert "FXMacroData Calendar" in text
+    assert "无需API" in text
+    assert "查看英文版指南" in text

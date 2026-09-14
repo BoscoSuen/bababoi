@@ -3,7 +3,7 @@ layout: default
 title: Your First Week
 parent: English
 nav_order: 8
-lang_peer: /ja/your-first-week/
+lang_peer: /zh/your-first-week/
 permalink: /en/your-first-week/
 ---
 

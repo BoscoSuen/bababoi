@@ -2,16 +2,16 @@
 
 `scripts/recommend.py` is the **single source of truth** for routing. This
 document explains the engine; `assets/intent_benchmark_v1.json` is the
-explicitly labeled 211-case EN/JA gold corpus, and
+explicitly labeled 211-case EN/ZH gold corpus, and
 `scripts/intent_benchmark.py` is its fail-closed evaluator.
 
 ## Engine overview
 
 1. Normalize the query (lowercase, collapse whitespace). **Bilingual** — every
-   persona carries both English and Japanese trigger terms, so the recommender
-   routes a JA goal (e.g. 「配当株を探したい」「APIキー無しで使えるもの」「スイング
-   トレードをしたい」) the same as its English equivalent. (`.lower()` leaves
-   Japanese unchanged; mixed-case "API" folds to "api", which the JA no-API
+   persona carries both English and Chinese trigger terms, so the recommender
+   routes a ZH goal (e.g. "寻找高股息股票"、"不需要API密钥"、"做波段交易")
+   the same as its English equivalent. (`.lower()` leaves
+   Chinese unchanged; mixed-case "API" folds to "api", which the ZH no-API
    terms account for.)
 2. Walk the **ordered persona table**. The **first** matching persona wins.
 3. A persona either names a `primary` workflow (+ optional `secondary`), or an
@@ -66,8 +66,8 @@ Evaluated top-to-bottom; first match wins. Order encodes precedence:
   short-term risk" → regime/core split, not the dividend bucket.
 - #12 before #13: specific Kanchi candidate sourcing wins over broad dividend
   portfolio maintenance while both candidates remain visible in diagnostics.
-- #16 before #17: specific JA monthly phrases such as 「今月の振り返り」 win
-  over the generic journal term 「振り返り」.
+- #16 before #17: specific ZH monthly phrases such as "本月回顾" win
+  over the generic journal term "回顾".
 
 ## Routing diagnostics and benchmark gate
 
@@ -78,9 +78,9 @@ backward compatibility. One match is `exact`; multiple matches are
 `ambiguous`; no matches are `fallback` with `selected_persona: null`.
 
 The versioned corpus requires all 17 personas and all 11 workflows to carry
-positive and hard-negative coverage in both English and Japanese. Its
+positive and hard-negative coverage in both English and Chinese. Its
 metamorphic cases cover EN case/punctuation/word-order/orthographic changes and
-JA punctuation/word-order/orthographic/particle/conjugation changes. Candidate
+ZH punctuation/word-order/orthographic/measure-word/aspect changes. Candidate
 precision, candidate recall, selected accuracy, and workflow accuracy are all
 fixed at 1.0. Static shadowing contracts fingerprint every ordered
 cross-persona term containment; a new overlap, stale allowlist entry,

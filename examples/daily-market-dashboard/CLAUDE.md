@@ -15,7 +15,7 @@ cp .env.example .env   # Set ANTHROPIC_API_KEY (optional if using subscription)
 
 # Generate dashboard
 python3 generate_dashboard.py --project-root ../..
-python3 generate_dashboard.py --project-root ../.. --lang ja
+python3 generate_dashboard.py --project-root ../.. --lang zh
 
 # Run
 streamlit run app.py

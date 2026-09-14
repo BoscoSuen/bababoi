@@ -191,8 +191,8 @@ def test_ten_question_contract(
         "trade coach",
         "trade coaching",
         "performance coach",
-        "トレードコーチ",
-        "取引後レビュー",
+        "交易教练",
+        "交易后复盘",
     ],
     ids=[
         "en-post-trade-coaching",
@@ -200,8 +200,8 @@ def test_ten_question_contract(
         "en-trade-coach",
         "en-trade-coaching",
         "en-performance-coach",
-        "ja-トレードコーチ",
-        "ja-取引後レビュー",
+        "zh-trade-coach",
+        "zh-post-trade-debrief",
     ],
 )
 def test_post_trade_coaching_routes_to_trade_memory_loop(
@@ -251,31 +251,31 @@ _SHAPIRO_REQUIRED_SKILLS = {
         "I want to fade a crowded futures position",
         "help me screen COT data for contrarian setups",
         "shapiro style contrarian futures trading",
-        "コミットメントオブトレーダーズで逆張りしたい",
-        "先物の逆張りをしたい",
-        "シャピロ式の逆張り手法を使いたい",
-        # Regression (accept-test review): natural JA sentences using the
-        # crowded VERB forms (混み合った/混み合っている), not just the noun
-        # form (混雑ポジション) — the original persona missed these.
-        "COTで混み合った先物ポジションを逆張りしたい",
-        "建玉が混み合っている先物を逆張りしたい",
+        "用COT数据做期货逆向交易",
+        "我想做期货逆向交易",
+        "我想用Shapiro式逆向手法",
+        # Regression (accept-test review): natural ZH sentences using the
+        # crowded verb forms, not just the noun form — the original
+        # persona missed these.
+        "COT数据里拥挤的期货仓位想逆向操作",
+        "持仓拥挤的期货想做逆向交易",
     ],
     ids=[
         "en-fade-crowded-futures",
         "en-cot-contrarian",
         "en-shapiro-style",
-        "ja-cot-contrarian",
-        "ja-futures-contrarian",
-        "ja-shapiro-style",
-        "ja-cot-crowded-verb-form",
-        "ja-crowded-futures-teiru-form",
+        "zh-cot-contrarian",
+        "zh-futures-contrarian",
+        "zh-shapiro-style",
+        "zh-cot-crowded-verb-form",
+        "zh-crowded-futures-teiru-form",
     ],
 )
 def test_shapiro_contrarian_routes_with_full_bundle(
     repo_metadata: dict[str, Any], query: str
 ) -> None:
     """Regression (Issue #244 rebase review): before the shapiro-contrarian
-    persona was added, these EN/JA queries (Shapiro/COT/crowded-futures
+    persona was added, these EN/ZH queries (Shapiro/COT/crowded-futures
     intent) fell through to the unmapped beginner default
     (market-regime-daily). Adding the persona alone was not enough either:
     cot-contrarian-detector (shapiro-contrarian's first required skill) has
@@ -344,24 +344,24 @@ _KANCHI_EXPECTED_OPTIONAL = {
         "kanchi dividend screening this week",
         "help me underwrite dividend candidates Kanchi-style",
         "run a kanchi high-dividend screen",
-        "かんち式で高配当株スクリーニングしたい",
-        "かんちさんのやり方で配当株スクリーニングしたい",
-        "高配当株を探したい",
+        "我想用Kanchi式筛选高股息股",
+        "我想用Kanchi的方法筛选股息股",
+        "我想找高股息股",
     ],
     ids=[
         "en-kanchi-high-yield",
         "en-kanchi-dividend-screening",
         "en-underwrite-kanchi-style",
         "en-kanchi-high-dividend-screen",
-        "ja-kanchi-style-screening",
-        "ja-kanchisan-screening",
-        "ja-high-yield-search",
+        "zh-kanchi-style-screening",
+        "zh-kanchisan-screening",
+        "zh-high-yield-search",
     ],
 )
 def test_kanchi_dividend_weekly_routes_with_full_bundle(
     repo_metadata: dict[str, Any], query: str
 ) -> None:
-    """Regression (Issue #260): Kanchi-intent EN/JA queries must route to
+    """Regression (Issue #260): Kanchi-intent EN/ZH queries must route to
     kanchi-dividend-weekly with its full required+optional 6-skill bundle,
     not fall through to core-portfolio-weekly (existing-holdings
     maintenance) via the broad dividend-long-term-investor persona. The
@@ -402,7 +402,7 @@ def test_kanchi_persona_does_not_regress_core_portfolio_routing(
     protected = [
         "I want to review my holdings and dividend candidates this week",  # CONTRACT Q4
         "I want to find dividend stocks",  # CONTRACT Q6 / skillset test
-        "配当株を探したい",  # JA pinned (:783)
+        "我想找股息股",  # ZH pinned (:783)
         "I want to see my portfolio allocation",
         "I want to rebalance my holdings",
     ]
@@ -431,8 +431,8 @@ def test_kanchi_persona_terms_do_not_collide_with_pinned_queries() -> None:
         "trade coach",
         "trade coaching",
         "performance coach",
-        "トレードコーチ",
-        "取引後レビュー",
+        "交易教练",
+        "交易后复盘",
         # test_skillset_manifest_active_for_shipped_categories /
         # test_skillset_deferred_without_manifest
         "I want to do swing trading",
@@ -440,14 +440,14 @@ def test_kanchi_persona_terms_do_not_collide_with_pinned_queries() -> None:
         "I have 15 minutes each morning can I take risk today",
         "I want to use short strategies",
         "I want to research and backtest new strategy ideas",
-        # test_japanese_queries_route
-        "API キー無しで使えるものを教えて",
-        "スイングトレードをしたい",
-        "配当株を探したい",
-        "初心者だけどどこから始めればいい",
-        "ショート戦略を使いたい",
-        "新しい戦略をバックテストしたい",
-        "毎朝15分で今日リスクを取れるか知りたい",
+        # test_chinese_queries_route
+        "不需要API密钥的有哪些",
+        "我想做波段交易",
+        "我想找股息股",
+        "我是新手从哪里开始",
+        "我想用做空策略",
+        "我想回测新策略",
+        "每天早上15分钟想知道今天能不能承受风险",
     ]
     for term in kanchi.any_terms:
         term_norm = normalize_query(term)
@@ -981,7 +981,7 @@ def test_render_text_honest_gap_no_bundle(repo_metadata: dict[str, Any]) -> None
 
 
 # ---------------------------------------------------------------------------
-# Bilingual (Japanese) routing — SKILL.md advertises JA triggers
+# Bilingual (Chinese) routing — SKILL.md advertises ZH triggers
 # ---------------------------------------------------------------------------
 
 
@@ -989,26 +989,26 @@ def test_render_text_honest_gap_no_bundle(repo_metadata: dict[str, Any]) -> None
     "query,exp_primary,exp_gap,exp_skillset",
     [
         # reviewer's three regression examples
-        ("API キー無しで使えるものを教えて", "market-regime-daily", False, "market-regime"),
-        ("スイングトレードをしたい", "swing-opportunity-daily", False, "swing-opportunity"),
-        ("配当株を探したい", "core-portfolio-weekly", False, "core-portfolio"),
-        # a few more JA personas
-        ("初心者だけどどこから始めればいい", "market-regime-daily", False, "market-regime"),
-        ("ショート戦略を使いたい", None, True, "advanced-satellite"),
-        ("新しい戦略をバックテストしたい", None, True, "strategy-research"),
-        ("毎朝15分で今日リスクを取れるか知りたい", "market-regime-daily", False, "market-regime"),
+        ("不需要API密钥的有哪些", "market-regime-daily", False, "market-regime"),
+        ("我想做波段交易", "swing-opportunity-daily", False, "swing-opportunity"),
+        ("我想找股息股", "core-portfolio-weekly", False, "core-portfolio"),
+        # a few more ZH personas
+        ("我是新手从哪里开始", "market-regime-daily", False, "market-regime"),
+        ("我想用做空策略", None, True, "advanced-satellite"),
+        ("我想回测新策略", None, True, "strategy-research"),
+        ("每天早上15分钟想知道今天能不能承受风险", "market-regime-daily", False, "market-regime"),
     ],
     ids=[
-        "ja-no-api",
-        "ja-swing",
-        "ja-dividend",
-        "ja-beginner",
-        "ja-short-gap",
-        "ja-research-gap",
-        "ja-morning",
+        "zh-no-api",
+        "zh-swing",
+        "zh-dividend",
+        "zh-beginner",
+        "zh-short-gap",
+        "zh-research-gap",
+        "zh-morning",
     ],
 )
-def test_japanese_queries_route(
+def test_chinese_queries_route(
     repo_metadata: dict[str, Any],
     query: str,
     exp_primary: str | None,
@@ -1017,12 +1017,12 @@ def test_japanese_queries_route(
 ) -> None:
     r = recommend(query, repo_metadata)
     primary_id = r["primary_workflow"]["id"] if r["primary_workflow"] else None
-    assert primary_id == exp_primary, f"JA route: {query}"
+    assert primary_id == exp_primary, f"ZH route: {query}"
     assert r["honest_gap"] is exp_gap
     assert r["skillset"]["id"] == exp_skillset
-    # JA queries must NOT fall through to the unmapped beginner default note.
+    # ZH queries must NOT fall through to the unmapped beginner default note.
     assert not (r["note"] and "did not match" in r["note"]), (
-        f"JA query fell through to unmapped default: {query}"
+        f"ZH query fell through to unmapped default: {query}"
     )
 
 

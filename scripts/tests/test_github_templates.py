@@ -45,7 +45,7 @@ ATTRIBUTE_REQUIRED_KEYS = {
 VALIDATION_ALLOWED_KEYS = {"required"}
 CHECKBOX_OPTION_ALLOWED_KEYS = {"label", "required"}
 SAFE_ID = re.compile(r"^[A-Za-z0-9_-]+$")
-JAPANESE_TEXT = re.compile(r"[ぁ-んァ-ン一-龯]")
+CHINESE_TEXT = re.compile(r"[一-鿿]")
 
 EXPECTED_CONTACT_LINKS = [
     "https://github.com/tradermonty/claude-trading-skills/blob/main/PROJECT_VISION.md",
@@ -85,7 +85,7 @@ def test_issue_template_config_has_exact_contact_links() -> None:
         for key in ("name", "url", "about"):
             value = assert_nonblank_string(link[key], (index, key))
             if key != "url":
-                assert JAPANESE_TEXT.search(value), (index, key)
+                assert CHINESE_TEXT.search(value), (index, key)
 
 
 def test_issue_forms_match_github_schema_invariants() -> None:
@@ -103,8 +103,8 @@ def test_issue_forms_match_github_schema_invariants() -> None:
         assert len(name) <= 64, filename
         assert len(description) <= 200, filename
         assert len(title) <= 256, filename
-        assert JAPANESE_TEXT.search(name), (filename, "name")
-        assert JAPANESE_TEXT.search(description), (filename, "description")
+        assert CHINESE_TEXT.search(name), (filename, "name")
+        assert CHINESE_TEXT.search(description), (filename, "description")
         assert name not in form_names, (filename, name)
         form_names.add(name)
 
@@ -161,8 +161,8 @@ def test_issue_forms_match_github_schema_invariants() -> None:
             )
             assert label not in labels, (filename, label)
             labels.add(label)
-            assert JAPANESE_TEXT.search(label), (filename, item_id, "label")
-            assert JAPANESE_TEXT.search(description_text), (
+            assert CHINESE_TEXT.search(label), (filename, item_id, "label")
+            assert CHINESE_TEXT.search(description_text), (
                 filename,
                 item_id,
                 "description",
@@ -205,7 +205,7 @@ def test_issue_forms_match_github_schema_invariants() -> None:
                 option_label = assert_nonblank_string(
                     option.get("label"), (filename, item_id, "option label")
                 )
-                assert JAPANESE_TEXT.search(option_label), (
+                assert CHINESE_TEXT.search(option_label), (
                     filename,
                     item_id,
                     "option label",
@@ -255,24 +255,24 @@ def test_pull_request_template_matches_local_and_ci_gates() -> None:
         assert command in template, command
 
     required_phrases = [
-        "Local validation / ローカル検証",
-        "CI and generated-artifact gates / CI・生成物ゲート",
+        "Local validation / 本地验证",
+        "CI and generated-artifact gates / CI与生成物检查",
         "N/A",
-        "EN and JA",
+        "EN and ZH",
         ".skill",
         "financial advice",
         "broker execution",
         "secrets",
         "personal information",
-        "金融助言",
-        "個人情報",
+        "金融建议",
+        "个人信息",
     ]
     for phrase in required_phrases:
         assert phrase in template, phrase
 
     assert "README/catalog output" not in template
     assert "README/CLAUDE catalog output" in template
-    assert "Website EN/JA skill catalogs" in template
+    assert "Website EN/ZH skill catalogs" in template
 
 
 def test_website_skill_catalog_guard_is_wired_to_pre_commit_and_metadata_ci() -> None:
@@ -294,7 +294,7 @@ def test_website_skill_catalog_guard_is_wired_to_pre_commit_and_metadata_ci() ->
         "skills-index.yaml",
         "scripts/check_skill_catalog.py",
         "docs/en/skill-catalog.md",
-        "docs/ja/skill-catalog.md",
+        "docs/zh/skill-catalog.md",
     ):
         assert pattern.fullmatch(path), path
 

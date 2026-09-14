@@ -4,7 +4,7 @@ title: "Fxmacrodata Calendar"
 grand_parent: English
 parent: Skill Guides
 nav_order: 34
-lang_peer: /ja/skills/fxmacrodata-calendar/
+lang_peer: /zh/skills/fxmacrodata-calendar/
 permalink: /en/skills/fxmacrodata-calendar/
 generated: true
 ---

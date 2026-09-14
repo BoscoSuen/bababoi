@@ -40,7 +40,7 @@ This framework integrates three proven approaches to market top detection, each 
 **Core Concept:** Market tops do not appear suddenly. They develop through a process where leading stocks - the strongest performers of the previous rally - begin breaking down before the major indices. This is because institutional investors sell their biggest winners first to lock in profits.
 
 **Key Observation from Monty Article:**
-> "弱気相場の初期段階では、特定の主導株が下降トレンドに抵抗するかのように強く、上昇できるという印象を与えます。"
+> "在熊市初期阶段，某些领涨股看起来能够抵抗下降趋势，给人一种仍能继续上涨的印象。"
 > (In the early stages of a bear market, certain leading stocks appear to resist the downtrend, giving the impression they can still rise.)
 
 **Detection Method:**
@@ -59,7 +59,7 @@ Using a basket of growth/innovation ETFs as proxy for market leadership:
 
 ### Pillar 3: Monty - Defensive Sector Rotation
 
-**Source:** monty-trader.com "米国株 株式相場の天井の見極め方と下落局面でやるべきこと"
+**Source:** monty-trader.com "美股 如何识别股市顶部及在下跌阶段应采取的措施"
 
 **Core Concept:** Before a market top, capital flows from offensive/growth sectors into defensive/value sectors. This "rotation" occurs because institutional investors are becoming defensive while maintaining their equity allocation. It's a critical early warning signal.
 

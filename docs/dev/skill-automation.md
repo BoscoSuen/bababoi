@@ -5,7 +5,7 @@ pipelines that were previously documented in the main README. It is not part
 of the beginner trading workflow or the documentation-site navigation.
 
 - [Back to README](../../README.md)
-- [日本語版](skill-automation.ja.md)
+- [中文版](skill-automation.zh.md)
 - [Maintenance runbook](maintenance-runbook.md)
 - [Self-improvement implementation details](../../CLAUDE.md#skill-self-improvement-loop)
 - [Generation implementation details](../../CLAUDE.md#skill-auto-generation-pipeline)
@@ -26,7 +26,7 @@ filesystem mode. The current implementations have these boundaries:
 | Generation daily dry-run | Existing idea backlog | Lock and log files, daily summary, `.skill_generation_state.json` | None | None; backlog status is not changed |
 | Generation weekly dry-run | Allowlisted session logs under `~/.claude/projects/` | `raw_candidates.yaml`, lock and log files, weekly summary, `.skill_generation_state.json` | None | None; backlog is not updated |
 | Generation weekly normal | Allowlisted session logs and existing backlog | Raw candidates, backlog, logs, summary, and state | Session-derived signals and length-limited user-message samples may be sent to the abstraction prompt. The resulting candidate descriptions are then sent to the scoring prompt; raw session-log files are not sent directly. | None |
-| Generation daily normal | Existing idea backlog and repository files | `skills/<name>/`, generated EN/JA skill docs and indexes/catalogs, `pyproject.toml` when needed, reports, backlog, logs, summary, and state | Designs and reviews a selected skill | Runs `git pull --ff-only`; may delete a same-name stale local branch, then create a branch, commit, push, and PR; deletes local automation branches whose PR is merged or closed |
+| Generation daily normal | Existing idea backlog and repository files | `skills/<name>/`, generated EN/ZH skill docs and indexes/catalogs, `pyproject.toml` when needed, reports, backlog, logs, summary, and state | Designs and reviews a selected skill | Runs `git pull --ff-only`; may delete a same-name stale local branch, then create a branch, commit, push, and PR; deletes local automation branches whose PR is merged or closed |
 
 This table describes the Python orchestrators when invoked directly. The
 self-improvement `launchd` wrapper manages a dedicated checkout and runs

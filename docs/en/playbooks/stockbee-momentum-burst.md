@@ -4,7 +4,7 @@ title: Stockbee Momentum Burst Playbook
 grand_parent: English
 parent: Playbooks
 nav_order: 12
-lang_peer: /ja/playbooks/stockbee-momentum-burst/
+lang_peer: /zh/playbooks/stockbee-momentum-burst/
 permalink: /en/playbooks/stockbee-momentum-burst/
 ---
 

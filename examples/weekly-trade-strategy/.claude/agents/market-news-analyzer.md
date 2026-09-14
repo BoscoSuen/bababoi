@@ -232,8 +232,8 @@ When invoked, follow these steps:
 ### Example Invocation
 
 ```
-market-news-analyzerエージェントでニュースとイベント分析を実行してください。
-過去10日間のニュース影響と今後7日間の重要イベント（経済指標・決算）を分析し、
-reports/2025-11-03/market-news-analysis.mdに保存してください。
-前回のレポート（technical-market-analysis.md, us-market-analysis.md）も参照してください。
+请用market-news-analyzer代理执行新闻和事件分析。
+分析过去10天的新闻影响和未来7天的重要事件（经济指标和财报），
+保存到reports/2025-11-03/market-news-analysis.md。
+同时参考之前的报告（technical-market-analysis.md和us-market-analysis.md）。
 ```

@@ -532,7 +532,7 @@ python3 skills/us-undervalued-growth-screener/scripts/evaluate_candidates.py \
   --input reports/us-undervalued-growth-screener/<run-id>/final/final-snapshot.json \
   --artifact-root reports/us-undervalued-growth-screener/<run-id> \
   --output-dir reports/us-undervalued-growth-screener/<run-id>/final \
-  --language ja \
+  --language zh \
   --strict \
   --require-final
 ```

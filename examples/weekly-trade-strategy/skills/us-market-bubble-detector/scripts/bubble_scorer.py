@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 """
-Bubble-O-Meter: 米国株式市場のバブル度を多面的に評価するスクリプト
+Bubble-O-Meter: 多维度评估美国股市泡沫程度的脚本
 
-8つの指標を0-2点で評価し、合計スコア(0-16点)でバブル度を判定:
-- 0-4: 正常域
-- 5-8: 警戒域
-- 9-12: 熱狂域
-- 13-16: 臨界域
+8个指标按0-2分评估，总分(0-16分)判定泡沫程度:
+- 0-4: 正常区间
+- 5-8: 警戒区间
+- 9-12: 狂热区间
+- 13-16: 临界区间
 
 使用方法:
     python bubble_scorer.py --ticker SPY --period 1y
@@ -18,84 +18,84 @@ from datetime import datetime
 
 
 class BubbleScorer:
-    """バブルスコアリングシステム"""
+    """泡沫评分系统"""
 
     def __init__(self):
         self.indicators = {
             "mass_penetration": {
-                "name": "大衆浸透度",
+                "name": "大众渗透度",
                 "weight": 2,
-                "description": "非投資家層からの推奨・言及",
+                "description": "非投资者群体的推荐和提及",
             },
             "media_saturation": {
-                "name": "メディア飽和",
+                "name": "媒体饱和度",
                 "weight": 2,
-                "description": "検索・SNS・メディア露出の急騰",
+                "description": "搜索、社交媒体、媒体曝光急剧上升",
             },
             "new_accounts": {
-                "name": "新規参入",
+                "name": "新参与者涌入",
                 "weight": 2,
-                "description": "口座開設・資金流入の加速",
+                "description": "开户和资金流入加速",
             },
             "new_issuance": {
-                "name": "新規発行氾濫",
+                "name": "新发行泛滥",
                 "weight": 2,
-                "description": "IPO/SPAC/関連商品の乱立",
+                "description": "IPO/SPAC/相关产品泛滥",
             },
             "leverage": {
-                "name": "レバレッジ",
+                "name": "杠杆",
                 "weight": 2,
-                "description": "証拠金・信用・資金調達レートの偏り",
+                "description": "保证金、信用、融资利率偏离",
             },
             "price_acceleration": {
-                "name": "価格加速度",
+                "name": "价格加速度",
                 "weight": 2,
-                "description": "リターンが歴史分布上位に到達",
+                "description": "收益率达到历史分布上端",
             },
             "valuation_disconnect": {
-                "name": "バリュエーション逸脱",
+                "name": "估值偏离",
                 "weight": 2,
-                "description": "ファンダ説明が物語一辺倒に",
+                "description": "基本面解释完全依赖叙事",
             },
             "breadth_expansion": {
-                "name": "相関と幅",
+                "name": "相关性与广度",
                 "weight": 2,
-                "description": "低質銘柄まで全面高",
+                "description": "低质量股票也全面上涨",
             },
         }
 
     def calculate_score(self, scores: dict[str, int]) -> dict:
         """
-        各指標のスコアから総合評価を計算
+        根据各指标评分计算综合评估
 
         Args:
-            scores: 各指標のスコア辞書 (0-2点)
+            scores: 各指标的评分字典 (0-2分)
 
         Returns:
-            評価結果の辞書
+            评估结果字典
         """
         total_score = sum(scores.values())
         max_score = len(self.indicators) * 2
 
-        # バブル段階の判定
+        # 泡沫阶段判定
         if total_score <= 4:
-            phase = "正常域"
+            phase = "正常区间"
             risk_level = "低"
-            action = "通常通りの投資戦略を継続"
+            action = "继续正常投资策略"
         elif total_score <= 8:
-            phase = "警戒域"
+            phase = "警戒区间"
             risk_level = "中"
-            action = "部分利確の開始、新規ポジションのサイズ縮小"
+            action = "开始部分止盈，缩小新仓位规模"
         elif total_score <= 12:
-            phase = "熱狂域"
+            phase = "狂热区间"
             risk_level = "高"
-            action = "階段状利確の加速、ATRトレーリングストップ厳格化、総リスク予算30-50%削減"
+            action = "加速阶梯式止盈，严格ATR跟踪止损，总风险预算削减30-50%"
         else:
-            phase = "臨界域"
-            risk_level = "極めて高"
-            action = "大幅な利確またはフルヘッジ、新規参入停止、反転確認後のショートポジション検討"
+            phase = "临界区间"
+            risk_level = "极高"
+            action = "大幅止盈或全面对冲，停止新建仓位，确认反转后考虑做空"
 
-        # Minskyフェーズの推定
+        # Minsky阶段推定
         minsky_phase = self._estimate_minsky_phase(scores, total_score)
 
         return {
@@ -112,31 +112,31 @@ class BubbleScorer:
         }
 
     def _estimate_minsky_phase(self, scores: dict[str, int], total: int) -> str:
-        """Minsky/Kindlebergerフェーズの推定"""
+        """Minsky/Kindleberger阶段推定"""
         mass_pen = scores.get("mass_penetration", 0)
         media = scores.get("media_saturation", 0)
         price_acc = scores.get("price_acceleration", 0)
 
         if total <= 4:
-            return "Displacement/Early Boom (きっかけ・初期拡張)"
+            return "Displacement/Early Boom (触发与早期扩张)"
         elif total <= 8:
             if media >= 1 and price_acc >= 1:
-                return "Boom (拡張期)"
+                return "Boom (扩张期)"
             else:
-                return "Displacement/Early Boom (きっかけ・初期拡張)"
+                return "Displacement/Early Boom (触发与早期扩张)"
         elif total <= 12:
             if mass_pen >= 2 and media >= 2:
-                return "Euphoria (熱狂期) - FOMOが制度化"
+                return "Euphoria (狂热期) - FOMO已制度化"
             else:
-                return "Late Boom/Early Euphoria (拡張後期・熱狂初期)"
+                return "Late Boom/Early Euphoria (扩张后期与狂热初期)"
         else:
             if mass_pen >= 2:
-                return "Peak Euphoria/Profit Taking (熱狂ピーク・利確開始) - 反転間近"
+                return "Peak Euphoria/Profit Taking (狂热顶峰与止盈开始) - 反转临近"
             else:
-                return "Euphoria (熱狂期)"
+                return "Euphoria (狂热期)"
 
     def _format_indicator_details(self, scores: dict[str, int]) -> list[dict]:
-        """指標の詳細情報をフォーマット"""
+        """格式化指标详细信息"""
         details = []
         for key, value in scores.items():
             indicator = self.indicators.get(key, {})
@@ -152,77 +152,77 @@ class BubbleScorer:
         return details
 
     def get_scoring_guidelines(self) -> str:
-        """各指標のスコアリングガイドラインを返す"""
+        """返回各指标的评分指南"""
         guidelines = """
-## バブルスコアリング・ガイドライン
+## 泡沫评分指南
 
-### 1. 大衆浸透度 (Mass Penetration)
-- 0点: 専門家・投資家層のみの議論
-- 1点: 一般層にも認知されるが、まだ投資対象としては限定的
-- 2点: 非投資家（タクシー運転手、美容師、家族）が積極的に推奨・言及
+### 1. 大众渗透度 (Mass Penetration)
+- 0分: 仅限专家和投资者群体讨论
+- 1分: 普通大众也有认知，但作为投资对象仍有限
+- 2分: 非投资者（出租车司机、理发师、家人）积极推荐和提及
 
-### 2. メディア飽和 (Media Saturation)
-- 0点: 通常レベルの報道・検索トレンド
-- 1点: 検索トレンド、SNS言及が平常の2-3倍
-- 2点: テレビ特集、雑誌表紙、検索トレンド急騰（平常の5倍以上）
+### 2. 媒体饱和度 (Media Saturation)
+- 0分: 正常水平的报道和搜索趋势
+- 1分: 搜索趋势、社交媒体提及量为平时的2-3倍
+- 2分: 电视专题、杂志封面、搜索趋势暴涨（平时的5倍以上）
 
-### 3. 新規参入 (New Accounts & Inflows)
-- 0点: 通常レベルの口座開設・入金
-- 1点: 口座開設が前年比50-100%増
-- 2点: 口座開設が前年比200%以上、「初めての投資」層の大量流入
+### 3. 新参与者涌入 (New Accounts & Inflows)
+- 0分: 正常水平的开户和入金
+- 1分: 开户量同比增长50-100%
+- 2分: 开户量同比增长200%以上，"首次投资"群体大量涌入
 
-### 4. 新規発行氾濫 (New Issuance Flood)
-- 0点: 通常レベルのIPO/商品組成
-- 1点: IPO/SPAC/関連ETFが前年比50%以上増加
-- 2点: 低質なIPO乱立、「○○関連」ファンド・ETFの濫造
+### 4. 新发行泛滥 (New Issuance Flood)
+- 0分: 正常水平的IPO/产品发行
+- 1分: IPO/SPAC/相关ETF同比增长50%以上
+- 2分: 低质量IPO泛滥，"XX概念"基金和ETF滥造
 
-### 5. レバレッジ (Leverage Indicators)
-- 0点: 証拠金残高・信用評価損益が正常範囲
-- 1点: 証拠金残高が過去平均の1.5倍、先物ポジション偏り
-- 2点: 証拠金残高が過去最高更新、資金調達レート高止まり、極端なポジション偏り
+### 5. 杠杆 (Leverage Indicators)
+- 0分: 保证金余额和信用评估在正常范围
+- 1分: 保证金余额为历史平均的1.5倍，期货仓位偏离
+- 2分: 保证金余额创历史新高，融资利率居高不下，极端仓位偏离
 
-### 6. 価格加速度 (Price Acceleration)
-- 0点: 年率リターンが歴史分布の中央値付近
-- 1点: 年率リターンが過去90パーセンタイル超
-- 2点: 年率リターンが過去95-99パーセンタイル、または加速度（2階微分）が正で増加
+### 6. 价格加速度 (Price Acceleration)
+- 0分: 年化收益率接近历史分布中位数
+- 1分: 年化收益率超过历史90百分位
+- 2分: 年化收益率达到历史95-99百分位，或加速度（二阶导数）为正且增加
 
-### 7. バリュエーション逸脱 (Valuation Disconnect)
-- 0点: ファンダメンタルで合理的に説明可能
-- 1点: 高バリュエーションだが「成長期待」で一応説明可能
-- 2点: 説明が完全に「物語」「革命」「パラダイムシフト」に依存、「今回は違う」
+### 7. 估值偏离 (Valuation Disconnect)
+- 0分: 可用基本面合理解释
+- 1分: 高估值但"增长预期"尚可解释
+- 2分: 解释完全依赖"叙事"、"革命"、"范式转换"，"这次不一样"
 
-### 8. 相関と幅 (Breadth & Correlation)
-- 0点: 一部のリーダー銘柄のみ上昇
-- 1点: セクター全体に波及、mid-capまで上昇
-- 2点: 低質・low-cap銘柄まで全面高、「ゾンビ企業」も上昇（最後の買い手参入）
+### 8. 相关性与广度 (Breadth & Correlation)
+- 0分: 仅部分龙头股上涨
+- 1分: 波及整个板块，mid-cap也上涨
+- 2分: 低质量、low-cap股票全面上涨，"僵尸企业"也上涨（最后的买家入场）
 """
         return guidelines
 
     def format_output(self, result: dict) -> str:
-        """結果を読みやすくフォーマット"""
+        """将结果格式化为可读输出"""
         output = f"""
 {"=" * 60}
-🔍 米国市場バブル度評価 - Bubble-O-Meter
+🔍 美国市场泡沫度评估 - Bubble-O-Meter
 {"=" * 60}
 
-評価日時: {result["timestamp"]}
+评估时间: {result["timestamp"]}
 
-【総合スコア】
-{result["total_score"]}/{result["max_score"]}点 ({result["percentage"]}%)
+【综合评分】
+{result["total_score"]}/{result["max_score"]}分 ({result["percentage"]}%)
 
-【市場フェーズ】
-現在: {result["phase"]} (リスク: {result["risk_level"]})
-Minskyフェーズ: {result["minsky_phase"]}
+【市场阶段】
+当前: {result["phase"]} (风险: {result["risk_level"]})
+Minsky阶段: {result["minsky_phase"]}
 
-【推奨アクション】
+【建议操作】
 {result["recommended_action"]}
 
 {"=" * 60}
-【指標別スコア】
+【各指标评分】
 {"=" * 60}
 """
         for detail in result["detailed_indicators"]:
-            output += f"\n{detail['status']} {detail['indicator']}: {detail['score']}/2点\n"
+            output += f"\n{detail['status']} {detail['indicator']}: {detail['score']}/2分\n"
             output += f"   └─ {detail['description']}\n"
 
         output += f"\n{'=' * 60}\n"
@@ -231,12 +231,12 @@ Minskyフェーズ: {result["minsky_phase"]}
 
 
 def manual_assessment() -> dict[str, int]:
-    """対話型の手動評価"""
+    """交互式手动评估"""
     scorer = BubbleScorer()
     print("\n" + "=" * 60)
-    print("🔍 米国市場バブル度評価 - Manual Assessment")
+    print("🔍 美国市场泡沫度评估 - Manual Assessment")
     print("=" * 60)
-    print("\n各指標を0-2点で評価してください:")
+    print("\n请对各指标进行0-2分评估:")
     print(scorer.get_scoring_guidelines())
 
     scores = {}
@@ -248,45 +248,45 @@ def manual_assessment() -> dict[str, int]:
                     scores[key] = score
                     break
                 else:
-                    print("0, 1, 2 のいずれかを入力してください")
+                    print("请输入0、1或2")
             except ValueError:
-                print("数値を入力してください")
+                print("请输入数字")
 
     return scores
 
 
 def main():
-    parser = argparse.ArgumentParser(description="米国市場のバブル度を評価するBubble-O-Meter")
-    parser.add_argument("--manual", action="store_true", help="対話型の手動評価モード")
+    parser = argparse.ArgumentParser(description="评估美国市场泡沫程度的Bubble-O-Meter")
+    parser.add_argument("--manual", action="store_true", help="交互式手动评估模式")
     parser.add_argument(
         "--scores",
         type=str,
-        help='JSON形式のスコア文字列 (例: \'{"mass_penetration":2,"media_saturation":1,...}\')',
+        help='JSON格式的评分字符串 (例: \'{"mass_penetration":2,"media_saturation":1,...}\')',
     )
-    parser.add_argument("--output", choices=["text", "json"], default="text", help="出力形式")
+    parser.add_argument("--output", choices=["text", "json"], default="text", help="输出格式")
 
     args = parser.parse_args()
     scorer = BubbleScorer()
 
-    # スコアの取得
+    # 获取评分
     if args.manual:
         scores = manual_assessment()
     elif args.scores:
         try:
             scores = json.loads(args.scores)
         except json.JSONDecodeError:
-            print("エラー: 無効なJSON形式です")
+            print("错误: 无效的JSON格式")
             return 1
     else:
-        print("エラー: --manual または --scores を指定してください")
-        print("\nガイドラインを表示:")
+        print("错误: 请指定 --manual 或 --scores")
+        print("\n显示评分指南:")
         print(scorer.get_scoring_guidelines())
         return 1
 
-    # 評価の実行
+    # 执行评估
     result = scorer.calculate_score(scores)
 
-    # 出力
+    # 输出
     if args.output == "json":
         print(json.dumps(result, indent=2, ensure_ascii=False))
     else:

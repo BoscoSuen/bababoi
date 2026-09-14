@@ -7,8 +7,10 @@ from difflib import SequenceMatcher
 from typing import Any
 
 BANNED_PHRASES = [
-    "本番投入可能",
-    "確実に勝てる",
+    "可直接投入生产",
+    "稳赚不赔",
+    "一定能赢",
+    "投入实盘",
     "production ready",
     "guaranteed edge",
     "sure to win",

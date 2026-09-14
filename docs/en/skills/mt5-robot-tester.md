@@ -4,7 +4,7 @@ title: "Mt5 Robot Tester"
 grand_parent: English
 parent: Skill Guides
 nav_order: 45
-lang_peer: /ja/skills/mt5-robot-tester/
+lang_peer: /zh/skills/mt5-robot-tester/
 permalink: /en/skills/mt5-robot-tester/
 generated: true
 ---

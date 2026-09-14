@@ -76,7 +76,7 @@ Saved to `reports/` (or `--output-dir`):
 - `ibd_distribution_day_monitor_YYYY-MM-DD_HHMMSS.json`
 - `ibd_distribution_day_monitor_YYYY-MM-DD_HHMMSS.md`
 
-JSON is UTF-8 with `ensure_ascii=False` (Japanese explanations preserved). Sensitive keys (`api_key`, `fmp_api_key`, `token`, etc.) are redacted automatically.
+JSON is UTF-8 with `ensure_ascii=False` (Chinese explanations preserved). Sensitive keys (`api_key`, `fmp_api_key`, `token`, etc.) are redacted automatically.
 
 ## Operating Principles
 - Do not override the IBD rule definitions unless `config/default.yaml` is changed deliberately.

@@ -4,7 +4,7 @@ title: VCP Screener
 grand_parent: English
 parent: Skill Guides
 nav_order: 3
-lang_peer: /ja/skills/vcp-screener/
+lang_peer: /zh/skills/vcp-screener/
 permalink: /en/skills/vcp-screener/
 ---
 

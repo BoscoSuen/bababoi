@@ -1,7 +1,7 @@
 schema_version: 1
 id: monthly-performance-review
 display_name: Monthly Performance Review
-display_name_ja: 月次パフォーマンスレビュー
+display_name_zh: 月度绩效回顾
 cadence: monthly
 estimated_minutes: 90
 target_users:
@@ -15,16 +15,15 @@ when_to_run: >-
   First weekend of each month, reviewing the prior month's closed positions,
   open thesis health, and process improvements. Closes the
   Plan -> Trade -> Record -> Review -> Improve loop.
-when_to_run_ja: >-
-  毎月最初の週末に、前月の決済済みポジション、未決済の投資仮説の健全性、
-  プロセス改善を確認する。計画 -> 取引 -> 記録 -> 振り返り -> 改善 の
-  ループを完結させる。
+when_to_run_zh: >-
+  每月第一个周末，审查上月已平仓头寸、未平仓投资假设的健康度及
+  流程改进。完成 计划 -> 交易 -> 记录 -> 回顾 -> 改进 的闭环。
 when_not_to_run: >-
   Do not skip this review even in losing months — that is when it matters most.
   Do not run weekly; the monthly cadence is intentional to filter noise.
-when_not_to_run_ja: >-
-  損失月であっても省略しない。そのような月にこそレビューが重要である。
-  ノイズを除くため月次としているので、週次では実行しない。
+when_not_to_run_zh: >-
+  即使是亏损月份也不要跳过——这恰恰是回顾最重要的时候。
+  为过滤噪音特意设为月度频率，不要按周执行。
 
 required_skills:
   - trader-memory-core
@@ -71,18 +70,18 @@ artifacts:
 final_outputs:
   - id: monthly_decision_log
     description: What trades worked / what did not, by category
-    description_ja: カテゴリ別に整理した、機能した取引と機能しなかった取引
+    description_zh: 按类别整理的成功交易与失败交易
   - id: rule_changes_for_next_month
     description: Adjustments to position sizing, entry rules, regime gates
-    description_ja: ポジションサイズ、エントリールール、レジームゲートの調整
+    description_zh: 仓位规模、入场规则和体制关卡的调整
   - id: skill_improvement_backlog
     description: Optional feedback into repo improvement loop (skills / workflows)
-    description_ja: リポジトリ改善ループへの任意のフィードバック（スキル / ワークフロー）
+    description_zh: 反馈至仓库改进循环的可选建议（技能/工作流）
 
 steps:
   - step: 1
     name: Aggregate the month's trades and theses
-    name_ja: 当月の取引と投資仮説を集計する
+    name_zh: 汇总当月交易和投资假设
     skill: trader-memory-core
     produces:
       - monthly_aggregate
@@ -90,7 +89,7 @@ steps:
 
   - step: 2
     name: Pattern-level postmortem across the month
-    name_ja: 月間のパターン単位で事後分析する
+    name_zh: 按月度模式进行复盘分析
     skill: signal-postmortem
     consumes:
       - monthly_aggregate
@@ -100,13 +99,13 @@ steps:
     decision_question: >-
       What recurring patterns appear across the month's outcomes? Classify by
       thesis quality, execution, market environment, and randomness.
-    decision_question_ja: >-
-      当月の結果にどのような反復パターンがあるか。投資仮説の質、執行、
-      市場環境、偶然性に分類する。
+    decision_question_zh: >-
+      当月结果中出现了哪些重复模式？按投资假设质量、执行、
+      市场环境和随机性分类。
 
   - step: 3
     name: Coach monthly process, risk, and behavior patterns
-    name_ja: 月次のプロセス、リスク、行動パターンを振り返る
+    name_zh: 月度回顾流程、风险和行为模式
     skill: trade-performance-coach
     optional: true
     consumes:
@@ -120,12 +119,12 @@ steps:
     decision_question: >-
       Which next-month operating rules should be accepted, modified, deferred,
       or journaled only?
-    decision_question_ja: >-
-      翌月の運用ルールのうち、採用、修正、保留、記録のみとするものはどれか。
+    decision_question_zh: >-
+      下月操作规则中，哪些应采纳、修改、推迟或仅作记录？
 
   - step: 4
     name: Re-validate hypotheses via backtest
-    name_ja: バックテストで仮説を再検証する
+    name_zh: 通过回测重新验证假设
     skill: backtest-expert
     optional: true
     consumes:
@@ -136,7 +135,7 @@ steps:
 
   - step: 5
     name: Review which skills helped or hurt
-    name_ja: 有効だったスキルと逆効果だったスキルを確認する
+    name_zh: 审查哪些技能有效、哪些适得其反
     skill: dual-axis-skill-reviewer
     optional: true
     consumes:
@@ -147,7 +146,7 @@ steps:
 
   - step: 6
     name: Produce decision log and rule changes
-    name_ja: 判断記録とルール変更を作成する
+    name_zh: 生成决策记录和规则变更
     skill: trader-memory-core
     consumes:
       - aggregate_postmortem
@@ -161,19 +160,19 @@ steps:
     decision_question: >-
       Based on this month's evidence, what specific rules will change next
       month? Trade-side rules vs repo-side improvements should stay separate.
-    decision_question_ja: >-
-      当月の証拠に基づき、翌月に変更する具体的なルールは何か。取引側のルールと
-      リポジトリ側の改善は分けて扱う。
+    decision_question_zh: >-
+      基于当月证据，下月需要变更哪些具体规则？交易侧规则与
+      仓库侧改进应分别处理。
 
 manual_review:
   - Distinguish process improvements (rule changes) from outcome accidents (randomness).
   - Trade-side rule changes apply to the trader's behavior next month.
   - Skill-side improvements are repo-improvement candidates and may or may not be acted on.
   - Be willing to delete or downgrade rules that aren't working — not just add new ones.
-manual_review_ja:
-  - プロセス改善（ルール変更）と、偶然による結果を区別する。
-  - 取引側のルール変更は、翌月のトレーダーの行動に適用する。
-  - スキル側の改善はリポジトリ改善候補であり、必ず実施するとは限らない。
-  - 新しいルールを追加するだけでなく、機能していないルールの削除や格下げも検討する。
+manual_review_zh:
+  - 区分流程改进（规则变更）与偶然导致的结果。
+  - 交易侧的规则变更适用于交易者下月的行为。
+  - 技能侧的改进是仓库改进候选项，不一定会实施。
+  - 不仅要添加新规则，还要考虑删除或降级无效的规则。
 
 journal_destination: trader-memory-core

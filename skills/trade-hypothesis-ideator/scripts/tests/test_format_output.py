@@ -72,14 +72,14 @@ def test_validate_output_bundle_rejects_more_than_five_hypotheses(
     assert any("1-5" in err for err in errors)
 
 
-def test_banned_phrase_detection_japanese(base_hypothesis_card: dict) -> None:
+def test_banned_phrase_detection_chinese(base_hypothesis_card: dict) -> None:
     card = deepcopy(base_hypothesis_card)
-    card["thesis"] = "この手法は確実に勝てる。"
+    card["thesis"] = "这个方法一定能赢。"
 
     errors = validate_hypothesis_card(card)
 
     assert errors
-    assert any("確実に勝てる" in err for err in errors)
+    assert any("一定能赢" in err for err in errors)
 
 
 def test_banned_phrase_detection_english(base_hypothesis_card: dict) -> None:

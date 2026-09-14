@@ -26,7 +26,7 @@ APP_ICON = "\U0001f4ca"
 
 PermissionMode = Literal["default", "acceptEdits", "plan", "bypassPermissions"]
 SettingSource = Literal["user", "project", "local"]
-UiLocale = Literal["en", "ja"]
+UiLocale = Literal["en", "zh"]
 LogFormat = Literal["text", "json"]
 LogLevel = Literal["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
 
@@ -47,7 +47,7 @@ def _parse_setting_sources(raw: str) -> list[SettingSource]:
 
 
 def _parse_ui_locale(raw: str) -> UiLocale:
-    if raw in {"en", "ja"}:
+    if raw in {"en", "zh"}:
         return cast(UiLocale, raw)
     return "en"
 

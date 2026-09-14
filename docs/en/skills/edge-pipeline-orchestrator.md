@@ -4,7 +4,7 @@ title: "Edge Pipeline Orchestrator"
 grand_parent: English
 parent: Skill Guides
 nav_order: 21
-lang_peer: /ja/skills/edge-pipeline-orchestrator/
+lang_peer: /zh/skills/edge-pipeline-orchestrator/
 permalink: /en/skills/edge-pipeline-orchestrator/
 ---
 

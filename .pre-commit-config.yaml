@@ -87,7 +87,7 @@ repos:
         language: system
         # Fire on any input that affects rendered output: manifests, generator,
         # and the rendered docs themselves (so manual edits are caught).
-        files: '^(workflows/.*\.yaml|scripts/generate_workflow_docs\.py|docs/(en|ja)/workflows\.md)$'
+        files: '^(workflows/.*\.yaml|scripts/generate_workflow_docs\.py|docs/(en|zh)/workflows\.md)$'
         pass_filenames: false
 
       - id: skillset-docs-drift
@@ -96,7 +96,7 @@ repos:
         language: system
         # Fire on any input that affects rendered output: manifests, generator,
         # and the rendered docs themselves (so manual edits are caught).
-        files: '^(skillsets/.*\.yaml|scripts/generate_skillset_docs\.py|docs/(en|ja)/skillsets\.md)$'
+        files: '^(skillsets/.*\.yaml|scripts/generate_skillset_docs\.py|docs/(en|zh)/skillsets\.md)$'
         pass_filenames: false
 
       - id: skill-docs-drift
@@ -109,7 +109,7 @@ repos:
         # Fire on every generator input: SKILL.md, references/scripts (resource
         # list), CLAUDE.md (API/CLI parse), skill-packages/*.skill (download
         # button), the generator, and the rendered docs themselves.
-        files: '^(skills/[^/]+/SKILL\.md|skills/[^/]+/references/.*|skills/[^/]+/scripts/.*\.py|scripts/generate_skill_docs\.py|CLAUDE\.md|skill-packages/.*\.skill|docs/(en|ja)/skills/[^/]+\.md)$'
+        files: '^(skills/[^/]+/SKILL\.md|skills/[^/]+/references/.*|skills/[^/]+/scripts/.*\.py|scripts/generate_skill_docs\.py|CLAUDE\.md|skill-packages/.*\.skill|docs/(en|zh)/skills/[^/]+\.md)$'
         pass_filenames: false
 
       - id: catalog-drift
@@ -119,7 +119,7 @@ repos:
         # Fire on any input that affects rendered output: index, generator,
         # and the target files themselves (catches manual edits between
         # sentinel markers).
-        files: '^(skills-index\.yaml|scripts/generate_catalog_from_index\.py|README\.md|README\.ja\.md|CLAUDE\.md)$'
+        files: '^(skills-index\.yaml|scripts/generate_catalog_from_index\.py|README\.md|README\.zh\.md|CLAUDE\.md)$'
         pass_filenames: false
 
       - id: quality-dashboard-drift
@@ -130,7 +130,7 @@ repos:
         # generator, and the rendered pages themselves (catches manual edits
         # between the auto-generated page boundaries). skills/**/scripts/tests
         # is included because has-tests (the Tests column) is filesystem-derived.
-        files: '^(skills-index\.yaml|config/ci-test-policy\.yaml|examples/workflows/replay-coverage\.yaml|docs/assets/quality-dashboard-sources\.json|scripts/generate_quality_dashboard\.py|docs/(en|ja)/quality-dashboard\.md|skills/[^/]+/scripts/tests/.*)$'
+        files: '^(skills-index\.yaml|config/ci-test-policy\.yaml|examples/workflows/replay-coverage\.yaml|docs/assets/quality-dashboard-sources\.json|scripts/generate_quality_dashboard\.py|docs/(en|zh)/quality-dashboard\.md|skills/[^/]+/scripts/tests/.*)$'
         pass_filenames: false
 
       - id: website-skill-catalog-check
@@ -139,7 +139,7 @@ repos:
         language: system
         # Website descriptions remain localized and hand-written. Validate
         # identity, completeness, counts, and paid-API fields against the index.
-        files: '^(skills-index\.yaml|scripts/check_skill_catalog\.py|scripts/tests/test_check_skill_catalog\.py|docs/(en|ja)/skill-catalog\.md)$'
+        files: '^(skills-index\.yaml|scripts/check_skill_catalog\.py|scripts/tests/test_check_skill_catalog\.py|docs/(en|zh)/skill-catalog\.md)$'
         pass_filenames: false
 
       - id: snapshot-check

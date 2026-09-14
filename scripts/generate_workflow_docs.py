@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate docs/{en,ja}/workflows.md from workflows/*.yaml manifests.
+"""Generate docs/{en,zh}/workflows.md from workflows/*.yaml manifests.
 
 Idempotent — same input produces byte-identical output. Run via:
 
@@ -75,53 +75,52 @@ LABELS: dict[str, dict[str, str]] = {
         "no": "no",
         "none": "(none)",
     },
-    "ja": {
-        "page_title": "ワークフロー",
+    "zh": {
+        "page_title": "工作流",
         "page_intro": (
-            "個人トレーダー OS の運用ワークフロー定義です。各ワークフローは"
-            "使用するスキル・判断ゲート・成果物の流れを順番通りに記述しています。"
+            "个人交易者操作系统的运营工作流定义。每个工作流按顺序描述"
+            "使用的技能、决策关卡和产出物的流程。"
             "[`workflows/`](https://github.com/tradermonty/claude-trading-skills/tree/main/workflows) "
-            "以下の定義ファイルが正本で、本ページはそこから自動生成されます。"
+            "下的定义文件为权威来源，本页面由此自动生成。"
         ),
         "auto_generated_note": (
-            "このページは `scripts/generate_workflow_docs.py` によって自動生成されます。"
-            "手動編集しないでください。"
+            "本页面由 `scripts/generate_workflow_docs.py` 自动生成。请勿手动编辑。"
         ),
-        "summary_table_title": "ワークフロー一覧",
-        "col_workflow": "ワークフロー",
-        "col_cadence": "頻度",
-        "col_minutes": "目安（分）",
-        "col_api": "API プロファイル",
-        "col_difficulty": "難易度",
-        "when_to_run": "実行タイミング",
-        "when_not_to_run": "実行してはいけないとき",
-        "required_skills": "必須スキル",
-        "optional_skills": "任意スキル",
-        "prerequisite_workflows": "前提ワークフロー（参考情報）",
-        "prerequisite_artifact": "が期待する成果物",
-        "manual_inputs": "手動入力契約",
-        "col_input": "入力",
-        "col_used_by_steps": "使用ステップ",
-        "col_schema_ref": "スキーマ参照",
-        "col_description": "説明",
-        "artifacts": "成果物一覧",
-        "col_artifact": "成果物",
-        "col_produced_by": "生成ステップ",
-        "col_required": "必須",
-        "col_downstream": "下流ヒント",
-        "steps": "ステップ",
-        "step_label": "ステップ",
-        "step_optional": "（任意）",
-        "step_decision_gate": "（判断ゲート）",
-        "step_consumes": "入力",
-        "step_produces": "出力",
-        "step_decision_question": "判断",
-        "manual_review": "手動レビュー",
-        "journal_destination": "記録先",
-        "final_outputs": "最終出力",
-        "yes": "あり",
-        "no": "なし",
-        "none": "（なし）",
+        "summary_table_title": "工作流一览",
+        "col_workflow": "工作流",
+        "col_cadence": "频率",
+        "col_minutes": "预计（分钟）",
+        "col_api": "API 配置",
+        "col_difficulty": "难度",
+        "when_to_run": "执行时机",
+        "when_not_to_run": "不应执行的情况",
+        "required_skills": "必需技能",
+        "optional_skills": "可选技能",
+        "prerequisite_workflows": "前置工作流（参考信息）",
+        "prerequisite_artifact": "期望的产出物",
+        "manual_inputs": "手动输入契约",
+        "col_input": "输入",
+        "col_used_by_steps": "使用步骤",
+        "col_schema_ref": "Schema 参考",
+        "col_description": "说明",
+        "artifacts": "产出物一览",
+        "col_artifact": "产出物",
+        "col_produced_by": "生成步骤",
+        "col_required": "必需",
+        "col_downstream": "下游提示",
+        "steps": "步骤",
+        "step_label": "步骤",
+        "step_optional": "（可选）",
+        "step_decision_gate": "（决策关卡）",
+        "step_consumes": "输入",
+        "step_produces": "输出",
+        "step_decision_question": "决策",
+        "manual_review": "手动审查",
+        "journal_destination": "记录目标",
+        "final_outputs": "最终输出",
+        "yes": "是",
+        "no": "否",
+        "none": "（无）",
     },
 }
 
@@ -129,19 +128,19 @@ LABELS: dict[str, dict[str, str]] = {
 ENUM_LABELS: dict[str, dict[str, dict[str, str]]] = {
     "cadence": {
         "en": {},
-        "ja": {
-            "daily": "毎日",
-            "weekly": "毎週",
-            "monthly": "毎月",
-            "ad-hoc": "随時",
+        "zh": {
+            "daily": "每日",
+            "weekly": "每周",
+            "monthly": "每月",
+            "ad-hoc": "临时",
         },
     },
     "difficulty": {
         "en": {},
-        "ja": {
-            "beginner": "初級",
-            "intermediate": "中級",
-            "advanced": "上級",
+        "zh": {
+            "beginner": "初级",
+            "intermediate": "中级",
+            "advanced": "高级",
         },
     },
 }
@@ -153,17 +152,17 @@ layout: default
 title: Workflows
 parent: English
 nav_order: 4
-lang_peer: /ja/workflows/
+lang_peer: /zh/workflows/
 permalink: /en/workflows/
 ---
 """,
-    "ja": """---
+    "zh": """---
 layout: default
-title: ワークフロー
-parent: 日本語
+title: 工作流
+parent: 中文
 nav_order: 4
 lang_peer: /en/workflows/
-permalink: /ja/workflows/
+permalink: /zh/workflows/
 ---
 """,
 }
@@ -190,7 +189,7 @@ def load_workflows(workflows_dir: Path) -> list[dict[str, Any]]:
 # ---------------------------------------------------------------------------
 
 # CJK punctuation, kana, ideographs, and full-width forms — the character
-# classes that never take an inter-character space in Japanese typography.
+# classes that never take an inter-character space in CJK typography.
 _CJK_CHAR_CLASS = "　-〿぀-ヿ㐀-䶿一-鿿豈-﫿＀-￯"
 _CJK_JOINED_SPACE = re.compile(f"(?<=[{_CJK_CHAR_CLASS}]) +(?=[{_CJK_CHAR_CLASS}])")
 
@@ -201,7 +200,7 @@ def _wrap(text: str | None) -> str:
     # Collapse YAML folded-scalar multiline into single line
     collapsed = " ".join(text.split())
     # A YAML folded scalar joins its wrapped lines with a space. That is correct
-    # for English, but Japanese prose has no inter-character space, so the join
+    # for English, but CJK prose has no inter-character space, so the join
     # leaks a visible space into the middle of a sentence. Drop the space only
     # when BOTH neighbours are CJK/full-width — a space next to ASCII (an
     # inline `code` span, a latin word) is intentional and preserved.
@@ -216,12 +215,12 @@ def _localized_text(
     *,
     default: str = "",
 ) -> str:
-    """Resolve prose for a locale; Japanese never falls back to English."""
+    """Resolve prose for a locale; Chinese never falls back to English."""
     if lang == "en":
         value = item.get(field, default)
         return value if isinstance(value, str) else str(value or default)
 
-    localized_field = f"{field}_ja"
+    localized_field = f"{field}_zh"
     value = item.get(localized_field)
     if not isinstance(value, str) or not value.strip():
         raise ValueError(f"{location}.{localized_field} must be a non-empty string")
@@ -451,7 +450,7 @@ def render_workflow_section(wf: dict, labels: dict[str, str], lang: str) -> str:
     cadence = _localized_enum("cadence", wf.get("cadence"), lang)
     difficulty = _localized_enum("difficulty", wf.get("difficulty"), lang)
     minutes = wf.get("estimated_minutes", "?")
-    duration = f"~{minutes} min" if lang == "en" else f"約{minutes}分"
+    duration = f"~{minutes} min" if lang == "en" else f"约{minutes}分钟"
 
     buf.write(f"## {display_name} {{#{wf_id}}}\n\n")
     buf.write(
@@ -484,23 +483,23 @@ def render_workflow_section(wf: dict, labels: dict[str, str], lang: str) -> str:
         for index, step in enumerate(steps):
             buf.write(_render_step(step, labels, lang, wf_id, index))
 
-    if lang == "ja":
+    if lang == "zh":
         source_review = wf.get("manual_review")
         if not isinstance(source_review, list):
             raise ValueError(f"{workflow_location}.manual_review must be a list")
-        manual_review = wf.get("manual_review_ja")
+        manual_review = wf.get("manual_review_zh")
         if not isinstance(manual_review, list):
-            raise ValueError(f"{workflow_location}.manual_review_ja must be a list")
+            raise ValueError(f"{workflow_location}.manual_review_zh must be a list")
         expected_count = len(source_review)
         if len(manual_review) != expected_count:
             raise ValueError(
-                f"{workflow_location}.manual_review_ja must contain exactly "
+                f"{workflow_location}.manual_review_zh must contain exactly "
                 f"{expected_count} item(s) to match manual_review"
             )
         for index, item in enumerate(manual_review):
             if not isinstance(item, str) or not item.strip():
                 raise ValueError(
-                    f"{workflow_location}.manual_review_ja[{index}] must be a non-empty string"
+                    f"{workflow_location}.manual_review_zh[{index}] must be a non-empty string"
                 )
     else:
         manual_review = wf.get("manual_review")
@@ -545,7 +544,7 @@ def default_output_path(project_root: Path, lang: str) -> Path:
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
-        description="Generate docs/{en,ja}/workflows.md from workflows/*.yaml manifests."
+        description="Generate docs/{en,zh}/workflows.md from workflows/*.yaml manifests."
     )
     parser.add_argument(
         "--project-root",
@@ -555,7 +554,7 @@ def main(argv: list[str] | None = None) -> int:
     )
     parser.add_argument(
         "--lang",
-        choices=["en", "ja", "all"],
+        choices=["en", "zh", "all"],
         default="all",
         help="Which language to generate (default: all)",
     )
@@ -563,7 +562,7 @@ def main(argv: list[str] | None = None) -> int:
         "--output",
         type=Path,
         default=None,
-        help="Override output path (only valid with --lang en or --lang ja)",
+        help="Override output path (only valid with --lang en or --lang zh)",
     )
     parser.add_argument(
         "--check",
@@ -573,7 +572,7 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     if args.output and args.lang == "all":
-        print("--output requires --lang en or --lang ja, not all", file=sys.stderr)
+        print("--output requires --lang en or --lang zh, not all", file=sys.stderr)
         return 2
 
     workflows_dir = args.project_root / "workflows"
@@ -586,7 +585,7 @@ def main(argv: list[str] | None = None) -> int:
         print(f"ERROR: no workflow manifests found under {workflows_dir}", file=sys.stderr)
         return 1
 
-    langs = ["en", "ja"] if args.lang == "all" else [args.lang]
+    langs = ["en", "zh"] if args.lang == "all" else [args.lang]
     drift = False
 
     for lang in langs:

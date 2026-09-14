@@ -4,7 +4,7 @@ title: PEAD Trade Playbook
 grand_parent: English
 parent: Playbooks
 nav_order: 14
-lang_peer: /ja/playbooks/pead/
+lang_peer: /zh/playbooks/pead/
 permalink: /en/playbooks/pead/
 ---
 

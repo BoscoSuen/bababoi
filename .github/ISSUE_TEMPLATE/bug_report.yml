@@ -1,5 +1,5 @@
-name: Bug report / バグ報告
-description: Report broken behavior with reproducible details. / 再現可能なバグを報告します。
+name: Bug report / 错误报告
+description: Report broken behavior with reproducible details. / 报告可复现的错误行为。
 title: "[Bug]: "
 labels: ["bug"]
 body:
@@ -11,20 +11,20 @@ body:
         Claude Trading Skills is educational and process-focused. Please report
         reproducible product behavior, not requests for personalized trading advice.
 
-        ご協力ありがとうございます。再現可能な動作を報告し、個別の投資助言は依頼しないでください。
+        感谢您的帮助。请报告可复现的行为问题，不要提交个人投资建议请求。
   - type: textarea
     id: summary
     attributes:
-      label: What is broken? / 何が壊れていますか？
-      description: Summarize the bug in one or two sentences. / バグを1〜2文で要約してください。
+      label: What is broken? / 什么出了问题？
+      description: Summarize the bug in one or two sentences. / 用1-2句话概括错误。
       placeholder: "The vcp-screener command fails when..."
     validations:
       required: true
   - type: textarea
     id: steps-to-reproduce
     attributes:
-      label: Steps to reproduce / 再現手順
-      description: Include the commands, files, inputs, or workflow steps. / コマンド、ファイル、入力、手順を書いてください。
+      label: Steps to reproduce / 复现步骤
+      description: Include the commands, files, inputs, or workflow steps. / 请提供命令、文件、输入或工作流步骤。
       placeholder: |
         1. Run ...
         2. Open ...
@@ -34,47 +34,47 @@ body:
   - type: textarea
     id: expected-behavior
     attributes:
-      label: Expected behavior / 期待した動作
-      description: Explain what should happen instead. / 本来どう動くべきか説明してください。
+      label: Expected behavior / 期望行为
+      description: Explain what should happen instead. / 说明预期的正确行为。
       placeholder: "The command should..."
     validations:
       required: true
   - type: textarea
     id: actual-behavior
     attributes:
-      label: Actual behavior / 実際の動作
-      description: Paste the relevant sanitized error or output. / 秘密情報を除いたエラーや出力を貼ってください。
+      label: Actual behavior / 实际行为
+      description: Paste the relevant sanitized error or output. / 请粘贴已脱敏的错误或输出。
       render: shell
     validations:
       required: true
   - type: input
     id: affected-area
     attributes:
-      label: Affected skill, workflow, or file / 影響するスキル・ワークフロー・ファイル
-      description: Name the affected repository path if known. / 分かれば影響するリポジトリ内のパスを書いてください。
+      label: Affected skill, workflow, or file / 受影响的技能、工作流或文件
+      description: Name the affected repository path if known. / 如果知道，请填写受影响的仓库路径。
       placeholder: "skills/vcp-screener or workflows/swing-opportunity-daily.yaml"
     validations:
       required: true
   - type: textarea
     id: environment
     attributes:
-      label: Environment / 実行環境
-      description: Include the OS, Python version, runner, and dependency manager. / OS、Python、実行方法、依存管理を書いてください。
+      label: Environment / 运行环境
+      description: Include the OS, Python version, runner, and dependency manager. / 请填写OS、Python版本、运行方式和依赖管理工具。
       placeholder: "macOS 15, Python 3.9, uv, Claude Code"
     validations:
       required: true
   - type: textarea
     id: additional-context
     attributes:
-      label: Additional context / 補足
-      description: Add sanitized sample data, screenshots, or links if useful. / 必要なら秘密情報を除いたデータ、画像、リンクを追加してください。
+      label: Additional context / 补充信息
+      description: Add sanitized sample data, screenshots, or links if useful. / 如需要可添加已脱敏的数据、截图或链接。
   - type: checkboxes
     id: acknowledgements
     attributes:
-      label: Acknowledgements / 確認事項
-      description: Confirm both items before submitting. / 送信前に両方を確認してください。
+      label: Acknowledgements / 确认事项
+      description: Confirm both items before submitting. / 提交前请确认以下两项。
       options:
-        - label: I removed secrets, API keys, personal information, and brokerage account data. / 秘密情報、APIキー、個人情報、証券口座情報を除外しました。
+        - label: I removed secrets, API keys, personal information, and brokerage account data. / 已移除密钥、API密钥、个人信息和证券账户数据。
           required: true
-        - label: This is not a request for financial advice, buy/sell recommendations, profit guarantees, or broker execution. / 金融助言、売買推奨、利益保証、発注実行の依頼ではありません。
+        - label: This is not a request for financial advice, buy/sell recommendations, profit guarantees, or broker execution. / 本报告不涉及金融建议、买卖推荐、收益保证或经纪商执行请求。
           required: true

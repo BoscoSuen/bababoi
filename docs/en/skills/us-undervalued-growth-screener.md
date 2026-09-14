@@ -4,7 +4,7 @@ title: "US Undervalued Growth Screener"
 grand_parent: English
 parent: Skill Guides
 nav_order: 73
-lang_peer: /ja/skills/us-undervalued-growth-screener/
+lang_peer: /zh/skills/us-undervalued-growth-screener/
 permalink: /en/skills/us-undervalued-growth-screener/
 generated: true
 ---
@@ -236,7 +236,7 @@ python3 skills/us-undervalued-growth-screener/scripts/evaluate_candidates.py \
   --input reports/us-undervalued-growth-screener/<run-id>/final/final-snapshot.json \
   --artifact-root reports/us-undervalued-growth-screener/<run-id> \
   --output-dir reports/us-undervalued-growth-screener/<run-id>/final \
-  --language ja \
+  --language zh \
   --strict \
   --require-final
 ```
@@ -281,7 +281,7 @@ Both commands must exit `0`. Present the self-contained ZIP together with the re
 - `skills/us-undervalued-growth-screener/references/claude-code-execution.md`
 - `skills/us-undervalued-growth-screener/references/data-contract.md`
 - `skills/us-undervalued-growth-screener/references/full-universe-snapshot.md`
-- `skills/us-undervalued-growth-screener/references/methodology-ja.md`
+- `skills/us-undervalued-growth-screener/references/methodology-zh.md`
 - `skills/us-undervalued-growth-screener/references/methodology.md`
 - `skills/us-undervalued-growth-screener/references/migration-v1-to-v2.md`
 - `skills/us-undervalued-growth-screener/references/migration-v2-to-v3.md`

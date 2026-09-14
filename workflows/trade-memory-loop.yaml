@@ -1,7 +1,7 @@
 schema_version: 1
 id: trade-memory-loop
 display_name: Trade Memory Loop
-display_name_ja: 取引記憶ループ
+display_name_zh: 交易记忆循环
 cadence: ad-hoc
 estimated_minutes: 30
 target_users:
@@ -16,16 +16,16 @@ when_to_run: >-
   generates a postmortem, (optionally) coaches process / risk / execution /
   behavior patterns, and (optionally) re-validates the original hypothesis via
   backtest.
-when_to_run_ja: >-
-  ポジションを全決済または一部決済するたびに実行する。結果を記録して事後分析を作成し、
-  任意でプロセス、リスク、執行、行動パターンを振り返り、元の仮説をバックテストで再検証する。
+when_to_run_zh: >-
+  每次全部或部分平仓时执行。记录结果并生成复盘分析，
+  可选地回顾流程、风险、执行和行为模式，并通过回测重新验证原始假设。
 when_not_to_run: >-
   Do not run before a position is closed — use trader-memory-core directly to
   update an open thesis instead. Do not skip this loop after a closed trade,
   even on winners.
-when_not_to_run_ja: >-
-  ポジション決済前には実行しない。未決済の投資仮説を更新する場合は
-  trader-memory-core を直接使用する。利益取引であっても、決済後にこのループを省略しない。
+when_not_to_run_zh: >-
+  平仓前不执行。如需更新未平仓的投资假设，
+  请直接使用 trader-memory-core。即使是盈利交易，平仓后也不要跳过此循环。
 
 required_skills:
   - trader-memory-core
@@ -65,7 +65,7 @@ artifacts:
 steps:
   - step: 1
     name: Record closed trade outcome
-    name_ja: 決済済み取引の結果を記録する
+    name_zh: 记录已平仓交易的结果
     skill: trader-memory-core
     produces:
       - closed_thesis_record
@@ -73,7 +73,7 @@ steps:
 
   - step: 2
     name: Generate postmortem
-    name_ja: 事後分析を作成する
+    name_zh: 生成复盘分析
     skill: signal-postmortem
     consumes:
       - closed_thesis_record
@@ -83,13 +83,13 @@ steps:
     decision_question: >-
       What was the root cause of the outcome — thesis quality, execution,
       market environment, or randomness? Classify and document.
-    decision_question_ja: >-
-      結果の根本原因は、投資仮説の質、執行、市場環境、偶然性のどれか。
-      分類して記録する。
+    decision_question_zh: >-
+      结果的根本原因是投资假设质量、执行、市场环境还是随机性？
+      分类并记录。
 
   - step: 3
     name: Coach process, risk, and behavior patterns
-    name_ja: プロセス、リスク、行動パターンを振り返る
+    name_zh: 回顾流程、风险和行为模式
     skill: trade-performance-coach
     optional: true
     consumes:
@@ -102,12 +102,12 @@ steps:
     decision_question: >-
       Which next-session operating rules should the trader accept, modify,
       defer, or journal only?
-    decision_question_ja: >-
-      次の取引セッションの運用ルールのうち、採用、修正、保留、記録のみとするものはどれか。
+    decision_question_zh: >-
+      下一交易时段的操作规则中，哪些应采纳、修改、推迟或仅作记录？
 
   - step: 4
     name: Re-validate hypothesis via backtest
-    name_ja: バックテストで仮説を再検証する
+    name_zh: 通过回测重新验证假设
     skill: backtest-expert
     optional: true
     consumes:
@@ -118,7 +118,7 @@ steps:
 
   - step: 5
     name: Append lessons to journal
-    name_ja: 学びを記録に追記する
+    name_zh: 将经验教训追记到日志
     skill: trader-memory-core
     consumes:
       - postmortem_findings
@@ -131,9 +131,9 @@ manual_review:
   - Be honest about whether the win was thesis-driven or lucky.
   - Be honest about whether the loss was thesis-flawed or executed poorly.
   - Don't rationalize randomness as either skill or failure.
-manual_review_ja:
-  - 利益が投資仮説によるものか、単なる幸運かを正直に評価する。
-  - 損失が投資仮説の欠陥によるものか、執行不良によるものかを正直に評価する。
-  - 偶然を技量や失敗として都合よく解釈しない。
+manual_review_zh:
+  - 诚实评估盈利是源于投资假设还是纯粹的运气。
+  - 诚实评估亏损是源于投资假设的缺陷还是执行不当。
+  - 不要将随机事件合理化为技能或失败。
 
 journal_destination: trader-memory-core

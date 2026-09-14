@@ -4,7 +4,7 @@ title: "PEAD Screener"
 grand_parent: English
 parent: Skill Guides
 nav_order: 34
-lang_peer: /ja/skills/pead-screener/
+lang_peer: /zh/skills/pead-screener/
 permalink: /en/skills/pead-screener/
 ---
 

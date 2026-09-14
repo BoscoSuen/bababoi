@@ -18,7 +18,7 @@ from pathlib import Path
 
 def test_utf8_write_and_read_no_locale_reliance(tmp_path: Path) -> None:
     """Write/read a Unicode file strictly as UTF-8 (guards #64)."""
-    payload = "中央値 テスト 配当 ε μ — — “quotes”"
+    payload = "中央值 测试 股息 ε μ — — “quotes”"
     target = tmp_path / "unicode.txt"
     target.write_text(payload, encoding="utf-8")
     assert target.read_text(encoding="utf-8") == payload

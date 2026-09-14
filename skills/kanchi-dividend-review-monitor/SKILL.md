@@ -1,6 +1,6 @@
 ---
 name: kanchi-dividend-review-monitor
-description: Monitor dividend portfolios with Kanchi-style forced-review triggers (T1-T5) and convert anomalies into OK/WARN/REVIEW states without auto-selling. Use when users ask for 減配検知, 8-Kガバナンス監視, 配当安全性モニタリング, REVIEWキュー自動化, or periodic dividend risk checks.
+description: Monitor dividend portfolios with Kanchi-style forced-review triggers (T1-T5) and convert anomalies into OK/WARN/REVIEW states without auto-selling. Use when users ask for 减配检测, 8-K治理监控, 股息安全性监控, REVIEW队列自动化, or periodic dividend risk checks.
 ---
 
 # Kanchi Dividend Review Monitor

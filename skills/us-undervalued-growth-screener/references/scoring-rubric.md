@@ -362,4 +362,4 @@ A candidate with one or two ordinary failures may be labeled `conditional`. A ca
 - **Most undervalued:** SBC-adjusted FCF yield ≥5% or EV/FCF ≤20x.
 - **Largest upside:** supported low-consensus-case upside ≥20%.
 
-If no ranked candidate meets a category threshold, render `確認できず` / `not verified`.
+If no ranked candidate meets a category threshold, render `无法确认` / `not verified`.

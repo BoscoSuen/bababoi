@@ -1,5 +1,5 @@
-name: Workflow recipe / ワークフロー改善
-description: Improve a multi-skill workflow or sample recipe. / 複数スキルの流れや実行例を改善します。
+name: Workflow recipe / 工作流改进
+description: Improve a multi-skill workflow or sample recipe. / 改进多技能工作流或示例流程。
 title: "[Workflow recipe]: "
 labels: ["documentation"]
 body:
@@ -9,36 +9,36 @@ body:
         Use this form for workflow recipes, sample runs, prompts, handoffs,
         and repeatable process improvements that preserve human decision gates.
 
-        ワークフロー、実行例、prompt、handoff、人間の判断ゲートを残す手順改善に利用してください。
+        用于工作流、示例运行、prompt、handoff及保留人工判断门的流程改进。
   - type: input
     id: workflow-name
     attributes:
-      label: Workflow or routine / ワークフロー名
-      description: Name the workflow manifest, sample, or routine if known. / 分かればmanifest、sample、routine名を書いてください。
+      label: Workflow or routine / 工作流名称
+      description: Name the workflow manifest, sample, or routine if known. / 如果知道，请填写manifest、sample或routine名称。
       placeholder: "workflows/market-regime-daily.yaml"
     validations:
       required: true
   - type: textarea
     id: use-case
     attributes:
-      label: Use case / 利用場面
-      description: Explain who it helps and which decision process improves. / 誰のどの判断プロセスを改善するか説明してください。
+      label: Use case / 使用场景
+      description: Explain who it helps and which decision process improves. / 说明帮助了谁以及改善了哪个决策流程。
       placeholder: "A 15-minute morning market check for..."
     validations:
       required: true
   - type: textarea
     id: current-gap
     attributes:
-      label: Current gap / 現状の不足
-      description: Explain what is missing, unclear, or hard to repeat. / 何が不足、不明確、再現困難か説明してください。
+      label: Current gap / 当前不足
+      description: Explain what is missing, unclear, or hard to repeat. / 说明缺少什么、什么不清楚或难以重复。
       placeholder: "The current workflow does not..."
     validations:
       required: true
   - type: textarea
     id: proposed-recipe
     attributes:
-      label: Proposed recipe / 提案する流れ
-      description: List skills, inputs, outputs, and decision gates. / スキル、入力、出力、判断ゲートを書いてください。
+      label: Proposed recipe / 建议的流程
+      description: List skills, inputs, outputs, and decision gates. / 列出技能、输入、输出和判断门。
       placeholder: |
         1. Run market-breadth-analyzer with...
         2. Feed the output to exposure-coach...
@@ -48,23 +48,23 @@ body:
   - type: textarea
     id: expected-artifacts
     attributes:
-      label: Expected artifacts / 期待する成果物
-      description: Name reports, YAML, Markdown, screenshots, or journal entries. / レポート、YAML、Markdown、画像、記録を書いてください。
+      label: Expected artifacts / 期望的产出物
+      description: Name reports, YAML, Markdown, screenshots, or journal entries. / 请填写报告、YAML、Markdown、截图或日志记录。
       placeholder: "reports/..., a workflow manifest, and a sample run"
     validations:
       required: true
   - type: textarea
     id: additional-context
     attributes:
-      label: Additional context / 補足
-      description: Add sanitized examples or links if useful. / 必要なら秘密情報を除いた例やリンクを追加してください。
+      label: Additional context / 补充信息
+      description: Add sanitized examples or links if useful. / 如需要可添加已脱敏的示例或链接。
   - type: checkboxes
     id: acknowledgements
     attributes:
-      label: Acknowledgements / 確認事項
-      description: Confirm both items before submitting. / 送信前に両方を確認してください。
+      label: Acknowledgements / 确认事项
+      description: Confirm both items before submitting. / 提交前请确认以下两项。
       options:
-        - label: I removed secrets, API keys, personal information, and brokerage account data. / 秘密情報、APIキー、個人情報、証券口座情報を除外しました。
+        - label: I removed secrets, API keys, personal information, and brokerage account data. / 已移除密钥、API密钥、个人信息和证券账户数据。
           required: true
-        - label: This is not a request for financial advice, buy/sell recommendations, profit guarantees, or broker execution. / 金融助言、売買推奨、利益保証、発注実行の依頼ではありません。
+        - label: This is not a request for financial advice, buy/sell recommendations, profit guarantees, or broker execution. / 本报告不涉及金融建议、买卖推荐、收益保证或经纪商执行请求。
           required: true

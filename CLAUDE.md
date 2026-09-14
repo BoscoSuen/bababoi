@@ -73,17 +73,17 @@ The skill-creator will:
 
 **MANDATORY: After creating or committing a new skill, complete ALL of the following:**
 
-1. **Generate documentation pages** (auto-gen handles EN page + JA stub + index updates):
+1. **Generate documentation pages** (auto-gen handles EN page + ZH stub + index updates):
    ```bash
    python3 scripts/generate_skill_docs.py --skill <skill-name>
    ```
-2. **Add to catalog category sections** in `docs/en/skill-catalog.md` and `docs/ja/skill-catalog.md`
+2. **Add to catalog category sections** in `docs/en/skill-catalog.md` and `docs/zh/skill-catalog.md`
 3. **Add to API Requirements Matrix** in both catalog files
-4. **Add to README** descriptions in `README.md` (English) and `README.ja.md` (Japanese)
-5. If the skill requires API keys, add to the API Requirements table in `README.md` and the API要件 section in `README.ja.md`
+4. **Add to README** descriptions in `README.md` (English) and `README.zh.md` (Chinese)
+5. If the skill requires API keys, add to the API Requirements table in `README.md` and the API要求 section in `README.zh.md`
 6. If a new category is needed, create it in both READMEs and both catalogs
 
-> **Pre-commit enforcement:** The `docs-completeness` hook blocks commits if any `skills/*/SKILL.md` exists without corresponding `docs/en/skills/<name>.md` and `docs/ja/skills/<name>.md`. Run the generate command above to fix.
+> **Pre-commit enforcement:** The `docs-completeness` hook blocks commits if any `skills/*/SKILL.md` exists without corresponding `docs/en/skills/<name>.md` and `docs/zh/skills/<name>.md`. Run the generate command above to fix.
 
 ### Creating Documentation Site Pages
 
@@ -92,8 +92,8 @@ Generate documentation pages for the Jekyll site at `docs/`.
 **Auto-generation (recommended for most skills):**
 
 ```bash
-# Generate 6-section EN page + JA stub for a specific skill
-# Also updates docs/en/skills/index.md and docs/ja/skills/index.md automatically
+# Generate 6-section EN page + ZH stub for a specific skill
+# Also updates docs/en/skills/index.md and docs/zh/skills/index.md automatically
 python3 scripts/generate_skill_docs.py --skill <skill-name>
 
 # Regenerate all auto-generated pages (ONLY pages marked `generated: true`;
@@ -101,7 +101,7 @@ python3 scripts/generate_skill_docs.py --skill <skill-name>
 python3 scripts/generate_skill_docs.py --overwrite
 ```
 
-> **Skill doc ownership / drift gate:** Committed `docs/{en,ja}/skills/*.md` are
+> **Skill doc ownership / drift gate:** Committed `docs/{en,zh}/skills/*.md` are
 > source-of-truth. A page is generator-owned only if its frontmatter has
 > `generated: true`; `generated: false` or an absent marker (and any
 > `HAND_WRITTEN` skill) is hand-maintained and **protected** — `--overwrite`
@@ -124,11 +124,11 @@ Required sections for ★ guides:
 | Task | Auto-gen | Manual |
 |------|----------|--------|
 | EN doc page (`docs/en/skills/<name>.md`) | ✅ | -- |
-| JA doc stub (`docs/ja/skills/<name>.md`) | ✅ | -- |
-| Index table (`docs/{en,ja}/skills/index.md`) | ✅ | -- |
-| Catalog category section (`docs/{en,ja}/skill-catalog.md`) | -- | ✅ |
+| ZH doc stub (`docs/zh/skills/<name>.md`) | ✅ | -- |
+| Index table (`docs/{en,zh}/skills/index.md`) | ✅ | -- |
+| Catalog category section (`docs/{en,zh}/skill-catalog.md`) | -- | ✅ |
 | Catalog API Requirements Matrix | -- | ✅ |
-| README.md / README.ja.md | -- | ✅ |
+| README.md / README.zh.md | -- | ✅ |
 
 See `docs/README.md` for frontmatter format, badge syntax, and complete checklist.
 
@@ -204,7 +204,7 @@ pre-commit install && pre-commit install --hook-type pre-push
 | detect-secrets | detect-secrets | Secret/credential leaks |
 | no-absolute-paths | local | `/Users/username/` path leaks in public repo |
 | skill-frontmatter | local | SKILL.md `name` matches directory, `description` exists |
-| docs-completeness | local | Every `skills/*/SKILL.md` has EN + JA doc pages |
+| docs-completeness | local | Every `skills/*/SKILL.md` has EN + ZH doc pages |
 
 **Pre-push hook:**
 
@@ -982,9 +982,9 @@ Files that contain secrets (`.mcp.json`, `.envrc`) must be listed in `.gitignore
 
 - All SKILL.md files are in English
 - Analysis outputs are in English
-- Some reference materials (Stanley Druckenmiller Investment) include Japanese content
-- README files available in both English (README.md) and Japanese (README.ja.md)
-- User interactions may be in Japanese; analysis outputs remain in English
+- Some reference materials (Stanley Druckenmiller Investment) include Chinese content
+- README files available in both English (README.md) and Chinese (README.zh.md)
+- User interactions may be in Chinese; analysis outputs remain in English
 
 ## Distribution Workflow
 
@@ -996,7 +996,7 @@ When skills are ready for distribution:
    python3 scripts/package_skills.py --skill <skill-name>
    ```
 3. Confirm the generated `.skill` file is in `skill-packages/`
-4. Update README.md and README.ja.md with skill description
+4. Update README.md and README.zh.md with skill description
    - **Important:** Clearly indicate if the skill requires API subscriptions (FMP, FINVIZ Elite)
    - Include pricing information and sign-up links for required APIs
    - Specify if APIs are required, optional, or not needed

@@ -199,10 +199,10 @@ def _today_dict(effective_history: list[dict], records: list[DDRecord]) -> dict:
 def _build_explanation(symbol: str, d5: int, d15: int, d25: int, risk: str, today_dd: bool) -> str:
     parts = []
     parts.append(
-        f"{symbol}は本日{'Distribution Day該当' if today_dd else 'Distribution Day非該当'}。"
+        f"{symbol}今日{'符合Distribution Day' if today_dd else '不符合Distribution Day'}。"
     )
-    parts.append(f"5/15/25セッション経過以内の有効Distribution Dayはそれぞれ {d5}/{d15}/{d25} 件。")
-    parts.append(f"リスク判定: {risk}。")
+    parts.append(f"5/15/25个交易日内的有效Distribution Day分别为 {d5}/{d15}/{d25} 个。")
+    parts.append(f"风险判定: {risk}。")
     return " ".join(parts)
 
 
@@ -211,7 +211,7 @@ def _build_cluster_state(d5: int, d15: int, d25: int) -> dict:
         "has_d5_cluster": d5 >= 2,
         "has_d15_cluster": d15 >= 3,
         "has_d25_cluster": d25 >= 5,
-        "cluster_description": (f"5/15/25セッション経過以内: {d5}/{d15}/{d25}"),
+        "cluster_description": (f"5/15/25个交易日内: {d5}/{d15}/{d25}"),
     }
 
 

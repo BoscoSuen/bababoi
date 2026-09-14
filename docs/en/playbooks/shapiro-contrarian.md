@@ -4,7 +4,7 @@ title: Shapiro COT Contrarian Playbook
 grand_parent: English
 parent: Playbooks
 nav_order: 20
-lang_peer: /ja/playbooks/shapiro-contrarian/
+lang_peer: /zh/playbooks/shapiro-contrarian/
 permalink: /en/playbooks/shapiro-contrarian/
 ---
 

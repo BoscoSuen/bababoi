@@ -4,7 +4,7 @@ title: "Weekly Performance Digest"
 grand_parent: English
 parent: Skill Guides
 nav_order: 75
-lang_peer: /ja/skills/weekly-performance-digest/
+lang_peer: /zh/skills/weekly-performance-digest/
 permalink: /en/skills/weekly-performance-digest/
 generated: true
 ---

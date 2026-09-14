@@ -2910,12 +2910,12 @@ def evaluate_snapshot(
     }
 
 
-def _label(language: str, en: str, ja: str) -> str:
-    return ja if language == "ja" else en
+def _label(language: str, en: str, zh: str) -> str:
+    return zh if language == "zh" else en
 
 
 def _missing(language: str) -> str:
-    return "確認できず" if language == "ja" else "not verified"
+    return "未验证" if language == "zh" else "not verified"
 
 
 def _md_escape(value: Any) -> str:
@@ -2947,26 +2947,26 @@ def _render_list(values: Any, missing: str) -> str:
 
 def _render_latest_earnings(language: str, records: Mapping[str, Any], missing: str) -> list[str]:
     lines: list[str] = []
-    for key, en, ja in (
-        ("quarter", "Latest quarter", "直近四半期"),
-        ("full_year", "Latest full year", "直近通期"),
+    for key, en, zh in (
+        ("quarter", "Latest quarter", "最近季度"),
+        ("full_year", "Latest full year", "最近全年"),
     ):
         record = _mapping(records.get(key))
         if not record:
             continue
         metrics = _mapping(record.get("metrics"))
-        lines.append(f"**{_label(language, en, ja)} — {record.get('period', missing)}**")
+        lines.append(f"**{_label(language, en, zh)} — {record.get('period', missing)}**")
         lines.extend(
             [
-                f"- **{_label(language, 'Period end / published', '期末／発表日時')}:** {record.get('period_end', missing)} / {record.get('published_at', missing)}",
-                f"- **{_label(language, 'Revenue / YoY', '売上高／前年比')}:** {_format_number(metrics.get('revenue'), 1, missing)} / {_format_pct(metrics.get('revenue_yoy_pct'), 1, missing)}",
-                f"- **{_label(language, 'GAAP operating income / margin', 'GAAP営業利益／利益率')}:** {_format_number(metrics.get('gaap_operating_income'), 1, missing)} / {_format_pct(metrics.get('gaap_operating_margin_pct'), 1, missing)}",
+                f"- **{_label(language, 'Period end / published', '期末/发布日期')}:** {record.get('period_end', missing)} / {record.get('published_at', missing)}",
+                f"- **{_label(language, 'Revenue / YoY', '营收/同比')}:** {_format_number(metrics.get('revenue'), 1, missing)} / {_format_pct(metrics.get('revenue_yoy_pct'), 1, missing)}",
+                f"- **{_label(language, 'GAAP operating income / margin', 'GAAP营业利润/利润率')}:** {_format_number(metrics.get('gaap_operating_income'), 1, missing)} / {_format_pct(metrics.get('gaap_operating_margin_pct'), 1, missing)}",
                 f"- **GAAP / Adjusted EPS:** {_format_number(metrics.get('gaap_eps'), 2, missing)} / {_format_number(metrics.get('adjusted_eps'), 2, missing)}",
-                f"- **{_label(language, 'OCF / standard FCF', '営業CF／標準FCF')}:** {_format_number(metrics.get('operating_cash_flow'), 1, missing)} / {_format_number(metrics.get('standard_fcf'), 1, missing)}",
-                f"- **{_label(language, 'Growth state', '成長状態')}:** {record.get('growth_state') or record.get('derived_growth_state') or missing}",
-                f"- **{_label(language, 'Guidance', 'ガイダンス')}:** {_render_list(record.get('guidance'), missing)}",
+                f"- **{_label(language, 'OCF / standard FCF', '经营现金流/标准自由现金流')}:** {_format_number(metrics.get('operating_cash_flow'), 1, missing)} / {_format_number(metrics.get('standard_fcf'), 1, missing)}",
+                f"- **{_label(language, 'Growth state', '增长状态')}:** {record.get('growth_state') or record.get('derived_growth_state') or missing}",
+                f"- **{_label(language, 'Guidance', '业绩指引')}:** {_render_list(record.get('guidance'), missing)}",
                 f"- **KPI:** {_render_list(record.get('key_kpis'), missing)}",
-                f"- **{_label(language, 'One-time items', '一時項目')}:** {_render_list(record.get('one_time_items'), missing)}",
+                f"- **{_label(language, 'One-time items', '一次性项目')}:** {_render_list(record.get('one_time_items'), missing)}",
             ]
         )
     return lines or [missing]
@@ -3025,64 +3025,62 @@ def _render_candidate_detail(language: str, row: Mapping[str, Any]) -> list[str]
 
     lines.append(f"### {row.get('rank')}. {row.get('company_name')} ({row.get('symbol')})")
     lines.append("")
-    lines.append(f"#### 1. {_label(language, 'Basic Information', '基本情報')}")
+    lines.append(f"#### 1. {_label(language, 'Basic Information', '基本信息')}")
     lines.extend(
         [
-            f"- **{_label(language, 'Exchange / sector / industry', '取引所／セクター／業種')}:** {identity.get('exchange', missing)} / {identity.get('sector', missing)} / {identity.get('industry', missing)}",
-            f"- **{_label(language, 'Price / market cap', '株価／時価総額')}:** {_format_price(identity.get('price'), identity.get('currency', 'USD'), missing)} / {_format_number(identity.get('market_cap'), 1, missing)}",
-            f"- **{_label(language, 'Liquidity', '流動性')}:** {_format_number(identity.get('average_daily_dollar_volume'), 1, missing)}",
-            f"- **{_label(language, 'Business overview', '企業概要')}:** {qualitative.get('business_overview', missing)}",
+            f"- **{_label(language, 'Exchange / sector / industry', '交易所/行业板块/细分行业')}:** {identity.get('exchange', missing)} / {identity.get('sector', missing)} / {identity.get('industry', missing)}",
+            f"- **{_label(language, 'Price / market cap', '股价/市值')}:** {_format_price(identity.get('price'), identity.get('currency', 'USD'), missing)} / {_format_number(identity.get('market_cap'), 1, missing)}",
+            f"- **{_label(language, 'Liquidity', '流动性')}:** {_format_number(identity.get('average_daily_dollar_volume'), 1, missing)}",
+            f"- **{_label(language, 'Business overview', '公司概述')}:** {qualitative.get('business_overview', missing)}",
         ]
     )
     lines.append("")
-    lines.append(f"#### 2. {_label(language, 'Investment Thesis', '投資仮説')}")
+    lines.append(f"#### 2. {_label(language, 'Investment Thesis', '投资假说')}")
     lines.append(str(qualitative.get("investment_thesis") or missing))
     lines.append("")
-    lines.append(f"#### 3. {_label(language, 'Valuation', 'バリュエーション')}")
+    lines.append(f"#### 3. {_label(language, 'Valuation', '估值')}")
     lines.extend(
         [
-            f"- **{_label(language, 'Valuation basis', '評価基準')}:** {valuation.get('basis', missing)} / {valuation.get('current_metric_basis', missing)} / {valuation.get('current_period_kind', missing)}",
-            f"- **{_label(language, 'Current metric / multiple', '現在指標／倍率')}:** {_format_number(valuation.get('current_metric'), 2, missing)} / {_format_number(valuation.get('current_multiple'), 2, missing)}x",
-            f"- **{_label(language, 'Peer median multiple', '同業中央値倍率')}:** {_format_number(valuation.get('peer_median_multiple'), 2, missing)}x",
+            f"- **{_label(language, 'Valuation basis', '估值基准')}:** {valuation.get('basis', missing)} / {valuation.get('current_metric_basis', missing)} / {valuation.get('current_period_kind', missing)}",
+            f"- **{_label(language, 'Current metric / multiple', '当前指标/倍数')}:** {_format_number(valuation.get('current_metric'), 2, missing)} / {_format_number(valuation.get('current_multiple'), 2, missing)}x",
+            f"- **{_label(language, 'Peer median multiple', '同业中位数倍数')}:** {_format_number(valuation.get('peer_median_multiple'), 2, missing)}x",
             f"- **{_label(language, 'EV/FCF', 'EV/FCF')}:** {_format_number(metrics.get('ev_to_fcf'), 2, missing)}x",
-            f"- **{_label(language, 'Enterprise value / cash definition', '企業価値／現金定義')}:** {_format_number(metrics.get('enterprise_value'), 1, missing)} / {metrics.get('cash_definition', missing)}",
-            f"- **{_label(language, 'Standard / SBC-adjusted FCF yield', '標準／SBC調整後FCF利回り')}:** {_format_pct(metrics.get('fcf_yield_pct'), 1, missing)} / {_format_pct(metrics.get('sbc_adjusted_fcf_yield_pct'), 1, missing)}",
+            f"- **{_label(language, 'Enterprise value / cash definition', '企业价值/现金定义')}:** {_format_number(metrics.get('enterprise_value'), 1, missing)} / {metrics.get('cash_definition', missing)}",
+            f"- **{_label(language, 'Standard / SBC-adjusted FCF yield', '标准/SBC调整后FCF收益率')}:** {_format_pct(metrics.get('fcf_yield_pct'), 1, missing)} / {_format_pct(metrics.get('sbc_adjusted_fcf_yield_pct'), 1, missing)}",
         ]
     )
     lines.append("")
-    lines.append(f"#### 4. {_label(language, 'Growth History and Forecasts', '成長実績と予想')}")
+    lines.append(f"#### 4. {_label(language, 'Growth History and Forecasts', '增长历史与预测')}")
     lines.extend(
         [
-            f"- **{_label(language, 'Revenue CAGR', '売上CAGR')}:** {_format_pct(metrics.get('revenue_cagr_pct'), 1, missing)}",
+            f"- **{_label(language, 'Revenue CAGR', '营收复合增长率')}:** {_format_pct(metrics.get('revenue_cagr_pct'), 1, missing)}",
             f"- **{_label(language, 'GAAP EPS CAGR', 'GAAP EPS CAGR')}:** {_format_pct(metrics.get('gaap_eps_cagr_pct'), 1, missing)}",
             f"- **{_label(language, 'FCF/share CAGR', 'FCF per share CAGR')}:** {_format_pct(metrics.get('fcf_per_share_cagr_pct'), 1, missing)}",
-            f"- **{_label(language, 'Current / year-2 / year-3 metric', '現在／2年後／3年後指標')}:** {_format_number(_mapping(periods.get('current')).get('metric'), 2, missing)} / {_format_number(_mapping(periods.get('year_2')).get('metric'), 2, missing)} / {_format_number(_mapping(periods.get('year_3')).get('metric'), 2, missing)}",
-            f"- **{_label(language, 'Forecast bridge', '予想ブリッジ')}:** {'PASS' if valuation.get('forecast_bridge_valid') else 'FAIL'}",
+            f"- **{_label(language, 'Current / year-2 / year-3 metric', '当前/2年后/3年后指标')}:** {_format_number(_mapping(periods.get('current')).get('metric'), 2, missing)} / {_format_number(_mapping(periods.get('year_2')).get('metric'), 2, missing)} / {_format_number(_mapping(periods.get('year_3')).get('metric'), 2, missing)}",
+            f"- **{_label(language, 'Forecast bridge', '预测桥接')}:** {'PASS' if valuation.get('forecast_bridge_valid') else 'FAIL'}",
         ]
     )
     lines.append("")
-    lines.append(f"#### 5. {_label(language, 'Latest Earnings', '直近決算')}")
+    lines.append(f"#### 5. {_label(language, 'Latest Earnings', '最近财报')}")
     lines.extend(_render_latest_earnings(language, latest_records, missing))
     lines.append("")
-    lines.append(f"#### 6. {_label(language, 'Growth Drivers', '成長ドライバー')}")
+    lines.append(f"#### 6. {_label(language, 'Growth Drivers', '增长驱动因素')}")
     lines.append(_render_list(qualitative.get("growth_drivers"), missing))
     lines.append("")
-    lines.append(f"#### 7. {_label(language, 'Peer Comparison', '同業他社比較')}")
+    lines.append(f"#### 7. {_label(language, 'Peer Comparison', '同业比较')}")
     lines.extend(_render_peers(language, _list(row.get("peers")), missing))
     lines.append("")
-    lines.append(f"#### 8. {_label(language, 'Why the Stock Is Discounted', 'なぜ割安なのか')}")
+    lines.append(f"#### 8. {_label(language, 'Why the Stock Is Discounted', '为何被低估')}")
     lines.extend(
         [
-            f"- **{_label(language, 'Market concerns', '市場の懸念')}:** {_render_list(qualitative.get('discount_reasons'), missing)}",
-            f"- **{_label(language, 'Temporary or structural', '一時的か構造的か')}:** {qualitative.get('discount_classification', missing)}",
-            f"- **{_label(language, 'How the market may be right', '市場評価が妥当な可能性')}:** {qualitative.get('market_may_be_right', missing)}",
-            f"- **{_label(language, 'Conditions for discount closure', 'ディスカウント縮小条件')}:** {_render_list(qualitative.get('rerating_conditions'), missing)}",
+            f"- **{_label(language, 'Market concerns', '市场顾虑')}:** {_render_list(qualitative.get('discount_reasons'), missing)}",
+            f"- **{_label(language, 'Temporary or structural', '暂时性还是结构性')}:** {qualitative.get('discount_classification', missing)}",
+            f"- **{_label(language, 'How the market may be right', '市场估值可能合理的原因')}:** {qualitative.get('market_may_be_right', missing)}",
+            f"- **{_label(language, 'Conditions for discount closure', '折价收窄条件')}:** {_render_list(qualitative.get('rerating_conditions'), missing)}",
         ]
     )
     lines.append("")
-    lines.append(
-        f"#### 9. {_label(language, 'Constant-Multiple Scenario', '倍率据え置きシナリオ')}"
-    )
+    lines.append(f"#### 9. {_label(language, 'Constant-Multiple Scenario', '倍数不变情景')}")
     lines.append("| Item | Current | Year 2 | Year 3 |")
     lines.append("|---|---:|---:|---:|")
     lines.append(
@@ -3102,7 +3100,7 @@ def _render_candidate_detail(language: str, row: Mapping[str, Any]) -> list[str]
     )
     lines.append("")
     lines.append(
-        f"#### 10. {_label(language, '20% Multiple-Contraction Scenario', '倍率20％低下シナリオ')}"
+        f"#### 10. {_label(language, '20% Multiple-Contraction Scenario', '倍数下降20%情景')}"
     )
     lines.append(
         f"- **2-year:** {_format_price(_scenario_value(row, 'multiple_contraction', 'year_2', 'implied_price'), identity.get('currency', 'USD'), missing)} / {_format_pct(_scenario_value(row, 'multiple_contraction', 'year_2', 'upside_pct'), 1, missing)}"
@@ -3111,40 +3109,38 @@ def _render_candidate_detail(language: str, row: Mapping[str, Any]) -> list[str]
         f"- **3-year:** {_format_price(_scenario_value(row, 'multiple_contraction', 'year_3', 'implied_price'), identity.get('currency', 'USD'), missing)} / {_format_pct(_scenario_value(row, 'multiple_contraction', 'year_3', 'upside_pct'), 1, missing)}"
     )
     lines.append("")
-    lines.append(f"#### 11. {_label(language, 'Catalysts', 'カタリスト')}")
+    lines.append(f"#### 11. {_label(language, 'Catalysts', '催化剂')}")
     lines.append(_render_list(qualitative.get("catalysts"), missing))
     lines.append("")
-    lines.append(f"#### 12. {_label(language, 'Largest Risk', '最大のリスク')}")
+    lines.append(f"#### 12. {_label(language, 'Largest Risk', '最大风险')}")
     lines.append(str(qualitative.get("maximum_risk") or missing))
     lines.append("")
-    lines.append(f"#### 13. {_label(language, 'Invalidation Conditions', '投資仮説の無効化条件')}")
+    lines.append(f"#### 13. {_label(language, 'Invalidation Conditions', '投资假说失效条件')}")
     lines.append(_render_list(qualitative.get("invalidation_conditions"), missing))
     lines.append("")
-    lines.append(f"#### 14. {_label(language, 'Cyclicality', 'シクリカル評価')}")
+    lines.append(f"#### 14. {_label(language, 'Cyclicality', '周期性评估')}")
     lines.extend(
         [
-            f"- **{_label(language, 'Cyclicality score', 'シクリカル度')}:** {cyclicality.get('score', missing)}/5",
-            f"- **{_label(language, 'Cycle position', '現在のサイクル位置')}:** {cyclicality.get('position', missing)}",
-            f"- **{_label(language, 'Peak-profit risk', 'ピーク利益リスク')}:** {cyclicality.get('peak_profit_risk', missing)}",
-            f"- **{_label(language, 'Normalized metric', '平準化指標')}:** {_format_number(_mapping(cyclicality.get('normalization')).get('normalized_metric'), 2, missing)}",
+            f"- **{_label(language, 'Cyclicality score', '周期性评分')}:** {cyclicality.get('score', missing)}/5",
+            f"- **{_label(language, 'Cycle position', '当前周期位置')}:** {cyclicality.get('position', missing)}",
+            f"- **{_label(language, 'Peak-profit risk', '峰值利润风险')}:** {cyclicality.get('peak_profit_risk', missing)}",
+            f"- **{_label(language, 'Normalized metric', '标准化指标')}:** {_format_number(_mapping(cyclicality.get('normalization')).get('normalized_metric'), 2, missing)}",
         ]
     )
     lines.append("")
-    lines.append(f"#### 15. {_label(language, 'Overall Score', '総合評価')}")
+    lines.append(f"#### 15. {_label(language, 'Overall Score', '综合评分')}")
     lines.extend(_render_score_table(row, missing))
     lines.append("")
-    lines.append(
-        f"#### 16. {_label(language, 'Cash-Flow and Evidence Audit', 'キャッシュフロー・証拠監査')}"
-    )
+    lines.append(f"#### 16. {_label(language, 'Cash-Flow and Evidence Audit', '现金流与证据审计')}")
     lines.extend(
         [
-            f"- **{_label(language, 'TTM method', 'TTM再構築方法')}:** {cash_flow.get('method', missing)}",
-            f"- **{_label(language, 'OCF / capex / standard FCF', '営業CF／設備投資／標準FCF')}:** {_format_number(cash_flow.get('operating_cash_flow'), 1, missing)} / {_format_number(cash_flow.get('capex_cash_outflow'), 1, missing)} / {_format_number(cash_flow.get('standard_fcf'), 1, missing)}",
-            f"- **{_label(language, 'Company adjusted FCF', '会社Adjusted FCF')}:** {_format_number(cash_flow.get('company_adjusted_fcf'), 1, missing)} ({cash_flow.get('company_adjusted_fcf_definition', missing)})",
-            f"- **{_label(language, 'Data quality', 'データ品質')}:** {row.get('data_quality_score')}/100",
-            f"- **{_label(language, 'Cash consistency', '現金・負債整合性')}:** {_md_escape(row.get('cash_consistency'))}",
+            f"- **{_label(language, 'TTM method', 'TTM重构方法')}:** {cash_flow.get('method', missing)}",
+            f"- **{_label(language, 'OCF / capex / standard FCF', '经营现金流/资本支出/标准自由现金流')}:** {_format_number(cash_flow.get('operating_cash_flow'), 1, missing)} / {_format_number(cash_flow.get('capex_cash_outflow'), 1, missing)} / {_format_number(cash_flow.get('standard_fcf'), 1, missing)}",
+            f"- **{_label(language, 'Company adjusted FCF', '公司调整后FCF')}:** {_format_number(cash_flow.get('company_adjusted_fcf'), 1, missing)} ({cash_flow.get('company_adjusted_fcf_definition', missing)})",
+            f"- **{_label(language, 'Data quality', '数据质量')}:** {row.get('data_quality_score')}/100",
+            f"- **{_label(language, 'Cash consistency', '现金与负债一致性')}:** {_md_escape(row.get('cash_consistency'))}",
             f"- **{_label(language, 'Warnings', '警告')}:** {_render_list(row.get('warnings'), missing)}",
-            f"- **{_label(language, 'Unresolved', '未解決')}:** {_render_list(row.get('unresolved_fields'), missing)}",
+            f"- **{_label(language, 'Unresolved', '未解决')}:** {_render_list(row.get('unresolved_fields'), missing)}",
         ]
     )
     lines.append("")
@@ -3168,7 +3164,7 @@ def render_markdown(report: Mapping[str, Any], *, language: str = "en") -> str:
     title = _label(
         language,
         "US Undervalued Growth Screening Report",
-        "米国株・割安成長株スクリーニングレポート",
+        "美国低估成长股筛选报告",
     )
     coverage = _mapping(report.get("coverage"))
     ranking_scope = _text(report.get("ranking_scope"))
@@ -3178,12 +3174,12 @@ def render_markdown(report: Mapping[str, Any], *, language: str = "en") -> str:
         title += _label(
             language,
             f" — Scoped Pilot ({evaluated} of {listed} listed names economically attempted)",
-            f" — 限定パイロット（上場{listed}銘柄中{evaluated}銘柄のみ経済評価を試行）",
+            f" — 限定试点（上市{listed}只中{evaluated}只进行了经济评估试行）",
         )
     elif ranking_scope == "diagnostic":
-        title += _label(language, " — DIAGNOSTIC (incomplete scope)", " — 診断用（範囲未完了）")
+        title += _label(language, " — DIAGNOSTIC (incomplete scope)", " — 诊断用（范围未完成）")
     if report.get("ranking_status") != "final":
-        title += _label(language, " — PROVISIONAL", " — 暫定")
+        title += _label(language, " — PROVISIONAL", " — 暂定")
     lines.append(f"# {title}")
     lines.append("")
     if ranking_scope and ranking_scope != "final_marketwide":
@@ -3194,7 +3190,7 @@ def render_markdown(report: Mapping[str, Any], *, language: str = "en") -> str:
             f"{float(evaluable_pct):.2f}%" if evaluable_pct is not None else missing
         )
         lines.append(
-            f"- **{_label(language, 'Ranking scope', 'ランキング範囲')}:** {ranking_scope} — "
+            f"- **{_label(language, 'Ranking scope', '排名范围')}:** {ranking_scope} — "
             + _label(
                 language,
                 (
@@ -3204,35 +3200,35 @@ def render_markdown(report: Mapping[str, Any], *, language: str = "en") -> str:
                     f"deep dive {coverage.get('deep_dive_count', '?')}). This is NOT a market-wide ranking."
                 ),
                 (
-                    f"結論は予想取得を試行した{coverage.get('economic_attempt_count', '?')}銘柄"
-                    f"（上場{coverage.get('listing_universe_count', '?')}銘柄の{attempt_pct_text}、"
-                    f"評価可能{coverage.get('economically_evaluable_count', '?')}銘柄・{evaluable_pct_text}、品質プローブ{coverage.get('quality_probe_count', '?')}銘柄、詳細分析{coverage.get('deep_dive_count', '?')}銘柄）"
-                    "に限定され、市場全体ランキングではありません。"
+                    f"结论仅限于尝试获取预测的{coverage.get('economic_attempt_count', '?')}只标的"
+                    f"（上市{coverage.get('listing_universe_count', '?')}只的{attempt_pct_text}、"
+                    f"可评估{coverage.get('economically_evaluable_count', '?')}只·{evaluable_pct_text}，质量探针{coverage.get('quality_probe_count', '?')}只，深度分析{coverage.get('deep_dive_count', '?')}只）"
+                    "，并非全市场排名。"
                 ),
             )
         )
     lines.append(
-        f"- **{_label(language, 'Analysis as of', '分析実施日時')}:** {report.get('analysis_as_of')}"
+        f"- **{_label(language, 'Analysis as of', '分析日期')}:** {report.get('analysis_as_of')}"
     )
     lines.append(
-        f"- **{_label(language, 'Price basis', '株価基準')}:** {price_basis.get('as_of', missing)} / {price_basis.get('session', missing)}"
+        f"- **{_label(language, 'Price basis', '股价基准')}:** {price_basis.get('as_of', missing)} / {price_basis.get('session', missing)}"
     )
     lines.append(
-        f"- **{_label(language, 'Ranking status', 'ランキング状態')}:** {report.get('ranking_status')}"
+        f"- **{_label(language, 'Ranking status', '排名状态')}:** {report.get('ranking_status')}"
     )
     lines.append(
-        f"- **{_label(language, 'Strict mode', '厳格モード')}:** {report.get('strict_mode')}"
+        f"- **{_label(language, 'Strict mode', '严格模式')}:** {report.get('strict_mode')}"
     )
     lines.append(
-        f"- **{_label(language, 'Deep-dive input / ranked / conditional / review / screened out / excluded', '詳細調査入力／ランキング／条件付き／要確認／スクリーニング落ち／除外')}:** {counts.get('input_candidates')} / {counts.get('ranked')} / {counts.get('conditional', 0)} / {counts.get('review_required')} / {counts.get('screened_out')} / {counts.get('excluded')}"
+        f"- **{_label(language, 'Deep-dive input / ranked / conditional / review / screened out / excluded', '深度研究输入/排名/有条件/待确认/筛选淘汰/排除')}:** {counts.get('input_candidates')} / {counts.get('ranked')} / {counts.get('conditional', 0)} / {counts.get('review_required')} / {counts.get('screened_out')} / {counts.get('excluded')}"
     )
     lines.append(
-        f"- **{_label(language, 'Broad-screen selected / deferred / unresolved / screened out / excluded / unavailable', '一次選定／予算繰越／未解決／一次落ち／除外／取得不能')}:** {broad_counts.get('selected', 0)} / {broad_counts.get('deferred_by_budget', 0)} / {broad_counts.get('review_required', 0)} / {broad_counts.get('screened_out', 0)} / {broad_counts.get('excluded', 0)} / {broad_counts.get('unavailable_after_enrichment', 0)}"
+        f"- **{_label(language, 'Broad-screen selected / deferred / unresolved / screened out / excluded / unavailable', '初筛入选/预算延后/未解决/初筛淘汰/排除/无法获取')}:** {broad_counts.get('selected', 0)} / {broad_counts.get('deferred_by_budget', 0)} / {broad_counts.get('review_required', 0)} / {broad_counts.get('screened_out', 0)} / {broad_counts.get('excluded', 0)} / {broad_counts.get('unavailable_after_enrichment', 0)}"
     )
     lines.append("")
 
     lines.append(
-        f"## {_label(language, 'Screening Funnel and Market Context', 'スクリーニング・ファネルと市場前提')}"
+        f"## {_label(language, 'Screening Funnel and Market Context', '筛选漏斗与市场前提')}"
     )
     lines.append("")
     lines.append(f"- **Listing universe:** {funnel.get('universe_count', missing)}")
@@ -3252,25 +3248,25 @@ def render_markdown(report: Mapping[str, Any], *, language: str = "en") -> str:
     audit = _mapping(report.get("screening_audit"))
     scope = _mapping(audit.get("scope"))
     lines.append(
-        f"- **{_label(language, 'Candidate-generation mode', '候補生成モード')}:** {audit.get('candidate_generation_mode', missing)}"
+        f"- **{_label(language, 'Candidate-generation mode', '候选生成模式')}:** {audit.get('candidate_generation_mode', missing)}"
     )
     lines.append(
-        f"- **{_label(language, 'Candidate-pool status', '候補プール状態')}:** {audit.get('candidate_pool_status', missing)}"
+        f"- **{_label(language, 'Candidate-pool status', '候选池状态')}:** {audit.get('candidate_pool_status', missing)}"
     )
     lines.append(
-        f"- **{_label(language, 'Selection outcome', '候補選定結果')}:** {audit.get('selection_outcome', missing)}"
+        f"- **{_label(language, 'Selection outcome', '候选选定结果')}:** {audit.get('selection_outcome', missing)}"
     )
     lines.append(
-        f"- **{_label(language, 'Listing-data coverage', '上場・価格データカバレッジ')}:** {_format_pct(audit.get('actual_listing_data_complete_pct'), 1, missing)}"
+        f"- **{_label(language, 'Listing-data coverage', '上市与价格数据覆盖率')}:** {_format_pct(audit.get('actual_listing_data_complete_pct'), 1, missing)}"
     )
     lines.append(
-        f"- **{_label(language, 'Candidate-pool discovery coverage', '候補プール経済評価可能カバレッジ')}:** {_format_pct(audit.get('actual_candidate_pool_discovery_evaluable_pct'), 1, missing)}"
+        f"- **{_label(language, 'Candidate-pool discovery coverage', '候选池可经济评估覆盖率')}:** {_format_pct(audit.get('actual_candidate_pool_discovery_evaluable_pct'), 1, missing)}"
     )
     lines.append(
-        f"- **{_label(language, 'Candidate-pool full-fundamental coverage (informational)', '候補プール完全財務カバレッジ（参考）')}:** {_format_pct(audit.get('actual_candidate_pool_fundamental_complete_pct'), 1, missing)}"
+        f"- **{_label(language, 'Candidate-pool full-fundamental coverage (informational)', '候选池完整财务覆盖率（参考）')}:** {_format_pct(audit.get('actual_candidate_pool_fundamental_complete_pct'), 1, missing)}"
     )
     lines.append(
-        f"- **{_label(language, 'Listing enumeration', 'リスティング列挙')}:** complete={scope.get('scope_complete', False)} / requested ${scope.get('requested_min_market_cap', missing)}-${scope.get('requested_max_market_cap', missing)} / retrieved ${scope.get('retrieval_min_market_cap', missing)}-${scope.get('retrieval_max_market_cap', missing)}"
+        f"- **{_label(language, 'Listing enumeration', '上市列举')}:** complete={scope.get('scope_complete', False)} / requested ${scope.get('requested_min_market_cap', missing)}-${scope.get('requested_max_market_cap', missing)} / retrieved ${scope.get('retrieval_min_market_cap', missing)}-${scope.get('retrieval_max_market_cap', missing)}"
     )
     generation = _mapping(_mapping(audit.get("candidate_pool")).get("generation_audit"))
     if generation:
@@ -3289,7 +3285,7 @@ def render_markdown(report: Mapping[str, Any], *, language: str = "en") -> str:
             coverage = missing
             status = "partial"
         lines.append(
-            f"- **{_label(language, 'Economic estimate coverage', '経済スクリーン範囲')}:** {status} / mode={mode} / {coverage} -- {_label(language, 'never a market-wide conclusion under', '以下の範囲での結論に限定')} conclusion_scope={audit.get('conclusion_scope', missing)}"
+            f"- **{_label(language, 'Economic estimate coverage', '经济筛选范围')}:** {status} / mode={mode} / {coverage} -- {_label(language, 'never a market-wide conclusion under', '以下范围内的结论')} conclusion_scope={audit.get('conclusion_scope', missing)}"
         )
     lines.append(
         f"- **{_label(language, 'Market assumptions', '市場前提')}:** {market.get('summary', missing)}"
@@ -3298,21 +3294,21 @@ def render_markdown(report: Mapping[str, Any], *, language: str = "en") -> str:
         f"- **Policy / 10Y / Inflation / Market Fwd P/E:** {_format_pct(market.get('policy_rate_pct'), 2, missing)} / {_format_pct(market.get('treasury_10y_yield_pct'), 2, missing)} / {_format_pct(market.get('inflation_yoy_pct'), 2, missing)} / {_format_number(market.get('market_forward_pe'), 2, missing)}x"
     )
     lines.append(
-        f"- **{_label(language, 'Universe audit SHA-256', '上場母集団監査SHA-256')}:** {audit.get('actual_universe_sha256', missing)}"
+        f"- **{_label(language, 'Universe audit SHA-256', '上市母集审计SHA-256')}:** {audit.get('actual_universe_sha256', missing)}"
     )
     enrichment = _mapping(audit.get("enrichment"))
     lines.append(
-        f"- **{_label(language, 'Candidate-pool audit SHA-256', '候補プール監査SHA-256')}:** {audit.get('actual_candidate_pool_sha256', missing)} / valid={audit.get('valid', False)}"
+        f"- **{_label(language, 'Candidate-pool audit SHA-256', '候选池审计SHA-256')}:** {audit.get('actual_candidate_pool_sha256', missing)} / valid={audit.get('valid', False)}"
     )
     lines.append(
-        f"- **{_label(language, 'Enrichment resolved / unresolved / exhausted', 'エンリッチメント解決済み／未解決／プール枯渇')}:** {audit.get('actual_enrichment_resolved_count', missing)} / {audit.get('actual_enrichment_unresolved_count', missing)} / {audit.get('actual_candidate_pool_exhausted', False)}"
+        f"- **{_label(language, 'Enrichment resolved / unresolved / exhausted', '数据补全已解决/未解决/候选池耗尽')}:** {audit.get('actual_enrichment_resolved_count', missing)} / {audit.get('actual_enrichment_unresolved_count', missing)} / {audit.get('actual_candidate_pool_exhausted', False)}"
     )
     lines.append(
-        f"- **{_label(language, 'Next action', '次の処理')}:** {enrichment.get('next_action', missing)}"
+        f"- **{_label(language, 'Next action', '下一步操作')}:** {enrichment.get('next_action', missing)}"
     )
     lines.append("")
 
-    lines.append(f"## A. {_label(language, 'Ranking', 'ランキング一覧')}")
+    lines.append(f"## A. {_label(language, 'Ranking', '排名一览')}")
     lines.append("")
     if ranked:
         lines.append(
@@ -3353,7 +3349,7 @@ def render_markdown(report: Mapping[str, Any], *, language: str = "en") -> str:
                 _label(
                     language,
                     "No qualifying candidates in the audited full universe.",
-                    "監査済みの全対象ユニバースでは現時点で該当なし。",
+                    "已审计的全部目标范围内暂无符合条件的候选。",
                 )
             )
         elif (
@@ -3371,10 +3367,10 @@ def render_markdown(report: Mapping[str, Any], *, language: str = "en") -> str:
                         "economically compared — this is not a market-wide conclusion."
                     ),
                     (
-                        f"経済評価を試行した{cov.get('economic_attempt_count', '?')}銘柄から選定した"
-                        f"{cov.get('deep_dive_count', '?')}銘柄の詳細分析では該当なし"
-                        f"（上場{cov.get('listing_universe_count', '?')}銘柄の残りは未審査であり、"
-                        "市場全体の該当なしを意味しません）。"
+                        f"从尝试经济评估的{cov.get('economic_attempt_count', '?')}只中选出的"
+                        f"{cov.get('deep_dive_count', '?')}只深度分析中无符合条件者"
+                        f"（上市{cov.get('listing_universe_count', '?')}只中其余未经审查，"
+                        "这不代表全市场结论）。"
                     ),
                 )
             )
@@ -3383,12 +3379,12 @@ def render_markdown(report: Mapping[str, Any], *, language: str = "en") -> str:
                 _label(
                     language,
                     "Ranking withheld: candidate-pool research is incomplete.",
-                    "ランキング保留：候補プールの調査が未完了です。",
+                    "排名暂缓：候选池研究尚未完成。",
                 )
             )
     lines.append("")
 
-    lines.append(f"## B. {_label(language, 'Scenario Table', 'シナリオ表')}")
+    lines.append(f"## B. {_label(language, 'Scenario Table', '情景表')}")
     lines.append("")
     lines.append(
         "| Ticker | Current Metric | Current Multiple | 2Y Price | 2Y Upside | 2Y Stress Price | 2Y Stress Upside | 3Y Price | 3Y Upside | 3Y Stress Price | 3Y Stress Upside | Peer 3Y Price |"
@@ -3402,12 +3398,12 @@ def render_markdown(report: Mapping[str, Any], *, language: str = "en") -> str:
         )
     lines.append("")
 
-    lines.append(f"## C. {_label(language, 'Candidate Details', '各銘柄の詳細')}")
+    lines.append(f"## C. {_label(language, 'Candidate Details', '各标的详细信息')}")
     lines.append("")
     for row in ranked:
         lines.extend(_render_candidate_detail(language, row))
 
-    lines.append(f"## D. {_label(language, 'Conditional Candidates', '条件付き候補')}")
+    lines.append(f"## D. {_label(language, 'Conditional Candidates', '有条件候选')}")
     lines.append("")
     if conditional:
         lines.append("| Ticker | Company | Final Score | Conditions | Low-case Upside |")
@@ -3417,13 +3413,13 @@ def render_markdown(report: Mapping[str, Any], *, language: str = "en") -> str:
                 f"| {row.get('symbol')} | {_md_escape(row.get('company_name'))} | {_format_number(row.get('final_score'), 1, missing)} | {_md_escape('; '.join(row.get('conditional_reasons') or []))} | {_format_pct(_best_low_case_upside(_mapping(row.get('valuation'))), 1, missing)} |"
             )
     else:
-        lines.append(_label(language, "None.", "なし。"))
+        lines.append(_label(language, "None.", "无。"))
     lines.append("")
 
-    lines.append(f"## E. {_label(language, 'Review Required', '追加確認が必要な候補')}")
+    lines.append(f"## E. {_label(language, 'Review Required', '需要进一步确认的候选')}")
     lines.append("")
     if review:
-        lines.append(f"### {_label(language, 'Deep-dive review blockers', '詳細調査の要確認')}")
+        lines.append(f"### {_label(language, 'Deep-dive review blockers', '深度研究待确认')}")
         lines.append("| Ticker | Company | Final Score | Blockers | Evidence Needed |")
         lines.append("|---|---|---:|---|---|")
         for row in review:
@@ -3437,7 +3433,7 @@ def render_markdown(report: Mapping[str, Any], *, language: str = "en") -> str:
     broad_unavailable = _list(broad.get("unavailable_after_enrichment"))
     if broad_selected or broad_deferred or broad_review or broad_unavailable:
         lines.append(
-            f"### {_label(language, 'Broad-screen dispositions requiring or deferring work', '一次スクリーニングの要確認・繰越')}"
+            f"### {_label(language, 'Broad-screen dispositions requiring or deferring work', '初筛待确认与延后')}"
         )
         lines.append(
             "| Ticker | Company | Status | Fwd P/E | Revenue Growth | Per-share Growth | Priority | Reasons / Requirements |"
@@ -3452,15 +3448,13 @@ def render_markdown(report: Mapping[str, Any], *, language: str = "en") -> str:
                 f"| {row.get('symbol')} | {_md_escape(row.get('company_name'))} | {row.get('status')} | {_format_number(metrics.get('forward_pe'), 2, missing)} | {_format_pct(metrics.get('revenue_growth_pct'), 1, missing)} | {_format_pct(metrics.get('per_share_growth_pct'), 1, missing)} | {_format_number(row.get('deep_dive_priority_score'), 1, missing)} | {_md_escape('; '.join(dict.fromkeys(reasons)) or missing)} |"
             )
     elif not review:
-        lines.append(_label(language, "None.", "なし。"))
+        lines.append(_label(language, "None.", "无。"))
     lines.append("")
 
-    lines.append(f"## F. {_label(language, 'Screened-Out Log', 'スクリーニング落ちログ')}")
+    lines.append(f"## F. {_label(language, 'Screened-Out Log', '筛选淘汰日志')}")
     lines.append("")
     if screened_out:
-        lines.append(
-            f"### {_label(language, 'Deep-dive screened out', '詳細調査でのスクリーニング落ち')}"
-        )
+        lines.append(f"### {_label(language, 'Deep-dive screened out', '深度研究筛选淘汰')}")
         lines.append("| Ticker | Company | Reason |")
         lines.append("|---|---|---|")
         for row in screened_out:
@@ -3470,9 +3464,7 @@ def render_markdown(report: Mapping[str, Any], *, language: str = "en") -> str:
         lines.append("")
     broad_screened = _list(broad.get("screened_out"))
     if broad_screened:
-        lines.append(
-            f"### {_label(language, 'Broad-screen screened out', '一次スクリーニング落ち')}"
-        )
+        lines.append(f"### {_label(language, 'Broad-screen screened out', '初筛淘汰')}")
         lines.append(
             "| Ticker | Company | Fwd P/E | Revenue Growth | Per-share Growth | Guideline Misses | Screen-Fail Reasons |"
         )
@@ -3483,10 +3475,10 @@ def render_markdown(report: Mapping[str, Any], *, language: str = "en") -> str:
                 f"| {row.get('symbol')} | {_md_escape(row.get('company_name'))} | {_format_number(metrics.get('forward_pe'), 2, missing)} | {_format_pct(metrics.get('revenue_growth_pct'), 1, missing)} | {_format_pct(metrics.get('per_share_growth_pct'), 1, missing)} | {_md_escape('; '.join(row.get('guideline_misses') or []) or missing)} | {_md_escape('; '.join(row.get('screen_fail_reasons') or []) or missing)} |"
             )
     elif not screened_out:
-        lines.append(_label(language, "None.", "なし。"))
+        lines.append(_label(language, "None.", "无。"))
     lines.append("")
 
-    lines.append(f"## G. {_label(language, 'Hard Exclusion Log', 'ハード除外ログ')}")
+    lines.append(f"## G. {_label(language, 'Hard Exclusion Log', '硬性排除日志')}")
     lines.append("")
     broad_excluded = _list(broad.get("excluded"))
     if excluded or broad_excluded:
@@ -3504,19 +3496,19 @@ def render_markdown(report: Mapping[str, Any], *, language: str = "en") -> str:
                 f"| broad_screen | {row.get('symbol')} | {_md_escape(row.get('company_name'))} | {_md_escape('; '.join(reasons) or missing)} |"
             )
     else:
-        lines.append(_label(language, "None.", "なし。"))
+        lines.append(_label(language, "None.", "无。"))
     lines.append("")
 
-    lines.append(f"## H. {_label(language, 'Final Three', '最終選定3銘柄')}")
+    lines.append(f"## H. {_label(language, 'Final Three', '最终精选3只')}")
     lines.append("")
     categories = [
-        ("highest_conviction", "Highest conviction", "最も確度が高い"),
-        ("most_undervalued", "Most undervalued", "最も割安"),
-        ("largest_upside", "Largest upside", "最も上昇余地が大きい"),
+        ("highest_conviction", "Highest conviction", "最高确信度"),
+        ("most_undervalued", "Most undervalued", "最被低估"),
+        ("largest_upside", "Largest upside", "最大上涨空间"),
     ]
-    for key, en, ja in categories:
+    for key, en, zh in categories:
         entry = _mapping(_mapping(report.get("final_three")).get(key))
-        lines.append(f"### {_label(language, en, ja)}")
+        lines.append(f"### {_label(language, en, zh)}")
         if not entry:
             lines.append(missing)
             lines.append("")
@@ -3524,15 +3516,15 @@ def render_markdown(report: Mapping[str, Any], *, language: str = "en") -> str:
         lines.extend(
             [
                 f"- **Ticker:** {entry.get('symbol')} — {entry.get('company_name')}",
-                f"- **{_label(language, 'Why it qualifies', '最も有望と判断した理由')}:** {entry.get('investment_thesis') or missing}",
-                f"- **{_label(language, 'Per-share growth upside', 'EPS/FCF成長だけの上昇余地')}:** {_format_pct(entry.get('constant_multiple_upside_pct'), 1, missing)}",
-                f"- **{_label(language, 'What the market may miss', '市場が見落としている可能性')}:** {entry.get('market_may_be_missing') or missing}",
-                f"- **{_label(language, 'Best catalyst', '最有力カタリスト')}:** {entry.get('best_catalyst') or missing}",
-                f"- **{_label(language, 'Largest risk', '最大のリスク')}:** {entry.get('maximum_risk') or missing}",
-                f"- **{_label(language, 'Reason not to buy now', '今買わない理由')}:** {entry.get('do_not_buy_reason') or missing}",
-                f"- **{_label(language, 'Bear case', '弱気シナリオ')}:** {entry.get('bear_case') or missing}",
-                f"- **{_label(language, 'Invalidation', '無効化条件')}:** {_render_list(entry.get('invalidation_conditions'), missing)}",
-                f"- **{_label(language, 'Next earnings KPIs', '次回決算KPI')}:** {_render_list(entry.get('next_earnings_kpis'), missing)}",
+                f"- **{_label(language, 'Why it qualifies', '判断最有前景的理由')}:** {entry.get('investment_thesis') or missing}",
+                f"- **{_label(language, 'Per-share growth upside', '仅EPS/FCF增长的上涨空间')}:** {_format_pct(entry.get('constant_multiple_upside_pct'), 1, missing)}",
+                f"- **{_label(language, 'What the market may miss', '市场可能忽略的因素')}:** {entry.get('market_may_be_missing') or missing}",
+                f"- **{_label(language, 'Best catalyst', '最有力催化剂')}:** {entry.get('best_catalyst') or missing}",
+                f"- **{_label(language, 'Largest risk', '最大风险')}:** {entry.get('maximum_risk') or missing}",
+                f"- **{_label(language, 'Reason not to buy now', '现在不买的理由')}:** {entry.get('do_not_buy_reason') or missing}",
+                f"- **{_label(language, 'Bear case', '悲观情景')}:** {entry.get('bear_case') or missing}",
+                f"- **{_label(language, 'Invalidation', '失效条件')}:** {_render_list(entry.get('invalidation_conditions'), missing)}",
+                f"- **{_label(language, 'Next earnings KPIs', '下次财报KPI')}:** {_render_list(entry.get('next_earnings_kpis'), missing)}",
             ]
         )
         lines.append("")
@@ -3549,7 +3541,7 @@ def render_markdown(report: Mapping[str, Any], *, language: str = "en") -> str:
             source_id = _text(item.get("id"))
             if source_id:
                 source_rows[source_id] = item
-    lines.append(f"## I. {_label(language, 'Source Ledger', '情報源台帳')}")
+    lines.append(f"## I. {_label(language, 'Source Ledger', '信息来源台账')}")
     lines.append("")
     if source_rows:
         lines.append("| Source ID | Tier | Kind | Published | Retrieved | Supports |")
@@ -3564,7 +3556,7 @@ def render_markdown(report: Mapping[str, Any], *, language: str = "en") -> str:
     lines.append("")
 
     lines.append(
-        f"## J. {_label(language, 'Unresolved Data and Global Warnings', '未解決データと全体警告')}"
+        f"## J. {_label(language, 'Unresolved Data and Global Warnings', '未解决数据与整体警告')}"
     )
     lines.append("")
     warnings = _list(report.get("global_warnings"))
@@ -3572,13 +3564,13 @@ def render_markdown(report: Mapping[str, Any], *, language: str = "en") -> str:
         for warning in warnings:
             lines.append(f"- {warning}")
     else:
-        lines.append(_label(language, "None.", "なし。"))
+        lines.append(_label(language, "None.", "无。"))
     lines.append("")
     lines.append(
         _label(
             language,
             "This report is a research screen, not an automatic order or guarantee of return.",
-            "本レポートは調査用スクリーニングであり、自動発注や収益保証ではありません。",
+            "本报告为研究性筛选，不构成自动下单或收益保证。",
         )
     )
     lines.append("")
@@ -3632,7 +3624,7 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
         help="Root used to resolve and hash broad-screen audit artifacts; defaults to input directory",
     )
     parser.add_argument("--top", type=int, default=None, help="Maximum ranked candidates")
-    parser.add_argument("--language", choices=("en", "ja"), default="en")
+    parser.add_argument("--language", choices=("en", "zh"), default="en")
     parser.add_argument("--strict", action="store_true", help="Enable fail-closed research gates")
     parser.add_argument("--stdout", action="store_true", help="Print the Markdown report to stdout")
     parser.add_argument(

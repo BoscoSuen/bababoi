@@ -4,7 +4,7 @@ title: Playbooks
 parent: English
 nav_order: 9
 has_children: true
-lang_peer: /ja/playbooks/
+lang_peer: /zh/playbooks/
 permalink: /en/playbooks/
 ---
 

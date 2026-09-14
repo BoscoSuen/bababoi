@@ -146,12 +146,12 @@ def check_price_scale(content: str) -> list[Finding]:
 # ---------------------------------------------------------------------------
 
 NOTATION_GROUPS: dict[str, list[str]] = {
-    "gold": ["Gold", "GLD", "GC", "金", "金先物", "ゴールド"],
+    "gold": ["Gold", "GLD", "GC", "金", "黄金期货", "黄金"],
     "sp500": ["S&P 500", "S&P500", "SPX", "SPY", "SP500"],
     "oil": ["WTI", "Crude", "CL", "USO", "原油"],
-    "silver": ["Silver", "SLV", "SI", "銀"],
-    "bonds": ["TLT", "10Y", "10年債", "米国債"],
-    "vix": ["VIX", "恐怖指数"],
+    "silver": ["Silver", "SLV", "SI", "银"],
+    "bonds": ["TLT", "10Y", "10年期国债", "美国国债"],
+    "vix": ["VIX", "恐慌指数"],
 }
 
 
@@ -203,13 +203,13 @@ WEEKDAY_MAP_EN: dict[str, int] = {
     "sun": 6,
 }
 
-WEEKDAY_MAP_JA: dict[str, int] = {
-    "月": 0,
-    "火": 1,
-    "水": 2,
-    "木": 3,
-    "金": 4,
-    "土": 5,
+WEEKDAY_MAP_ZH: dict[str, int] = {
+    "一": 0,
+    "二": 1,
+    "三": 2,
+    "四": 3,
+    "五": 4,
+    "六": 5,
     "日": 6,
 }
 
@@ -297,7 +297,7 @@ def infer_year(
 def check_dates(
     content: str, as_of: date | None = None, filepath: str | None = None
 ) -> list[Finding]:
-    """Check date-weekday mismatches in English and Japanese content."""
+    """Check date-weekday mismatches in English and Chinese content."""
     findings: list[Finding] = []
 
     # ---- English with year: "February 28, 2026 (Friday)" ----
@@ -390,9 +390,9 @@ def check_dates(
                 )
             )
 
-    # ---- Japanese: "1月1日（木）" or "1月1日（木曜日）" ----
-    ja_pat = re.compile(r"(\d{1,2})月(\d{1,2})日[（(]([月火水木金土日])(?:曜日)?[）)]")
-    for m in ja_pat.finditer(content):
+    # ---- Chinese: "1月1日（周四）" or "1月1日（星期四）" ----
+    zh_pat = re.compile(r"(\d{1,2})月(\d{1,2})日[（(](?:周|星期)([一二三四五六日])[）)]")
+    for m in zh_pat.finditer(content):
         month_val = int(m.group(1))
         day_val = int(m.group(2))
         weekday_char = m.group(3)
@@ -404,10 +404,10 @@ def check_dates(
             continue
 
         actual_weekday = d.weekday()
-        stated_weekday = WEEKDAY_MAP_JA.get(weekday_char)
+        stated_weekday = WEEKDAY_MAP_ZH.get(weekday_char)
 
         if stated_weekday is not None and stated_weekday != actual_weekday:
-            ja_names = {0: "月", 1: "火", 2: "水", 3: "木", 4: "金", 5: "土", 6: "日"}
+            zh_names = {0: "一", 1: "二", 2: "三", 3: "四", 4: "五", 5: "六", 6: "日"}
             line_num = content[: m.start()].count("\n") + 1
             findings.append(
                 Finding(
@@ -415,16 +415,16 @@ def check_dates(
                     category="dates",
                     message=(
                         f"Date-weekday mismatch: {m.group(0)} "
-                        f"-- actual weekday is {ja_names[actual_weekday]} "
+                        f"-- actual weekday is 周{zh_names[actual_weekday]} "
                         f"(inferred year: {year})"
                     ),
                     line_number=line_num,
                 )
             )
 
-    # ---- Japanese slash format: "1/1(木)" ----
-    ja_slash_pat = re.compile(r"(\d{1,2})/(\d{1,2})[（(]([月火水木金土日])[）)]")
-    for m in ja_slash_pat.finditer(content):
+    # ---- Chinese slash format: "1/1(周四)" ----
+    zh_slash_pat = re.compile(r"(\d{1,2})/(\d{1,2})[（(](?:周|星期)([一二三四五六日])[）)]")
+    for m in zh_slash_pat.finditer(content):
         month_val = int(m.group(1))
         day_val = int(m.group(2))
         weekday_char = m.group(3)
@@ -436,10 +436,10 @@ def check_dates(
             continue
 
         actual_weekday = d.weekday()
-        stated_weekday = WEEKDAY_MAP_JA.get(weekday_char)
+        stated_weekday = WEEKDAY_MAP_ZH.get(weekday_char)
 
         if stated_weekday is not None and stated_weekday != actual_weekday:
-            ja_names = {0: "月", 1: "火", 2: "水", 3: "木", 4: "金", 5: "土", 6: "日"}
+            zh_names = {0: "一", 1: "二", 2: "三", 3: "四", 4: "五", 5: "六", 6: "日"}
             line_num = content[: m.start()].count("\n") + 1
             findings.append(
                 Finding(
@@ -447,7 +447,7 @@ def check_dates(
                     category="dates",
                     message=(
                         f"Date-weekday mismatch: {m.group(0)} "
-                        f"-- actual weekday is {ja_names[actual_weekday]} "
+                        f"-- actual weekday is 周{zh_names[actual_weekday]} "
                         f"(inferred year: {year})"
                     ),
                     line_number=line_num,
@@ -463,20 +463,20 @@ def check_dates(
 
 ALLOCATION_HEADING_KEYWORDS: list[str] = [
     "配分",
-    "アロケーション",
+    "配置",
     "allocation",
-    "セクター配分",
+    "板块配置",
     "asset allocation",
 ]
 
 ALLOCATION_TABLE_KEYWORDS: list[str] = [
     "配分",
     "allocation",
-    "ウェイト",
+    "权重",
     "weight",
     "比率",
     "ratio",
-    "目安比率",
+    "目标比率",
 ]
 
 
@@ -490,8 +490,8 @@ def find_allocation_sections(content: str) -> list[str]:
         if not re.match(r"^#{1,6}\s", line):
             continue
         heading_text = re.sub(r"^#{1,6}\s+", "", line).strip().lower()
-        # Skip ポジション alone (without 配分)
-        if "ポジション" in heading_text and "配分" not in heading_text:
+        # Skip 仓位 alone (without 配分)
+        if "仓位" in heading_text and "配分" not in heading_text:
             continue
         if any(kw.lower() in heading_text for kw in ALLOCATION_HEADING_KEYWORDS):
             section_lines: list[str] = []
@@ -639,7 +639,7 @@ def check_units(content: str) -> list[Finding]:
     has_bp = bool(re.search(r"\d+\s*bp", content, re.IGNORECASE))
     has_pct_rate = bool(
         re.search(
-            r"(?:yield|rate|利回り|金利).*?\d+(?:\.\d+)?%",
+            r"(?:yield|rate|收益率|利率).*?\d+(?:\.\d+)?%",
             content,
             re.IGNORECASE,
         )

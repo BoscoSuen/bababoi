@@ -4,7 +4,7 @@ title: Market Breadth Analyzer
 grand_parent: English
 parent: Skill Guides
 nav_order: 5
-lang_peer: /ja/skills/market-breadth-analyzer/
+lang_peer: /zh/skills/market-breadth-analyzer/
 permalink: /en/skills/market-breadth-analyzer/
 ---
 

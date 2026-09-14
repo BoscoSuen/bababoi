@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "benchmark_version": "2026-08-29.v1",
-  "description": "Manually labeled EN/JA gold corpus for deterministic first-match Navigator routing.",
+  "description": "Manually labeled EN/ZH gold corpus for deterministic first-match Navigator routing.",
   "baseline": {
     "candidate_precision": 1,
     "candidate_recall": 1,
@@ -11,87 +11,121 @@
   "neighbor_contracts": [
     {
       "target_persona": "short-strategy-trader",
-      "allowed_selected_personas": ["separate-core-satellite"],
+      "allowed_selected_personas": [
+        "separate-core-satellite"
+      ],
       "rationale": "Distinguish short selling from short-term portfolio separation."
     },
     {
       "target_persona": "strategy-researcher",
-      "allowed_selected_personas": ["stockbee-20pct-researcher"],
+      "allowed_selected_personas": [
+        "stockbee-20pct-researcher"
+      ],
       "rationale": "Distinguish generic strategy backtesting from the specific 20% mover study."
     },
     {
       "target_persona": "shapiro-contrarian-futures-trader",
-      "allowed_selected_personas": ["multi-asset-opportunity-trader"],
+      "allowed_selected_personas": [
+        "multi-asset-opportunity-trader"
+      ],
       "rationale": "Distinguish COT crowding analysis from a cross-asset opportunity scan."
     },
     {
       "target_persona": "no-api-path",
-      "allowed_selected_personas": ["swing-trader"],
+      "allowed_selected_personas": [
+        "swing-trader"
+      ],
       "rationale": "An available API key must not be interpreted as a no-API constraint."
     },
     {
       "target_persona": "stockbee-20pct-researcher",
-      "allowed_selected_personas": ["dividend-long-term-investor"],
+      "allowed_selected_personas": [
+        "dividend-long-term-investor"
+      ],
       "rationale": "Distinguish a 20% mover event study from a 20% portfolio allocation."
     },
     {
       "target_persona": "stockbee-episodic-pivot-trader",
-      "allowed_selected_personas": ["swing-trader"],
+      "allowed_selected_personas": [
+        "swing-trader"
+      ],
       "rationale": "Distinguish catalyst-specific EP analysis from generic swing screening."
     },
     {
       "target_persona": "stockbee-fluency-learner",
-      "allowed_selected_personas": ["swing-trader"],
+      "allowed_selected_personas": [
+        "swing-trader"
+      ],
       "rationale": "Distinguish setup learning from immediate momentum execution."
     },
     {
       "target_persona": "multi-asset-opportunity-trader",
-      "allowed_selected_personas": ["dividend-long-term-investor"],
+      "allowed_selected_personas": [
+        "dividend-long-term-investor"
+      ],
       "rationale": "Distinguish opportunity discovery from portfolio rebalancing."
     },
     {
       "target_persona": "part-time-swing-trader-regime-gated",
-      "allowed_selected_personas": ["swing-trader"],
+      "allowed_selected_personas": [
+        "swing-trader"
+      ],
       "rationale": "Distinguish regime-gated swing intent from unconditional swing intent."
     },
     {
       "target_persona": "morning-risk-check",
-      "allowed_selected_personas": ["trade-journaler"],
+      "allowed_selected_personas": [
+        "trade-journaler"
+      ],
       "rationale": "Distinguish a pre-trade risk check from a post-trade review."
     },
     {
       "target_persona": "separate-core-satellite",
-      "allowed_selected_personas": ["dividend-long-term-investor"],
+      "allowed_selected_personas": [
+        "dividend-long-term-investor"
+      ],
       "rationale": "Distinguish sleeve separation from holdings maintenance."
     },
     {
       "target_persona": "kanchi-dividend-investor",
-      "allowed_selected_personas": ["dividend-long-term-investor"],
+      "allowed_selected_personas": [
+        "dividend-long-term-investor"
+      ],
       "rationale": "Distinguish Kanchi candidate sourcing from existing dividend holdings review."
     },
     {
       "target_persona": "dividend-long-term-investor",
-      "allowed_selected_personas": ["separate-core-satellite"],
+      "allowed_selected_personas": [
+        "separate-core-satellite"
+      ],
       "rationale": "Distinguish holdings maintenance from core and satellite separation."
     },
     {
       "target_persona": "swing-trader",
-      "allowed_selected_personas": ["stockbee-fluency-learner"],
+      "allowed_selected_personas": [
+        "stockbee-fluency-learner"
+      ],
       "rationale": "Distinguish executable swing screening from setup-learning practice."
     },
     {
       "target_persona": "beginner-onramp",
-      "allowed_selected_personas": ["no-api-path"],
+      "allowed_selected_personas": [
+        "no-api-path"
+      ],
       "rationale": "Distinguish a general beginner request from an explicit no-API constraint."
     },
     {
       "target_persona": "monthly-reviewer",
-      "allowed_selected_personas": ["trade-journaler"],
+      "allowed_selected_personas": [
+        "trade-journaler"
+      ],
       "rationale": "Distinguish one-trade postmortems from month-level review."
     },
     {
       "target_persona": "trade-journaler",
-      "allowed_selected_personas": ["monthly-reviewer"],
+      "allowed_selected_personas": [
+        "monthly-reviewer"
+      ],
       "rationale": "Distinguish month-level review from one-trade journaling."
     }
   ],
@@ -102,25 +136,25 @@
       "rationale": "Specific regime-gated swing intent must precede generic swing intent",
       "ambiguous_case_ids": [
         "amb-swing-en",
-        "amb-swing-ja"
+        "amb-swing-zh"
       ]
     },
     {
-      "fingerprint": "[8,\"part-time-swing-trader-regime-gated\",\"スイング\",13,\"swing-trader\",\"スイング\",\"equal\"]",
+      "fingerprint": "[8,\"part-time-swing-trader-regime-gated\",\"波段\",13,\"swing-trader\",\"波段\",\"equal\"]",
       "winner": "part-time-swing-trader-regime-gated",
       "rationale": "Specific regime-gated swing intent must precede generic swing intent",
       "ambiguous_case_ids": [
         "amb-swing-en",
-        "amb-swing-ja"
+        "amb-swing-zh"
       ]
     },
     {
-      "fingerprint": "[8,\"part-time-swing-trader-regime-gated\",\"スイング\",13,\"swing-trader\",\"スイングトレード\",\"earlier_in_later\"]",
+      "fingerprint": "[8,\"part-time-swing-trader-regime-gated\",\"波段\",13,\"swing-trader\",\"波段交易\",\"earlier_in_later\"]",
       "winner": "part-time-swing-trader-regime-gated",
       "rationale": "Specific regime-gated swing intent must precede generic swing intent",
       "ambiguous_case_ids": [
         "amb-swing-en",
-        "amb-swing-ja"
+        "amb-swing-zh"
       ]
     },
     {
@@ -129,7 +163,7 @@
       "rationale": "Core/satellite separation must precede broad holdings language",
       "ambiguous_case_ids": [
         "amb-core-en",
-        "amb-core-ja"
+        "amb-core-zh"
       ]
     },
     {
@@ -138,16 +172,16 @@
       "rationale": "Core/satellite separation must precede broad holdings language",
       "ambiguous_case_ids": [
         "amb-core-en",
-        "amb-core-ja"
+        "amb-core-zh"
       ]
     },
     {
-      "fingerprint": "[10,\"separate-core-satellite\",\"長期保有と短期\",12,\"dividend-long-term-investor\",\"長期保有\",\"later_in_earlier\"]",
+      "fingerprint": "[10,\"separate-core-satellite\",\"长期持有和短期\",12,\"dividend-long-term-investor\",\"长期持有\",\"later_in_earlier\"]",
       "winner": "separate-core-satellite",
       "rationale": "Core/satellite separation must precede broad holdings language",
       "ambiguous_case_ids": [
         "amb-core-en",
-        "amb-core-ja"
+        "amb-core-zh"
       ]
     },
     {
@@ -214,7 +248,7 @@
       ]
     },
     {
-      "fingerprint": "[11,\"kanchi-dividend-investor\",\"高配当株スクリーニング\",12,\"dividend-long-term-investor\",\"配当\",\"later_in_earlier\"]",
+      "fingerprint": "[11,\"kanchi-dividend-investor\",\"高股息股筛选\",12,\"dividend-long-term-investor\",\"股息\",\"later_in_earlier\"]",
       "winner": "kanchi-dividend-investor",
       "rationale": "Kanchi candidate sourcing must precede broad dividend portfolio maintenance",
       "ambiguous_case_ids": [
@@ -223,7 +257,7 @@
       ]
     },
     {
-      "fingerprint": "[11,\"kanchi-dividend-investor\",\"高配当株スクリーニング\",12,\"dividend-long-term-investor\",\"配当株\",\"later_in_earlier\"]",
+      "fingerprint": "[11,\"kanchi-dividend-investor\",\"高股息股筛选\",12,\"dividend-long-term-investor\",\"股息股\",\"later_in_earlier\"]",
       "winner": "kanchi-dividend-investor",
       "rationale": "Kanchi candidate sourcing must precede broad dividend portfolio maintenance",
       "ambiguous_case_ids": [
@@ -232,7 +266,7 @@
       ]
     },
     {
-      "fingerprint": "[11,\"kanchi-dividend-investor\",\"高配当株スクリーニング\",12,\"dividend-long-term-investor\",\"高配当\",\"later_in_earlier\"]",
+      "fingerprint": "[11,\"kanchi-dividend-investor\",\"高股息股筛选\",12,\"dividend-long-term-investor\",\"高股息\",\"later_in_earlier\"]",
       "winner": "kanchi-dividend-investor",
       "rationale": "Kanchi candidate sourcing must precede broad dividend portfolio maintenance",
       "ambiguous_case_ids": [
@@ -241,7 +275,7 @@
       ]
     },
     {
-      "fingerprint": "[11,\"kanchi-dividend-investor\",\"高配当株を探\",12,\"dividend-long-term-investor\",\"配当\",\"later_in_earlier\"]",
+      "fingerprint": "[11,\"kanchi-dividend-investor\",\"找高股息股\",12,\"dividend-long-term-investor\",\"股息\",\"later_in_earlier\"]",
       "winner": "kanchi-dividend-investor",
       "rationale": "Kanchi candidate sourcing must precede broad dividend portfolio maintenance",
       "ambiguous_case_ids": [
@@ -250,7 +284,7 @@
       ]
     },
     {
-      "fingerprint": "[11,\"kanchi-dividend-investor\",\"高配当株を探\",12,\"dividend-long-term-investor\",\"配当株\",\"later_in_earlier\"]",
+      "fingerprint": "[11,\"kanchi-dividend-investor\",\"找高股息股\",12,\"dividend-long-term-investor\",\"股息股\",\"later_in_earlier\"]",
       "winner": "kanchi-dividend-investor",
       "rationale": "Kanchi candidate sourcing must precede broad dividend portfolio maintenance",
       "ambiguous_case_ids": [
@@ -259,7 +293,7 @@
       ]
     },
     {
-      "fingerprint": "[11,\"kanchi-dividend-investor\",\"高配当株を探\",12,\"dividend-long-term-investor\",\"高配当\",\"later_in_earlier\"]",
+      "fingerprint": "[11,\"kanchi-dividend-investor\",\"找高股息股\",12,\"dividend-long-term-investor\",\"高股息\",\"later_in_earlier\"]",
       "winner": "kanchi-dividend-investor",
       "rationale": "Kanchi candidate sourcing must precede broad dividend portfolio maintenance",
       "ambiguous_case_ids": [
@@ -268,7 +302,7 @@
       ]
     },
     {
-      "fingerprint": "[11,\"kanchi-dividend-investor\",\"配当株スクリーニング\",12,\"dividend-long-term-investor\",\"配当\",\"later_in_earlier\"]",
+      "fingerprint": "[11,\"kanchi-dividend-investor\",\"股息股筛选\",12,\"dividend-long-term-investor\",\"股息\",\"later_in_earlier\"]",
       "winner": "kanchi-dividend-investor",
       "rationale": "Kanchi candidate sourcing must precede broad dividend portfolio maintenance",
       "ambiguous_case_ids": [
@@ -277,7 +311,7 @@
       ]
     },
     {
-      "fingerprint": "[11,\"kanchi-dividend-investor\",\"配当株スクリーニング\",12,\"dividend-long-term-investor\",\"配当株\",\"later_in_earlier\"]",
+      "fingerprint": "[11,\"kanchi-dividend-investor\",\"股息股筛选\",12,\"dividend-long-term-investor\",\"股息股\",\"later_in_earlier\"]",
       "winner": "kanchi-dividend-investor",
       "rationale": "Kanchi candidate sourcing must precede broad dividend portfolio maintenance",
       "ambiguous_case_ids": [
@@ -286,27 +320,67 @@
       ]
     },
     {
-      "fingerprint": "[15,\"monthly-reviewer\",\"今月の振り返り\",16,\"trade-journaler\",\"振り返り\",\"later_in_earlier\"]",
+      "fingerprint": "[15,\"monthly-reviewer\",\"上个月的复盘\",16,\"trade-journaler\",\"复盘\",\"later_in_earlier\"]",
       "winner": "monthly-reviewer",
-      "rationale": "Specific monthly Japanese review phrases must precede generic reflection language",
+      "rationale": "Specific monthly Chinese review phrases must precede generic journaling language",
       "ambiguous_case_ids": [
         "amb-monthly-ja"
       ]
     },
     {
-      "fingerprint": "[15,\"monthly-reviewer\",\"先月の振り返り\",16,\"trade-journaler\",\"振り返り\",\"later_in_earlier\"]",
+      "fingerprint": "[15,\"monthly-reviewer\",\"月度复盘\",16,\"trade-journaler\",\"复盘\",\"later_in_earlier\"]",
       "winner": "monthly-reviewer",
-      "rationale": "Specific monthly Japanese review phrases must precede generic reflection language",
+      "rationale": "Specific monthly Chinese review phrases must precede generic journaling language",
       "ambiguous_case_ids": [
         "amb-monthly-ja"
       ]
     },
     {
-      "fingerprint": "[15,\"monthly-reviewer\",\"月次の振り返り\",16,\"trade-journaler\",\"振り返り\",\"later_in_earlier\"]",
+      "fingerprint": "[15,\"monthly-reviewer\",\"月末复盘\",16,\"trade-journaler\",\"复盘\",\"later_in_earlier\"]",
       "winner": "monthly-reviewer",
-      "rationale": "Specific monthly Japanese review phrases must precede generic reflection language",
+      "rationale": "Specific monthly Chinese review phrases must precede generic journaling language",
       "ambiguous_case_ids": [
         "amb-monthly-ja"
+      ]
+    },
+    {
+      "fingerprint": "[15,\"monthly-reviewer\",\"这个月的复盘\",16,\"trade-journaler\",\"复盘\",\"later_in_earlier\"]",
+      "winner": "monthly-reviewer",
+      "rationale": "Specific monthly Chinese review phrases must precede generic journaling language",
+      "ambiguous_case_ids": [
+        "amb-monthly-ja"
+      ]
+    },
+    {
+      "fingerprint": "[2,\"shapiro-contrarian-futures-trader\",\"持仓偏离\",12,\"dividend-long-term-investor\",\"持仓\",\"later_in_earlier\"]",
+      "winner": "shapiro-contrarian-futures-trader",
+      "rationale": "Specific COT/futures positioning terms must precede broad holdings language",
+      "ambiguous_case_ids": [
+        "amb-shapiro-zh"
+      ]
+    },
+    {
+      "fingerprint": "[2,\"shapiro-contrarian-futures-trader\",\"持仓拥挤\",12,\"dividend-long-term-investor\",\"持仓\",\"later_in_earlier\"]",
+      "winner": "shapiro-contrarian-futures-trader",
+      "rationale": "Specific COT/futures positioning terms must precede broad holdings language",
+      "ambiguous_case_ids": [
+        "amb-shapiro-zh"
+      ]
+    },
+    {
+      "fingerprint": "[2,\"shapiro-contrarian-futures-trader\",\"拥挤期货持仓\",12,\"dividend-long-term-investor\",\"持仓\",\"later_in_earlier\"]",
+      "winner": "shapiro-contrarian-futures-trader",
+      "rationale": "Specific COT/futures positioning terms must precede broad holdings language",
+      "ambiguous_case_ids": [
+        "amb-shapiro-zh"
+      ]
+    },
+    {
+      "fingerprint": "[2,\"shapiro-contrarian-futures-trader\",\"持仓偏差\",12,\"dividend-long-term-investor\",\"持仓\",\"later_in_earlier\"]",
+      "winner": "shapiro-contrarian-futures-trader",
+      "rationale": "Specific COT/futures positioning terms must precede broad holdings language",
+      "ambiguous_case_ids": [
+        "amb-shapiro-zh"
       ]
     }
   ],
@@ -397,9 +471,9 @@
     },
     {
       "id": "short-p05",
-      "language": "ja",
+      "language": "zh",
       "label": "honest_gap",
-      "query": "空売り戦略を使いたい",
+      "query": "我想使用做空策略",
       "target_persona": "short-strategy-trader",
       "expected_candidate_personas": [
         "short-strategy-trader"
@@ -418,9 +492,9 @@
     },
     {
       "id": "short-p06",
-      "language": "ja",
+      "language": "zh",
       "label": "honest_gap",
-      "query": "ショートポジションを検討したい",
+      "query": "我想研究空头仓位",
       "target_persona": "short-strategy-trader",
       "expected_candidate_personas": [
         "short-strategy-trader"
@@ -439,9 +513,9 @@
     },
     {
       "id": "short-p07",
-      "language": "ja",
+      "language": "zh",
       "label": "honest_gap",
-      "query": "売り建て候補を探したい",
+      "query": "我想找做空机会",
       "target_persona": "short-strategy-trader",
       "expected_candidate_personas": [
         "short-strategy-trader"
@@ -460,9 +534,9 @@
     },
     {
       "id": "short-p08",
-      "language": "ja",
+      "language": "zh",
       "label": "honest_gap",
-      "query": "パラボリックショートを研究したい",
+      "query": "我想研究抛物线做空",
       "target_persona": "short-strategy-trader",
       "expected_candidate_personas": [
         "short-strategy-trader"
@@ -502,9 +576,9 @@
     },
     {
       "id": "short-m02",
-      "language": "ja",
+      "language": "zh",
       "label": "honest_gap",
-      "query": "空売り戦略を使いたい。",
+      "query": "我想使用做空策略。",
       "target_persona": "short-strategy-trader",
       "expected_candidate_personas": [
         "short-strategy-trader"
@@ -545,9 +619,9 @@
     },
     {
       "id": "short-n02",
-      "language": "ja",
+      "language": "zh",
       "label": "hard_negative",
-      "query": "長期と短期の投資リスクを分けたい",
+      "query": "我想分离长期和短期的投资风险",
       "target_persona": "short-strategy-trader",
       "expected_candidate_personas": [
         "separate-core-satellite"
@@ -651,9 +725,9 @@
     },
     {
       "id": "research-p05",
-      "language": "ja",
+      "language": "zh",
       "label": "honest_gap",
-      "query": "新しい戦略をバックテストしたい",
+      "query": "我想回测新策略",
       "target_persona": "strategy-researcher",
       "expected_candidate_personas": [
         "strategy-researcher"
@@ -672,9 +746,9 @@
     },
     {
       "id": "research-p06",
-      "language": "ja",
+      "language": "zh",
       "label": "honest_gap",
-      "query": "戦略アイデアを検証したい",
+      "query": "我想验证策略想法",
       "target_persona": "strategy-researcher",
       "expected_candidate_personas": [
         "strategy-researcher"
@@ -693,9 +767,9 @@
     },
     {
       "id": "research-p07",
-      "language": "ja",
+      "language": "zh",
       "label": "honest_gap",
-      "query": "仮説検証の流れを作りたい",
+      "query": "我想建立假设验证流程",
       "target_persona": "strategy-researcher",
       "expected_candidate_personas": [
         "strategy-researcher"
@@ -714,9 +788,9 @@
     },
     {
       "id": "research-p08",
-      "language": "ja",
+      "language": "zh",
       "label": "honest_gap",
-      "query": "戦略研究を始めたい",
+      "query": "我想开始策略研究",
       "target_persona": "strategy-researcher",
       "expected_candidate_personas": [
         "strategy-researcher"
@@ -756,9 +830,9 @@
     },
     {
       "id": "research-m02",
-      "language": "ja",
+      "language": "zh",
       "label": "honest_gap",
-      "query": "検証したい、新しい戦略を",
+      "query": "想验证一下，新策略",
       "target_persona": "strategy-researcher",
       "expected_candidate_personas": [
         "strategy-researcher"
@@ -799,9 +873,9 @@
     },
     {
       "id": "research-n02",
-      "language": "ja",
+      "language": "zh",
       "label": "hard_negative",
-      "query": "20%変動銘柄を研究したい",
+      "query": "我想研究20%变动的标的",
       "target_persona": "strategy-researcher",
       "expected_candidate_personas": [
         "stockbee-20pct-researcher"
@@ -905,9 +979,9 @@
     },
     {
       "id": "shapiro-p05",
-      "language": "ja",
+      "language": "zh",
       "label": "positive",
-      "query": "COTデータで先物の逆張りを探したい",
+      "query": "我想用COT数据寻找期货逆向交易机会",
       "target_persona": "shapiro-contrarian-futures-trader",
       "expected_candidate_personas": [
         "shapiro-contrarian-futures-trader"
@@ -926,9 +1000,9 @@
     },
     {
       "id": "shapiro-p06",
-      "language": "ja",
+      "language": "zh",
       "label": "positive",
-      "query": "シャピロ式の逆張り先物を確認したい",
+      "query": "我想确认Shapiro式逆向期货交易",
       "target_persona": "shapiro-contrarian-futures-trader",
       "expected_candidate_personas": [
         "shapiro-contrarian-futures-trader"
@@ -947,9 +1021,9 @@
     },
     {
       "id": "shapiro-p07",
-      "language": "ja",
+      "language": "zh",
       "label": "positive",
-      "query": "建玉の偏りを調べたい",
+      "query": "我想调查拥挤仓位",
       "target_persona": "shapiro-contrarian-futures-trader",
       "expected_candidate_personas": [
         "shapiro-contrarian-futures-trader"
@@ -968,9 +1042,9 @@
     },
     {
       "id": "shapiro-p08",
-      "language": "ja",
+      "language": "zh",
       "label": "positive",
-      "query": "混み合った先物ポジションを分析したい",
+      "query": "我想分析拥挤的期货仓位",
       "target_persona": "shapiro-contrarian-futures-trader",
       "expected_candidate_personas": [
         "shapiro-contrarian-futures-trader"
@@ -1010,9 +1084,9 @@
     },
     {
       "id": "shapiro-m02",
-      "language": "ja",
+      "language": "zh",
       "label": "positive",
-      "query": "先物を確認したい、シャピロ式の逆張りで",
+      "query": "想确认期货，用Shapiro式逆向交易",
       "target_persona": "shapiro-contrarian-futures-trader",
       "expected_candidate_personas": [
         "shapiro-contrarian-futures-trader"
@@ -1053,9 +1127,9 @@
     },
     {
       "id": "shapiro-n02",
-      "language": "ja",
+      "language": "zh",
       "label": "hard_negative",
-      "query": "複数資産の投資機会を確認したい",
+      "query": "我想确认多资产投资机会",
       "target_persona": "shapiro-contrarian-futures-trader",
       "expected_candidate_personas": [
         "multi-asset-opportunity-trader"
@@ -1159,9 +1233,9 @@
     },
     {
       "id": "noapi-p05",
-      "language": "ja",
+      "language": "zh",
       "label": "no_api",
-      "query": "APIなしで使える流れを教えて",
+      "query": "告诉我不需要API就能用的流程",
       "target_persona": "no-api-path",
       "expected_candidate_personas": [
         "no-api-path"
@@ -1180,9 +1254,9 @@
     },
     {
       "id": "noapi-p06",
-      "language": "ja",
+      "language": "zh",
       "label": "no_api",
-      "query": "API不要のワークフローが欲しい",
+      "query": "我想要不需要API的工作流",
       "target_persona": "no-api-path",
       "expected_candidate_personas": [
         "no-api-path"
@@ -1201,9 +1275,9 @@
     },
     {
       "id": "noapi-p07",
-      "language": "ja",
+      "language": "zh",
       "label": "no_api",
-      "query": "課金なしで始めたい",
+      "query": "我想免费使用",
       "target_persona": "no-api-path",
       "expected_candidate_personas": [
         "no-api-path"
@@ -1222,9 +1296,9 @@
     },
     {
       "id": "noapi-p08",
-      "language": "ja",
+      "language": "zh",
       "label": "no_api",
-      "query": "キー無しで使えるものを探したい",
+      "query": "我想找不用密钥就能用的功能",
       "target_persona": "no-api-path",
       "expected_candidate_personas": [
         "no-api-path"
@@ -1264,9 +1338,9 @@
     },
     {
       "id": "noapi-m02",
-      "language": "ja",
+      "language": "zh",
       "label": "no_api",
-      "query": "API なしで、使える流れを教えて",
+      "query": "告诉我，不需要API就能用的流程",
       "target_persona": "no-api-path",
       "expected_candidate_personas": [
         "no-api-path"
@@ -1307,9 +1381,9 @@
     },
     {
       "id": "noapi-n02",
-      "language": "ja",
+      "language": "zh",
       "label": "hard_negative",
-      "query": "APIキーを設定済みなのでスイングトレードをしたい",
+      "query": "我已经设置好API密钥，想做波段交易",
       "target_persona": "no-api-path",
       "expected_candidate_personas": [
         "swing-trader"
@@ -1413,9 +1487,9 @@
     },
     {
       "id": "twentypct-p05",
-      "language": "ja",
+      "language": "zh",
       "label": "positive",
-      "query": "ストックビー20%変動研究をしたい",
+      "query": "我想做Stockbee 20%变动研究",
       "target_persona": "stockbee-20pct-researcher",
       "expected_candidate_personas": [
         "stockbee-20pct-researcher"
@@ -1434,9 +1508,9 @@
     },
     {
       "id": "twentypct-p06",
-      "language": "ja",
+      "language": "zh",
       "label": "positive",
-      "query": "20%変動銘柄を調べたい",
+      "query": "我想调查20%波动个股",
       "target_persona": "stockbee-20pct-researcher",
       "expected_candidate_personas": [
         "stockbee-20pct-researcher"
@@ -1455,9 +1529,9 @@
     },
     {
       "id": "twentypct-p07",
-      "language": "ja",
+      "language": "zh",
       "label": "positive",
-      "query": "プラス20%銘柄を集めたい",
+      "query": "我想收集涨幅20%个股",
       "target_persona": "stockbee-20pct-researcher",
       "expected_candidate_personas": [
         "stockbee-20pct-researcher"
@@ -1476,9 +1550,9 @@
     },
     {
       "id": "twentypct-p08",
-      "language": "ja",
+      "language": "zh",
       "label": "positive",
-      "query": "急騰急落モデルブックを作りたい",
+      "query": "我想建立急涨急跌模型手册",
       "target_persona": "stockbee-20pct-researcher",
       "expected_candidate_personas": [
         "stockbee-20pct-researcher"
@@ -1518,9 +1592,9 @@
     },
     {
       "id": "twentypct-m02",
-      "language": "ja",
+      "language": "zh",
       "label": "positive",
-      "query": "調べたい、20%変動銘柄を",
+      "query": "想调查一下，20%变动的标的",
       "target_persona": "stockbee-20pct-researcher",
       "expected_candidate_personas": [
         "stockbee-20pct-researcher"
@@ -1561,9 +1635,9 @@
     },
     {
       "id": "twentypct-n02",
-      "language": "ja",
+      "language": "zh",
       "label": "hard_negative",
-      "query": "ポートフォリオを20%ずつリバランスしたい",
+      "query": "我想每20%对投资组合进行再平衡",
       "target_persona": "stockbee-20pct-researcher",
       "expected_candidate_personas": [
         "dividend-long-term-investor"
@@ -1667,9 +1741,9 @@
     },
     {
       "id": "ep-p05",
-      "language": "ja",
+      "language": "zh",
       "label": "positive",
-      "query": "エピソディックピボット候補を分析したい",
+      "query": "我想分析Episodic Pivot候选标的",
       "target_persona": "stockbee-episodic-pivot-trader",
       "expected_candidate_personas": [
         "stockbee-episodic-pivot-trader"
@@ -1688,9 +1762,9 @@
     },
     {
       "id": "ep-p06",
-      "language": "ja",
+      "language": "zh",
       "label": "positive",
-      "query": "ストックビーEPを実行したい",
+      "query": "我想执行Stockbee EP",
       "target_persona": "stockbee-episodic-pivot-trader",
       "expected_candidate_personas": [
         "stockbee-episodic-pivot-trader"
@@ -1709,9 +1783,9 @@
     },
     {
       "id": "ep-p07",
-      "language": "ja",
+      "language": "zh",
       "label": "positive",
-      "query": "Day 1 EP候補を分類したい",
+      "query": "我想分类Day 1 EP候选标的",
       "target_persona": "stockbee-episodic-pivot-trader",
       "expected_candidate_personas": [
         "stockbee-episodic-pivot-trader"
@@ -1730,9 +1804,9 @@
     },
     {
       "id": "ep-p08",
-      "language": "ja",
+      "language": "zh",
       "label": "positive",
-      "query": "遅延EPの監視リストを作りたい",
+      "query": "我想建立延迟EP的监控列表",
       "target_persona": "stockbee-episodic-pivot-trader",
       "expected_candidate_personas": [
         "stockbee-episodic-pivot-trader"
@@ -1772,9 +1846,9 @@
     },
     {
       "id": "ep-m02",
-      "language": "ja",
+      "language": "zh",
       "label": "positive",
-      "query": "EP候補を、分類したい",
+      "query": "想分类一下，EP候选标的",
       "target_persona": "stockbee-episodic-pivot-trader",
       "expected_candidate_personas": [
         "stockbee-episodic-pivot-trader"
@@ -1815,9 +1889,9 @@
     },
     {
       "id": "ep-n02",
-      "language": "ja",
+      "language": "zh",
       "label": "hard_negative",
-      "query": "普通のスイング候補を探したい",
+      "query": "我想找普通的波段候选标的",
       "target_persona": "stockbee-episodic-pivot-trader",
       "expected_candidate_personas": [
         "swing-trader"
@@ -1921,9 +1995,9 @@
     },
     {
       "id": "fluency-p05",
-      "language": "ja",
+      "language": "zh",
       "label": "positive",
-      "query": "セットアップ習熟を進めたい",
+      "query": "我想提高形态熟练度",
       "target_persona": "stockbee-fluency-learner",
       "expected_candidate_personas": [
         "stockbee-fluency-learner"
@@ -1942,9 +2016,9 @@
     },
     {
       "id": "fluency-p06",
-      "language": "ja",
+      "language": "zh",
       "label": "positive",
-      "query": "セットアップ練習帳を作りたい",
+      "query": "我想建立形态练习册",
       "target_persona": "stockbee-fluency-learner",
       "expected_candidate_personas": [
         "stockbee-fluency-learner"
@@ -1963,9 +2037,9 @@
     },
     {
       "id": "fluency-p07",
-      "language": "ja",
+      "language": "zh",
       "label": "positive",
-      "query": "ストックビーのモデルブックを更新したい",
+      "query": "我想更新stockbee模型册",
       "target_persona": "stockbee-fluency-learner",
       "expected_candidate_personas": [
         "stockbee-fluency-learner"
@@ -1984,9 +2058,9 @@
     },
     {
       "id": "fluency-p08",
-      "language": "ja",
+      "language": "zh",
       "label": "positive",
-      "query": "失敗セットアップを研究したい",
+      "query": "我想研究失败形态",
       "target_persona": "stockbee-fluency-learner",
       "expected_candidate_personas": [
         "stockbee-fluency-learner"
@@ -2026,9 +2100,9 @@
     },
     {
       "id": "fluency-m02",
-      "language": "ja",
+      "language": "zh",
       "label": "positive",
-      "query": "セットアップを習熟したい",
+      "query": "我想熟悉形态",
       "target_persona": "stockbee-fluency-learner",
       "expected_candidate_personas": [
         "stockbee-fluency-learner"
@@ -2039,7 +2113,7 @@
       "expected_no_api_path": true,
       "neighbor_of": null,
       "base_id": "fluency-p05",
-      "transformation": "ja_particle",
+      "transformation": "zh_particle",
       "tags": [
         "gold",
         "metamorphic"
@@ -2069,9 +2143,9 @@
     },
     {
       "id": "fluency-n02",
-      "language": "ja",
+      "language": "zh",
       "label": "hard_negative",
-      "query": "モメンタム銘柄を今すぐ取引したい",
+      "query": "我想立刻交易动量标的",
       "target_persona": "stockbee-fluency-learner",
       "expected_candidate_personas": [
         "swing-trader"
@@ -2175,9 +2249,9 @@
     },
     {
       "id": "multiasset-p05",
-      "language": "ja",
+      "language": "zh",
       "label": "positive",
-      "query": "マルチアセット投資機会を探したい",
+      "query": "我想寻找多资产投资机会",
       "target_persona": "multi-asset-opportunity-trader",
       "expected_candidate_personas": [
         "multi-asset-opportunity-trader"
@@ -2196,9 +2270,9 @@
     },
     {
       "id": "multiasset-p06",
-      "language": "ja",
+      "language": "zh",
       "label": "positive",
-      "query": "複数資産の投資機会を確認したい",
+      "query": "我想确认多资产投资机会",
       "target_persona": "multi-asset-opportunity-trader",
       "expected_candidate_personas": [
         "multi-asset-opportunity-trader"
@@ -2217,9 +2291,9 @@
     },
     {
       "id": "multiasset-p07",
-      "language": "ja",
+      "language": "zh",
       "label": "positive",
-      "query": "資産横断の投資機会を調べたい",
+      "query": "我想调查跨资产投资机会",
       "target_persona": "multi-asset-opportunity-trader",
       "expected_candidate_personas": [
         "multi-asset-opportunity-trader"
@@ -2238,9 +2312,9 @@
     },
     {
       "id": "multiasset-p08",
-      "language": "ja",
+      "language": "zh",
       "label": "positive",
-      "query": "マクロとテーマを横断して候補を出したい",
+      "query": "我想跨宏观和主题筛选候选标的",
       "target_persona": "multi-asset-opportunity-trader",
       "expected_candidate_personas": [
         "multi-asset-opportunity-trader"
@@ -2280,9 +2354,9 @@
     },
     {
       "id": "multiasset-m02",
-      "language": "ja",
+      "language": "zh",
       "label": "positive",
-      "query": "確認したい、複数資産の投資機会を",
+      "query": "想确认一下，多资产投资机会",
       "target_persona": "multi-asset-opportunity-trader",
       "expected_candidate_personas": [
         "multi-asset-opportunity-trader"
@@ -2323,9 +2397,9 @@
     },
     {
       "id": "multiasset-n02",
-      "language": "ja",
+      "language": "zh",
       "label": "hard_negative",
-      "query": "複数資産ポートフォリオをリバランスしたい",
+      "query": "我想对多资产投资组合进行再平衡",
       "target_persona": "multi-asset-opportunity-trader",
       "expected_candidate_personas": [
         "dividend-long-term-investor"
@@ -2433,9 +2507,9 @@
     },
     {
       "id": "gatedswing-p05",
-      "language": "ja",
+      "language": "zh",
       "label": "positive",
-      "query": "地合いが良い時だけスイングしたい",
+      "query": "我只想在行情好的时候做波段",
       "target_persona": "part-time-swing-trader-regime-gated",
       "expected_candidate_personas": [
         "part-time-swing-trader-regime-gated",
@@ -2455,9 +2529,9 @@
     },
     {
       "id": "gatedswing-p06",
-      "language": "ja",
+      "language": "zh",
       "label": "positive",
-      "query": "相場次第でスイングをしたい",
+      "query": "我想看行情再做波段",
       "target_persona": "part-time-swing-trader-regime-gated",
       "expected_candidate_personas": [
         "part-time-swing-trader-regime-gated",
@@ -2477,9 +2551,9 @@
     },
     {
       "id": "gatedswing-p07",
-      "language": "ja",
+      "language": "zh",
       "label": "positive",
-      "query": "市場環境が良い時にスイングしたい",
+      "query": "我想在市场环境好的时候做波段",
       "target_persona": "part-time-swing-trader-regime-gated",
       "expected_candidate_personas": [
         "part-time-swing-trader-regime-gated",
@@ -2499,9 +2573,9 @@
     },
     {
       "id": "gatedswing-p08",
-      "language": "ja",
+      "language": "zh",
       "label": "positive",
-      "query": "条件が良い時だけスイングしたい",
+      "query": "我只想在条件好的时候做波段",
       "target_persona": "part-time-swing-trader-regime-gated",
       "expected_candidate_personas": [
         "part-time-swing-trader-regime-gated",
@@ -2543,9 +2617,9 @@
     },
     {
       "id": "gatedswing-m02",
-      "language": "ja",
+      "language": "zh",
       "label": "positive",
-      "query": "スイングしたい、地合いが良い時だけ",
+      "query": "想做波段，只在行情好的时候",
       "target_persona": "part-time-swing-trader-regime-gated",
       "expected_candidate_personas": [
         "part-time-swing-trader-regime-gated",
@@ -2587,9 +2661,9 @@
     },
     {
       "id": "gatedswing-n02",
-      "language": "ja",
+      "language": "zh",
       "label": "hard_negative",
-      "query": "地合いに関係なくスイングしたい",
+      "query": "我想不管行情都做波段",
       "target_persona": "part-time-swing-trader-regime-gated",
       "expected_candidate_personas": [
         "swing-trader"
@@ -2693,9 +2767,9 @@
     },
     {
       "id": "morning-p05",
-      "language": "ja",
+      "language": "zh",
       "label": "positive",
-      "query": "今日はリスクを取れるか知りたい",
+      "query": "我想知道今天能不能承担风险",
       "target_persona": "morning-risk-check",
       "expected_candidate_personas": [
         "morning-risk-check"
@@ -2714,9 +2788,9 @@
     },
     {
       "id": "morning-p06",
-      "language": "ja",
+      "language": "zh",
       "label": "positive",
-      "query": "毎朝のクイックチェックをしたい",
+      "query": "我想做每天早上的快速检查",
       "target_persona": "morning-risk-check",
       "expected_candidate_personas": [
         "morning-risk-check"
@@ -2735,9 +2809,9 @@
     },
     {
       "id": "morning-p07",
-      "language": "ja",
+      "language": "zh",
       "label": "positive",
-      "query": "今日トレードしてよいか確認したい",
+      "query": "我想确认今天能交易吗",
       "target_persona": "morning-risk-check",
       "expected_candidate_personas": [
         "morning-risk-check"
@@ -2756,9 +2830,9 @@
     },
     {
       "id": "morning-p08",
-      "language": "ja",
+      "language": "zh",
       "label": "positive",
-      "query": "朝の15分で相場を確認したい",
+      "query": "我想用早上15分钟确认行情",
       "target_persona": "morning-risk-check",
       "expected_candidate_personas": [
         "morning-risk-check"
@@ -2798,9 +2872,9 @@
     },
     {
       "id": "morning-m02",
-      "language": "ja",
+      "language": "zh",
       "label": "positive",
-      "query": "今日、リスクを取れるか知りたい",
+      "query": "今天，我想知道能不能承担风险",
       "target_persona": "morning-risk-check",
       "expected_candidate_personas": [
         "morning-risk-check"
@@ -2841,9 +2915,9 @@
     },
     {
       "id": "morning-n02",
-      "language": "ja",
+      "language": "zh",
       "label": "hard_negative",
-      "query": "決済したトレードの反省を記録したい",
+      "query": "我想记录已平仓交易的反思",
       "target_persona": "morning-risk-check",
       "expected_candidate_personas": [
         "trade-journaler"
@@ -2947,9 +3021,9 @@
     },
     {
       "id": "separate-p05",
-      "language": "ja",
+      "language": "zh",
       "label": "positive",
-      "query": "長期と短期を分けたい",
+      "query": "我想把长期和短期分开",
       "target_persona": "separate-core-satellite",
       "expected_candidate_personas": [
         "separate-core-satellite"
@@ -2968,9 +3042,9 @@
     },
     {
       "id": "separate-p06",
-      "language": "ja",
+      "language": "zh",
       "label": "positive",
-      "query": "投資とトレードを切り分けたい",
+      "query": "我想分离投资和交易",
       "target_persona": "separate-core-satellite",
       "expected_candidate_personas": [
         "separate-core-satellite"
@@ -2989,9 +3063,9 @@
     },
     {
       "id": "separate-p07",
-      "language": "ja",
+      "language": "zh",
       "label": "positive",
-      "query": "コアとサテライトのポートフォリオを分離したい",
+      "query": "我想把核心和卫星投资组合分开",
       "target_persona": "separate-core-satellite",
       "expected_candidate_personas": [
         "separate-core-satellite"
@@ -3010,9 +3084,9 @@
     },
     {
       "id": "separate-p08",
-      "language": "ja",
+      "language": "zh",
       "label": "ambiguous",
-      "query": "長期投資から短期リスクを分けたい",
+      "query": "我想从长期投资中分离短期风险",
       "target_persona": "separate-core-satellite",
       "expected_candidate_personas": [
         "separate-core-satellite",
@@ -3054,9 +3128,9 @@
     },
     {
       "id": "separate-m02",
-      "language": "ja",
+      "language": "zh",
       "label": "positive",
-      "query": "長期と短期を分ける",
+      "query": "把长期和短期分开",
       "target_persona": "separate-core-satellite",
       "expected_candidate_personas": [
         "separate-core-satellite"
@@ -3067,7 +3141,7 @@
       "expected_no_api_path": false,
       "neighbor_of": null,
       "base_id": "separate-p05",
-      "transformation": "ja_conjugation",
+      "transformation": "zh_expression",
       "tags": [
         "gold",
         "metamorphic"
@@ -3097,9 +3171,9 @@
     },
     {
       "id": "separate-n02",
-      "language": "ja",
+      "language": "zh",
       "label": "hard_negative",
-      "query": "配当の長期保有を見直したい",
+      "query": "我想重新审视长期持有的股息股",
       "target_persona": "separate-core-satellite",
       "expected_candidate_personas": [
         "dividend-long-term-investor"
@@ -3203,9 +3277,9 @@
     },
     {
       "id": "kanchi-p05",
-      "language": "ja",
+      "language": "zh",
       "label": "positive",
-      "query": "かんち式で候補を探したい",
+      "query": "我想用Kanchi式方法找候选标的",
       "target_persona": "kanchi-dividend-investor",
       "expected_candidate_personas": [
         "kanchi-dividend-investor"
@@ -3224,9 +3298,9 @@
     },
     {
       "id": "kanchi-p06",
-      "language": "ja",
+      "language": "zh",
       "label": "positive",
-      "query": "かんちさんの方法を使いたい",
+      "query": "我想使用Kanchi的方法",
       "target_persona": "kanchi-dividend-investor",
       "expected_candidate_personas": [
         "kanchi-dividend-investor"
@@ -3245,9 +3319,9 @@
     },
     {
       "id": "kanchi-p07",
-      "language": "ja",
+      "language": "zh",
       "label": "positive",
-      "query": "かんち式の週次確認をしたい",
+      "query": "我想做Kanchi式每周确认",
       "target_persona": "kanchi-dividend-investor",
       "expected_candidate_personas": [
         "kanchi-dividend-investor"
@@ -3266,9 +3340,9 @@
     },
     {
       "id": "kanchi-p08",
-      "language": "ja",
+      "language": "zh",
       "label": "positive",
-      "query": "かんちで銘柄候補を探したい",
+      "query": "我想用Kanchi找股票候选",
       "target_persona": "kanchi-dividend-investor",
       "expected_candidate_personas": [
         "kanchi-dividend-investor"
@@ -3308,9 +3382,9 @@
     },
     {
       "id": "kanchi-m02",
-      "language": "ja",
+      "language": "zh",
       "label": "positive",
-      "query": "候補を、かんち式で探したい",
+      "query": "想找候选标的，用Kanchi式方法",
       "target_persona": "kanchi-dividend-investor",
       "expected_candidate_personas": [
         "kanchi-dividend-investor"
@@ -3351,9 +3425,9 @@
     },
     {
       "id": "kanchi-n02",
-      "language": "ja",
+      "language": "zh",
       "label": "hard_negative",
-      "query": "保有中の配当株を見直したい",
+      "query": "我想重新审视持有中的股息股",
       "target_persona": "kanchi-dividend-investor",
       "expected_candidate_personas": [
         "dividend-long-term-investor"
@@ -3457,9 +3531,9 @@
     },
     {
       "id": "dividend-p05",
-      "language": "ja",
+      "language": "zh",
       "label": "positive",
-      "query": "配当株を見直したい",
+      "query": "我想重新审视股息股",
       "target_persona": "dividend-long-term-investor",
       "expected_candidate_personas": [
         "dividend-long-term-investor"
@@ -3478,9 +3552,9 @@
     },
     {
       "id": "dividend-p06",
-      "language": "ja",
+      "language": "zh",
       "label": "positive",
-      "query": "長期投資のポートフォリオを確認したい",
+      "query": "我想确认长期投资组合",
       "target_persona": "dividend-long-term-investor",
       "expected_candidate_personas": [
         "dividend-long-term-investor"
@@ -3499,9 +3573,9 @@
     },
     {
       "id": "dividend-p07",
-      "language": "ja",
+      "language": "zh",
       "label": "positive",
-      "query": "保有銘柄をリバランスしたい",
+      "query": "我想对持仓进行再平衡",
       "target_persona": "dividend-long-term-investor",
       "expected_candidate_personas": [
         "dividend-long-term-investor"
@@ -3520,9 +3594,9 @@
     },
     {
       "id": "dividend-p08",
-      "language": "ja",
+      "language": "zh",
       "label": "positive",
-      "query": "増配株を探したい",
+      "query": "我想找增加股息的股票",
       "target_persona": "dividend-long-term-investor",
       "expected_candidate_personas": [
         "dividend-long-term-investor"
@@ -3562,9 +3636,9 @@
     },
     {
       "id": "dividend-m02",
-      "language": "ja",
+      "language": "zh",
       "label": "positive",
-      "query": "配当株が見直したい",
+      "query": "我想重新审视股息股",
       "target_persona": "dividend-long-term-investor",
       "expected_candidate_personas": [
         "dividend-long-term-investor"
@@ -3575,7 +3649,7 @@
       "expected_no_api_path": false,
       "neighbor_of": null,
       "base_id": "dividend-p05",
-      "transformation": "ja_particle",
+      "transformation": "zh_particle",
       "tags": [
         "gold",
         "metamorphic"
@@ -3605,9 +3679,9 @@
     },
     {
       "id": "dividend-n02",
-      "language": "ja",
+      "language": "zh",
       "label": "hard_negative",
-      "query": "長期と短期を分けたい",
+      "query": "我想把长期和短期分开",
       "target_persona": "dividend-long-term-investor",
       "expected_candidate_personas": [
         "separate-core-satellite"
@@ -3711,9 +3785,9 @@
     },
     {
       "id": "swing-p05",
-      "language": "ja",
+      "language": "zh",
       "label": "positive",
-      "query": "スイングトレードをしたい",
+      "query": "我想做波段交易",
       "target_persona": "swing-trader",
       "expected_candidate_personas": [
         "swing-trader"
@@ -3732,9 +3806,9 @@
     },
     {
       "id": "swing-p06",
-      "language": "ja",
+      "language": "zh",
       "label": "positive",
-      "query": "ブレイクアウト候補を探したい",
+      "query": "我想找突破候选标的",
       "target_persona": "swing-trader",
       "expected_candidate_personas": [
         "swing-trader"
@@ -3753,9 +3827,9 @@
     },
     {
       "id": "swing-p07",
-      "language": "ja",
+      "language": "zh",
       "label": "positive",
-      "query": "モメンタム銘柄を確認したい",
+      "query": "我想确认动量标的",
       "target_persona": "swing-trader",
       "expected_candidate_personas": [
         "swing-trader"
@@ -3774,9 +3848,9 @@
     },
     {
       "id": "swing-p08",
-      "language": "ja",
+      "language": "zh",
       "label": "positive",
-      "query": "短期売買の候補が欲しい",
+      "query": "我想要短线交易候选标的",
       "target_persona": "swing-trader",
       "expected_candidate_personas": [
         "swing-trader"
@@ -3816,9 +3890,9 @@
     },
     {
       "id": "swing-m02",
-      "language": "ja",
+      "language": "zh",
       "label": "positive",
-      "query": "候補を、ブレイクアウトで探したい",
+      "query": "想找候选标的，用突破策略",
       "target_persona": "swing-trader",
       "expected_candidate_personas": [
         "swing-trader"
@@ -3830,6 +3904,27 @@
       "neighbor_of": null,
       "base_id": "swing-p05",
       "transformation": "word_order",
+      "tags": [
+        "gold",
+        "metamorphic"
+      ]
+    },
+    {
+      "id": "swing-m03",
+      "language": "zh",
+      "label": "positive",
+      "query": "我想做几笔波段交易",
+      "target_persona": "swing-trader",
+      "expected_candidate_personas": [
+        "swing-trader"
+      ],
+      "expected_selected_persona": "swing-trader",
+      "expected_primary_workflow": "swing-opportunity-daily",
+      "expected_honest_gap": false,
+      "expected_no_api_path": false,
+      "neighbor_of": null,
+      "base_id": "swing-p05",
+      "transformation": "zh_measure_word",
       "tags": [
         "gold",
         "metamorphic"
@@ -3859,9 +3954,9 @@
     },
     {
       "id": "swing-n02",
-      "language": "ja",
+      "language": "zh",
       "label": "hard_negative",
-      "query": "セットアップ習熟を進めたい",
+      "query": "我想提高形态熟练度",
       "target_persona": "swing-trader",
       "expected_candidate_personas": [
         "stockbee-fluency-learner"
@@ -3965,9 +4060,9 @@
     },
     {
       "id": "beginner-p05",
-      "language": "ja",
+      "language": "zh",
       "label": "positive",
-      "query": "初心者向けの道筋が欲しい",
+      "query": "我想要新手入门路径",
       "target_persona": "beginner-onramp",
       "expected_candidate_personas": [
         "beginner-onramp"
@@ -3986,9 +4081,9 @@
     },
     {
       "id": "beginner-p06",
-      "language": "ja",
+      "language": "zh",
       "label": "positive",
-      "query": "どこから始めればよいか知りたい",
+      "query": "我想知道从哪里开始",
       "target_persona": "beginner-onramp",
       "expected_candidate_personas": [
         "beginner-onramp"
@@ -4007,9 +4102,9 @@
     },
     {
       "id": "beginner-p07",
-      "language": "ja",
+      "language": "zh",
       "label": "positive",
-      "query": "入門の流れを教えて",
+      "query": "告诉我入门流程",
       "target_persona": "beginner-onramp",
       "expected_candidate_personas": [
         "beginner-onramp"
@@ -4028,9 +4123,9 @@
     },
     {
       "id": "beginner-p08",
-      "language": "ja",
+      "language": "zh",
       "label": "positive",
-      "query": "初めて使うので案内して",
+      "query": "第一次使用，请指引",
       "target_persona": "beginner-onramp",
       "expected_candidate_personas": [
         "beginner-onramp"
@@ -4070,9 +4165,9 @@
     },
     {
       "id": "beginner-m02",
-      "language": "ja",
+      "language": "zh",
       "label": "positive",
-      "query": "初心者向けの、道筋が欲しい",
+      "query": "想要一下，新手入门路径",
       "target_persona": "beginner-onramp",
       "expected_candidate_personas": [
         "beginner-onramp"
@@ -4113,9 +4208,9 @@
     },
     {
       "id": "beginner-n02",
-      "language": "ja",
+      "language": "zh",
       "label": "hard_negative",
-      "query": "APIなしで使える流れを教えて",
+      "query": "告诉我不需要API就能用的流程",
       "target_persona": "beginner-onramp",
       "expected_candidate_personas": [
         "no-api-path"
@@ -4219,9 +4314,9 @@
     },
     {
       "id": "monthly-p05",
-      "language": "ja",
+      "language": "zh",
       "label": "positive",
-      "query": "月次レビューを実行したい",
+      "query": "我想执行月度回顾",
       "target_persona": "monthly-reviewer",
       "expected_candidate_personas": [
         "monthly-reviewer"
@@ -4240,9 +4335,9 @@
     },
     {
       "id": "monthly-p06",
-      "language": "ja",
+      "language": "zh",
       "label": "positive",
-      "query": "月末レビューを作りたい",
+      "query": "我想做月度回顾",
       "target_persona": "monthly-reviewer",
       "expected_candidate_personas": [
         "monthly-reviewer"
@@ -4261,9 +4356,9 @@
     },
     {
       "id": "monthly-p07",
-      "language": "ja",
+      "language": "zh",
       "label": "positive",
-      "query": "月間パフォーマンスを確認したい",
+      "query": "我想确认月度绩效",
       "target_persona": "monthly-reviewer",
       "expected_candidate_personas": [
         "monthly-reviewer"
@@ -4282,9 +4377,9 @@
     },
     {
       "id": "monthly-p08",
-      "language": "ja",
+      "language": "zh",
       "label": "positive",
-      "query": "月次の結果をまとめたい",
+      "query": "我想汇总月度结果",
       "target_persona": "monthly-reviewer",
       "expected_candidate_personas": [
         "monthly-reviewer"
@@ -4324,9 +4419,9 @@
     },
     {
       "id": "monthly-m02",
-      "language": "ja",
+      "language": "zh",
       "label": "positive",
-      "query": "月次レビューを、実行したい",
+      "query": "想执行一下，月度回顾",
       "target_persona": "monthly-reviewer",
       "expected_candidate_personas": [
         "monthly-reviewer"
@@ -4367,9 +4462,9 @@
     },
     {
       "id": "monthly-n02",
-      "language": "ja",
+      "language": "zh",
       "label": "hard_negative",
-      "query": "決済したトレードの教訓を記録したい",
+      "query": "我想记录已平仓交易的教训",
       "target_persona": "monthly-reviewer",
       "expected_candidate_personas": [
         "trade-journaler"
@@ -4473,9 +4568,9 @@
     },
     {
       "id": "journal-p05",
-      "language": "ja",
+      "language": "zh",
       "label": "positive",
-      "query": "トレード記録を残したい",
+      "query": "我想留下交易记录",
       "target_persona": "trade-journaler",
       "expected_candidate_personas": [
         "trade-journaler"
@@ -4494,9 +4589,9 @@
     },
     {
       "id": "journal-p06",
-      "language": "ja",
+      "language": "zh",
       "label": "positive",
-      "query": "決済したトレードを反省したい",
+      "query": "我想反思已平仓的交易",
       "target_persona": "trade-journaler",
       "expected_candidate_personas": [
         "trade-journaler"
@@ -4515,9 +4610,9 @@
     },
     {
       "id": "journal-p07",
-      "language": "ja",
+      "language": "zh",
       "label": "positive",
-      "query": "売買記録に教訓を残したい",
+      "query": "我想在交易记录中留下教训",
       "target_persona": "trade-journaler",
       "expected_candidate_personas": [
         "trade-journaler"
@@ -4536,9 +4631,9 @@
     },
     {
       "id": "journal-p08",
-      "language": "ja",
+      "language": "zh",
       "label": "positive",
-      "query": "取引後レビューをしたい",
+      "query": "我想做交易后复盘",
       "target_persona": "trade-journaler",
       "expected_candidate_personas": [
         "trade-journaler"
@@ -4578,9 +4673,9 @@
     },
     {
       "id": "journal-m02",
-      "language": "ja",
+      "language": "zh",
       "label": "positive",
-      "query": "トレードの記録を残したい",
+      "query": "想留下交易记录",
       "target_persona": "trade-journaler",
       "expected_candidate_personas": [
         "trade-journaler"
@@ -4591,7 +4686,28 @@
       "expected_no_api_path": true,
       "neighbor_of": null,
       "base_id": "journal-p05",
-      "transformation": "ja_particle",
+      "transformation": "zh_particle",
+      "tags": [
+        "gold",
+        "metamorphic"
+      ]
+    },
+    {
+      "id": "journal-m03",
+      "language": "zh",
+      "label": "positive",
+      "query": "我已经留了交易记录",
+      "target_persona": "trade-journaler",
+      "expected_candidate_personas": [
+        "trade-journaler"
+      ],
+      "expected_selected_persona": "trade-journaler",
+      "expected_primary_workflow": "trade-memory-loop",
+      "expected_honest_gap": false,
+      "expected_no_api_path": true,
+      "neighbor_of": null,
+      "base_id": "journal-p05",
+      "transformation": "zh_aspect",
       "tags": [
         "gold",
         "metamorphic"
@@ -4621,9 +4737,9 @@
     },
     {
       "id": "journal-n02",
-      "language": "ja",
+      "language": "zh",
       "label": "hard_negative",
-      "query": "月次レビューを作りたい",
+      "query": "我想做月度回顾",
       "target_persona": "trade-journaler",
       "expected_candidate_personas": [
         "monthly-reviewer"
@@ -4665,10 +4781,10 @@
       ]
     },
     {
-      "id": "amb-swing-ja",
-      "language": "ja",
+      "id": "amb-swing-zh",
+      "language": "zh",
       "label": "ambiguous",
-      "query": "地合いが良い時だけスイングトレードをしたい",
+      "query": "我只想在行情好的时候做波段交易",
       "target_persona": "part-time-swing-trader-regime-gated",
       "expected_candidate_personas": [
         "part-time-swing-trader-regime-gated",
@@ -4711,10 +4827,10 @@
       ]
     },
     {
-      "id": "amb-core-ja",
-      "language": "ja",
+      "id": "amb-core-zh",
+      "language": "zh",
       "label": "ambiguous",
-      "query": "長期保有と短期リスクを分けたい",
+      "query": "我想把长期持有和短期风险分开",
       "target_persona": "separate-core-satellite",
       "expected_candidate_personas": [
         "separate-core-satellite",
@@ -4758,9 +4874,9 @@
     },
     {
       "id": "amb-kanchi-ja",
-      "language": "ja",
+      "language": "zh",
       "label": "ambiguous",
-      "query": "高配当株スクリーニングをしたい",
+      "query": "我想做高股息股筛选",
       "target_persona": "kanchi-dividend-investor",
       "expected_candidate_personas": [
         "kanchi-dividend-investor",
@@ -4781,9 +4897,9 @@
     },
     {
       "id": "amb-monthly-ja",
-      "language": "ja",
+      "language": "zh",
       "label": "ambiguous",
-      "query": "今月の振り返りをしたい",
+      "query": "我想做这个月的复盘",
       "target_persona": "monthly-reviewer",
       "expected_candidate_personas": [
         "monthly-reviewer",
@@ -4794,6 +4910,29 @@
       "expected_honest_gap": false,
       "expected_no_api_path": true,
       "neighbor_of": "trade-journaler",
+      "base_id": null,
+      "transformation": null,
+      "tags": [
+        "gold",
+        "ambiguous",
+        "shadowing"
+      ]
+    },
+    {
+      "id": "amb-shapiro-zh",
+      "language": "zh",
+      "label": "ambiguous",
+      "query": "我想分析持仓偏离的情况",
+      "target_persona": "shapiro-contrarian-futures-trader",
+      "expected_candidate_personas": [
+        "shapiro-contrarian-futures-trader",
+        "dividend-long-term-investor"
+      ],
+      "expected_selected_persona": "shapiro-contrarian-futures-trader",
+      "expected_primary_workflow": "shapiro-contrarian",
+      "expected_honest_gap": false,
+      "expected_no_api_path": false,
+      "neighbor_of": "dividend-long-term-investor",
       "base_id": null,
       "transformation": null,
       "tags": [

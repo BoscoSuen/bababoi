@@ -4,7 +4,7 @@ title: IBD Distribution Day Monitor
 grand_parent: English
 parent: Skill Guides
 nav_order: 11
-lang_peer: /ja/skills/ibd-distribution-day-monitor/
+lang_peer: /zh/skills/ibd-distribution-day-monitor/
 permalink: /en/skills/ibd-distribution-day-monitor/
 ---
 
@@ -119,7 +119,7 @@ You can also invoke it conversationally inside Claude Code: "Run the IBD Distrib
 6. **Per-index classification** — Thresholds (`d25 >= 6` or `d15 >= 4` for SEVERE, etc.) are loaded from config (`RiskThresholds`). The 21EMA / 50SMA filter only escalates to SEVERE when the close is below **both** moving averages and `d25 >= 5`. If MA cannot be computed due to insufficient data, the filter is `None` and SEVERE escalation is skipped.
 7. **Combine** — The combined risk is QQQ-weighted: a SEVERE on either index, or a HIGH on QQQ, immediately escalates. `QQQ NORMAL + SPY HIGH` still raises to HIGH because broad-market deterioration historically spills into TQQQ. Otherwise the maximum risk wins.
 8. **Exposure policy** — TQQQ targets {100, 75, 50, 25}% as risk rises and tightens the trailing stop accordingly. QQQ uses a less aggressive variant ({100, 100, 75, 50}%). The recommendation never **widens** the user's existing trailing stop — it can only tighten it.
-9. **Output** — JSON is written with `ensure_ascii=False` so Japanese explanations survive round-trip. Sensitive keys (`api_key`, `fmp_api_key`, `token`, etc.) are redacted via lowercase comparison before either file is written.
+9. **Output** — JSON is written with `ensure_ascii=False` so Chinese explanations survive round-trip. Sensitive keys (`api_key`, `fmp_api_key`, `token`, etc.) are redacted via lowercase comparison before either file is written.
 
 ---
 
