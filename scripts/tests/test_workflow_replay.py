@@ -33,7 +33,67 @@ COVERAGE = ROOT / "examples" / "workflows" / "replay-coverage.yaml"
 SPEC = ROOT / "examples" / "workflows" / "stockbee-fluency-loop" / "replay.yaml"
 
 
-def test_coverage_is_complete_and_eight_of_eleven_are_covered() -> None:
+@pytest.mark.parametrize("overlapping_spelling", [False, True])
+def test_canonicalize_symlink_path_spellings(tmp_path: Path, overlapping_spelling: bool) -> None:
+    alias = tmp_path.resolve() / "repo with spaces"
+    # Emulate /tmp being a substring of /private/tmp on every platform.
+    real = (
+        tmp_path / "private" / alias.relative_to(alias.anchor)
+        if overlapping_spelling
+        else tmp_path / "real repo"
+    )
+    real.mkdir(parents=True)
+    try:
+        alias.symlink_to(real, target_is_directory=True)
+    except OSError as exc:
+        pytest.skip(f"directory symlinks unavailable: {exc}")
+    suffix = "skills/demo/SKILL.md"
+    sibling = str(alias.with_name("repo with spaces-other")) + "/" + suffix
+    payload = {
+        "paths": [str(alias) + "/" + suffix, {"path": str(real) + "/" + suffix}],
+        "diagnostic": f"Read '{alias}/{suffix}' and '{real}/{suffix}'",
+        "outside": sibling,
+    }
+
+    canonical = replay_module._canonicalize(payload, "2026-05-31T23:59:59Z", {str(alias) + "/": ""})
+
+    assert canonical == {
+        "paths": [suffix, {"path": suffix}],
+        "diagnostic": f"Read '{suffix}' and '{suffix}'",
+        "outside": sibling,
+    }
+
+
+@pytest.mark.parametrize("file_first", [False, True])
+def test_canonicalize_specific_files_before_parent_paths(tmp_path: Path, file_first: bool) -> None:
+    root = tmp_path.resolve()
+    source = root / "input.json"
+    entries = [(str(root) + "/", "$WORK/"), (str(source), "$INPUT/source.json")]
+    if file_first:
+        entries.reverse()
+
+    canonical = replay_module._canonicalize(
+        [str(source), str(root) + "/report.json"],
+        "2026-05-31T23:59:59Z",
+        dict(entries),
+    )
+
+    assert canonical == ["$INPUT/source.json", "$WORK/report.json"]
+
+
+def test_canonicalize_retains_literal_order_timestamps_and_non_string_values() -> None:
+    timestamp = "2026-05-31T23:59:59Z"
+    payload = {"generated_at": "old", "nested": ["value", 3, None, {"ok": True}]}
+
+    canonical = replay_module._canonicalize(
+        payload, timestamp, {"value": "longer literal", "longer literal": "done"}
+    )
+
+    assert canonical == {"generated_at": timestamp, "nested": ["done", 3, None, {"ok": True}]}
+    assert payload["generated_at"] == "old"
+
+
+def test_coverage_is_complete_and_ten_of_eleven_are_covered() -> None:
     summary = validate_coverage(ROOT, COVERAGE)
 
     assert summary["covered"] == [
@@ -41,19 +101,23 @@ def test_coverage_is_complete_and_eight_of_eleven_are_covered() -> None:
         "kanchi-dividend-weekly",
         "market-regime-daily",
         "monthly-performance-review",
+        "shapiro-contrarian",
         "stockbee-20pct-study-daily",
+        "stockbee-ep-daily",
         "stockbee-fluency-loop",
         "swing-opportunity-daily",
         "trade-memory-loop",
     ]
     assert set(summary["deferred"]) == FROZEN_DEFERRED_WORKFLOWS
-    assert len(summary["deferred"]) == 3
+    assert len(summary["deferred"]) == 1
     assert summary["variants"] == {
         "core-portfolio-weekly": ["required-only", "full-path"],
         "kanchi-dividend-weekly": ["required-only", "full-path"],
         "market-regime-daily": ["required-only", "full-path"],
         "monthly-performance-review": ["required-only", "full-path"],
+        "shapiro-contrarian": ["required-only", "full-path"],
         "stockbee-20pct-study-daily": ["required-only", "full-path"],
+        "stockbee-ep-daily": ["required-only", "full-path"],
         "stockbee-fluency-loop": ["required-only", "full-path"],
         "swing-opportunity-daily": ["required-only", "full-path"],
         "trade-memory-loop": ["required-only", "full-path"],
@@ -69,10 +133,10 @@ def test_new_workflow_cannot_be_silently_deferred() -> None:
 
     coverage["deferred"]["new-workflow"] = {
         "issue": 294,
-        "reason": "Do not allow new coverage 8/11 deferrals.",
+        "reason": "Do not allow new coverage 10/11 deferrals.",
     }
     errors = coverage_errors(workflow_ids, coverage)
-    assert any("frozen coverage 8/11 deferred set" in error for error in errors)
+    assert any("frozen coverage 10/11 deferred set" in error for error in errors)
 
 
 def test_pilot_spec_matches_workflow_and_requires_offline_prices() -> None:
@@ -560,7 +624,7 @@ def test_check_writes_structured_report_when_executor_fails(
 
     assert any("injected execution failure" in difference for difference in differences)
     report = json.loads(report_path.read_text(encoding="utf-8"))
-    assert report["coverage"] == {"covered": 8, "total": 11}
+    assert report["coverage"] == {"covered": 10, "total": 11}
     assert report["rows"][0]["status"] == "error"
     assert report["rows"][0]["completed_steps"] == [1]
 
