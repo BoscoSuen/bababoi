@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<!--
+  Daily post-market tasks — fires at 14:00 and 15:00 local (Pacific).
+  14:00 PT = 17:00 ET (summer/EDT), 15:00 PT = 17:00 ET (winter/EST).
+  The script converts to ET, checks trading day, and dedup-gates so only
+  one send per day. Both firings ensure correct 5 PM ET across DST.
+
+  Currently: swing daily signal to DISCORD_SWING_SIGNAL_URL.
+
+  SETUP: Replace $HOME and $PROJECT_DIR before installing.
+    sed "s|\$HOME|$HOME|g; s|\$PROJECT_DIR|$(pwd)|g" \
+      launchd/com.trade-analysis.daily-tasks.plist > ~/Library/LaunchAgents/com.trade-analysis.daily-tasks.plist
+    launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.trade-analysis.daily-tasks.plist
+    launchctl list | grep daily-tasks
+  REMOVE:
+    launchctl bootout gui/$(id -u)/com.trade-analysis.daily-tasks
+-->
+<dict>
+	<key>Label</key>
+	<string>com.trade-analysis.daily-tasks</string>
+
+	<key>ProgramArguments</key>
+	<array>
+		<string>/bin/bash</string>
+		<string>$PROJECT_DIR/scripts/run_daily_tasks.sh</string>
+	</array>
+
+	<key>WorkingDirectory</key>
+	<string>$PROJECT_DIR</string>
+
+	<key>StartCalendarInterval</key>
+	<array>
+		<dict>
+			<key>Hour</key>
+			<integer>14</integer>
+			<key>Minute</key>
+			<integer>0</integer>
+		</dict>
+		<dict>
+			<key>Hour</key>
+			<integer>15</integer>
+			<key>Minute</key>
+			<integer>0</integer>
+		</dict>
+	</array>
+
+	<key>EnvironmentVariables</key>
+	<dict>
+		<key>PATH</key>
+		<string>/opt/homebrew/bin:/opt/homebrew/sbin:$HOME/.local/bin:/usr/local/bin:/usr/bin:/bin</string>
+		<key>HOME</key>
+		<string>$HOME</string>
+	</dict>
+
+	<key>StandardOutPath</key>
+	<string>$PROJECT_DIR/logs/launchd_daily_tasks.log</string>
+
+	<key>StandardErrorPath</key>
+	<string>$PROJECT_DIR/logs/launchd_daily_tasks_error.log</string>
+
+	<key>RunAtLoad</key>
+	<false/>
+</dict>
+</plist>

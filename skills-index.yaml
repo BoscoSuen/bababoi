@@ -911,7 +911,7 @@ skills:
   - id: discord_webhook
     type: web
     requirement: optional
-    note: Summary and narrative posts via DISCORD_WEBHOOK_URL
+    note: Summary and narrative posts via DISCORD_MARKET_REPORT_URL
   - id: claude_cli
     type: local_file
     requirement: optional

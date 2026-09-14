@@ -6,7 +6,7 @@ import os
 import time
 from typing import Any
 
-WEBHOOK_ENV = "DISCORD_WEBHOOK_URL"
+WEBHOOK_ENV = "DISCORD_MARKET_REPORT_URL"
 MAX_CHARS = 1900
 
 

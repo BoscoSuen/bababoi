@@ -350,7 +350,7 @@ Core + Satellite 的主要路径已在上文"推荐起步路径"中汇总。以�
 - **Intraday Market Monitor**、**VCP Screener**、**FTD Detector**、**Macro Regime Detector**、**IBD Distribution Day Monitor**、**Market Top Detector**、**Technical Analyst（价格回退）**: 需要[Polygon.io](https://polygon.io/)（Stocks Starter以上，15分钟延迟）密钥
   - 设置环境变量：`export POLYGON_API_KEY=your_key_here`（记录在已gitignore的`.envrc`中）
   - 共享客户端：`scripts/market_data/`（缓存于`.cache/market_data/`，`--provider fixture --fixture-dir DIR`用于离线回放）
-  - Intraday Market Monitor通知可选使用`DISCORD_WEBHOOK_URL`
+  - Intraday Market Monitor通知可选使用`DISCORD_MARKET_REPORT_URL`；Swing Daily Signal使用`DISCORD_SWING_SIGNAL_URL`
 - **Economic Calendar Fetcher**、**Earnings Calendar**、**CANSLIM Screener**: 需要[Financial Modeling Prep (FMP) API](https://financialmodelingprep.com)密钥
   - 免费层：250请求/天（足够大多数技能使用）
   - 设置环境变量：`export FMP_API_KEY=your_key_here`

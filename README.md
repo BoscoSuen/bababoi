@@ -399,7 +399,7 @@ Several skills require API keys for data access:
 | **FTD Detector** | ❌ Not used | ❌ Not used | ❌ Not used | Polygon (`POLYGON_API_KEY`); SPY/QQQ proxies for rally/FTD detection |
 | **IBD Distribution Day Monitor** | ❌ Not used | ❌ Not used | ❌ Not used | Polygon (`POLYGON_API_KEY`); daily QQQ/SPY OHLCV for Distribution Day detection |
 | **Macro Regime Detector** | ❌ Not used | ❌ Not used | ❌ Not used | Polygon (`POLYGON_API_KEY`); cross-asset ETF history and Treasury yields |
-| **Intraday Market Monitor** | ❌ Not used | ❌ Not used | ❌ Not used | Polygon (`POLYGON_API_KEY`, Stocks Starter) hourly breadth/sector/posture; optional `DISCORD_WEBHOOK_URL` and `claude -p` narrative |
+| **Intraday Market Monitor** | ❌ Not used | ❌ Not used | ❌ Not used | Polygon (`POLYGON_API_KEY`, Stocks Starter) hourly breadth/sector/posture; optional `DISCORD_MARKET_REPORT_URL` and `claude -p` narrative |
 | **Market Top Detector** | ❌ Not used | ❌ Not used | ❌ Not used | Polygon (`POLYGON_API_KEY`); VIX via yfinance; TraderMonty breadth CSV |
 | **Market Breadth Analyzer** | ❌ Not used | ❌ Not used | ❌ Not used | Uses free GitHub CSV data |
 | **Uptrend Analyzer** | ❌ Not used | ❌ Not used | ❌ Not used | Uses free GitHub CSV data |

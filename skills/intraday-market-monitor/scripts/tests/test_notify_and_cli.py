@@ -47,7 +47,7 @@ def test_discord_post_success_retry_and_missing_url(monkeypatch):
         ]
         == 400
     )
-    monkeypatch.delenv("DISCORD_WEBHOOK_URL", raising=False)
+    monkeypatch.delenv("DISCORD_MARKET_REPORT_URL", raising=False)
     assert discord_notify.post("hi")["posted"] is False
 
 

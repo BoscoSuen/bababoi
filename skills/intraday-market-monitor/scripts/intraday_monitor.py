@@ -434,7 +434,7 @@ def build_parser() -> argparse.ArgumentParser:
     common(rp)
     rp.add_argument("--date", required=True)
 
-    d = sub.add_parser("discord-test", help="post a one-line ping to DISCORD_WEBHOOK_URL")
+    d = sub.add_parser("discord-test", help="post a one-line ping to DISCORD_MARKET_REPORT_URL")
     d.add_argument("--message", default=None)
     return p
 

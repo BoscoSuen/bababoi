@@ -259,7 +259,7 @@ The table below is **auto-generated** from `skills-index.yaml` by `scripts/gener
 | **Futures Position Sizer** | ❌ Not used | ❌ Not used | ❌ Not used | Pure calculation; consumes contrarian-setup-gate's READY_FOR_PLAN report or explicit direction/entry/stop flags; works offline |
 | **IBD Distribution Day Monitor** | ❌ Not used | ❌ Not used | ❌ Not used | Daily QQQ/SPY OHLCV via Polygon (scripts/market_data); POLYGON_API_KEY |
 | **Institutional Flow Tracker** | ✅ Required | ❌ Not used | ❌ Not used | Financial Modeling Prep API |
-| **Intraday Market Monitor** | ❌ Not used | ❌ Not used | ❌ Not used | Polygon.io Stocks Starter (15-min delayed) via scripts/market_data; POLYGON_API_KEY; Summary and narrative posts via DISCORD_WEBHOOK_URL; Narrative via `claude -p` at 10:20 / 15:20 / posture flips |
+| **Intraday Market Monitor** | ❌ Not used | ❌ Not used | ❌ Not used | Polygon.io Stocks Starter (15-min delayed) via scripts/market_data; POLYGON_API_KEY; Summary and narrative posts via DISCORD_MARKET_REPORT_URL; Narrative via `claude -p` at 10:20 / 15:20 / posture flips |
 | **Kanchi Dividend Review Monitor** | 🟡 Optional (Recommended) | ❌ Not used | ❌ Not used | Dividend / price monitoring via FMP |
 | **Kanchi Dividend SOP** | 🟡 Optional (Recommended) | ❌ Not used | ❌ Not used | US dividend stock data via FMP |
 | **Kanchi Dividend US Tax Accounting** | ❌ Not used | ❌ Not used | ❌ Not used | US tax workflow guidance; pure calculation |
@@ -325,13 +325,14 @@ export POLYGON_API_KEY=your_key_here
 # ^GSPC/^IXIC are served by SPY/QQQ proxies; ^VIX/^VIX3M come from yfinance.
 ```
 
-**Discord webhook (intraday-market-monitor notifications, optional):**
+**Discord webhooks (notifications, optional):**
 ```bash
-export DISCORD_WEBHOOK_URL=https://discord.com/api/webhooks/...
+export DISCORD_MARKET_REPORT_URL=https://discord.com/api/webhooks/...   # intraday posture
+export DISCORD_SWING_SIGNAL_URL=https://discord.com/api/webhooks/...    # swing daily signal (5 PM ET)
 python3 skills/intraday-market-monitor/scripts/intraday_monitor.py discord-test
 ```
 
-Put both in the gitignored `.envrc`; `scripts/run_intraday_monitor.sh` sources it for launchd.
+Put all webhook URLs in the gitignored `.envrc`; `scripts/run_intraday_monitor.sh` sources it for launchd.
 
 **Financial Modeling Prep (FMP) API (frozen legacy skills only):**
 ```bash

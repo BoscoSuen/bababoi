@@ -147,11 +147,14 @@ drift `--check`) then `bash scripts/run_all_tests.sh`.
 
 ## 5. Scheduled self-maintenance jobs
 
-Four shipped `launchd` **templates** under `launchd/`: three automate repo
-self-maintenance and one (`intraday-monitor`) is the trading-side hourly job
-(reads `POLYGON_API_KEY` / `DISCORD_WEBHOOK_URL` from the gitignored `.envrc`,
+Five shipped `launchd` **templates** under `launchd/`: three automate repo
+self-maintenance, one (`intraday-monitor`) is the trading-side hourly job
+(reads `POLYGON_API_KEY` / `DISCORD_MARKET_REPORT_URL` from the gitignored `.envrc`,
 writes `reports/intraday/` and `state/intraday/`, logs to
-`logs/launchd_intraday_monitor*.log`). They are templates (paths use a `$PROJECT_DIR` placeholder);
+`logs/launchd_intraday_monitor*.log`), and one (`daily-tasks`) runs post-market
+tasks at 5 PM ET (reads `POLYGON_API_KEY` / `DISCORD_SWING_SIGNAL_URL`, writes
+`state/swing_signal/`, logs to `logs/launchd_daily_tasks*.log`).
+They are templates (paths use a `$PROJECT_DIR` placeholder);
 whether they are loaded is **local machine state**, so verify with `launchctl`
 rather than assuming.
 
@@ -161,6 +164,7 @@ rather than assuming.
 | `com.trade-analysis.skill-generation-daily.plist` | `com.trade-analysis.skill-generation-daily` | daily 07:00 | `scripts/run_skill_generation.sh` (daily) → `run_skill_generation_pipeline.py` |
 | `com.trade-analysis.skill-generation-weekly.plist` | `com.trade-analysis.skill-generation-weekly` | Saturday 06:00 | `scripts/run_skill_generation.sh` (weekly: mine + score) |
 | `com.trade-analysis.intraday-monitor.plist` | `com.trade-analysis.intraday-monitor` | every hour at :20 and :50 (local); the script maps to ET slots 09:50 … 16:20 and exits on non-session days | `scripts/run_intraday_monitor.sh` → `skills/intraday-market-monitor/scripts/intraday_monitor.py run --auto-slot` |
+| `com.trade-analysis.daily-tasks.plist` | `com.trade-analysis.daily-tasks` | 14:00 and 15:00 local (covers 17:00 ET across DST); dedup-gated so only one send per day | `scripts/run_daily_tasks.sh` → `scripts/send_swing_signal.py --auto` |
 
 For a concise explanation of what each mode reads and writes, including why
 `--dry-run` is not filesystem-read-only, see the

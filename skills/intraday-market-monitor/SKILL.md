@@ -29,7 +29,7 @@ minutes; that is out of scope on this plan tier.
 ## Prerequisites
 
 - `POLYGON_API_KEY` (Polygon Stocks Starter or higher) in the environment or `.envrc`
-- `DISCORD_WEBHOOK_URL` (optional; `--no-discord` to skip)
+- `DISCORD_MARKET_REPORT_URL` (optional; `--no-discord` to skip)
 - `claude` CLI on PATH for narratives (optional; `--narrative never` to skip)
 - `pip install -r skills/intraday-market-monitor/requirements.txt`
 - Optional `state/watchlist.yaml` (see `references/watchlist.example.yaml`) and/or the

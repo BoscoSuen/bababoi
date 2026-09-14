@@ -1,0 +1,372 @@
+#!/usr/bin/env python3
+"""Post swing-opportunity-daily signal summary to Discord.
+
+Usage:
+    # Manual send (reads today's existing reports, runs screeners if missing):
+    python3 scripts/send_swing_signal.py --manual
+
+    # Launchd mode (checks trading day + dedup, runs screeners if needed):
+    python3 scripts/send_swing_signal.py --auto
+
+    # Dry-run (format and print, don't post):
+    python3 scripts/send_swing_signal.py --manual --dry-run
+"""
+
+from __future__ import annotations
+
+import argparse
+import json
+import os
+import subprocess
+import sys
+import time
+from datetime import date, datetime
+from glob import glob
+from pathlib import Path
+from zoneinfo import ZoneInfo
+
+ET = ZoneInfo("America/New_York")
+REPO_ROOT = Path(__file__).resolve().parents[1]
+REPORTS_DIR = REPO_ROOT / "reports"
+STATE_DIR = REPO_ROOT / "state" / "swing_signal"
+MAX_DISCORD_CHARS = 1950
+
+
+def now_et() -> datetime:
+    return datetime.now(ET)
+
+
+def is_trading_day(d: date) -> bool:
+    sys.path.insert(0, str(REPO_ROOT))
+    try:
+        from scripts.market_calendar.market_calendar import session_for_date
+
+        session_for_date("XNYS", d)
+        return True
+    except Exception:
+        return d.weekday() < 5
+
+
+def _find_report(prefix: str, today_str: str) -> Path | None:
+    pattern = str(REPORTS_DIR / f"{prefix}_{today_str}*.json")
+    matches = sorted(glob(pattern))
+    return Path(matches[-1]) if matches else None
+
+
+def _run_screener(cmd: list[str], label: str) -> int:
+    py = str(REPO_ROOT / ".venv" / "bin" / "python3")
+    full = [py] + cmd
+    print(f"  Running {label}...", flush=True)
+    result = subprocess.run(full, cwd=str(REPO_ROOT), capture_output=True, text=True, timeout=300)
+    if result.returncode != 0:
+        print(f"  WARNING: {label} failed (rc={result.returncode}): {result.stderr[:200]}")
+    return result.returncode
+
+
+def ensure_reports(today_str: str) -> dict[str, Path | None]:
+    """Find or generate today's screener reports."""
+    reports = {}
+
+    # VCP
+    reports["vcp"] = _find_report("vcp_screener", today_str)
+    if not reports["vcp"]:
+        _run_screener(
+            [
+                str(REPO_ROOT / "skills" / "vcp-screener" / "scripts" / "screen_vcp.py"),
+                "--output-dir",
+                str(REPORTS_DIR),
+            ],
+            "VCP screener",
+        )
+        reports["vcp"] = _find_report("vcp_screener", today_str)
+
+    # Momentum Burst
+    reports["mb"] = _find_report("stockbee_momentum_burst", today_str)
+    if not reports["mb"]:
+        _run_screener(
+            [
+                str(
+                    REPO_ROOT
+                    / "skills"
+                    / "stockbee-momentum-burst-screener"
+                    / "scripts"
+                    / "screen_momentum_burst.py"
+                ),
+                "--output-dir",
+                str(REPORTS_DIR),
+            ],
+            "Momentum Burst screener",
+        )
+        reports["mb"] = _find_report("stockbee_momentum_burst", today_str)
+
+    # Exhaustion Hammer
+    reports["eh"] = _find_report("stockbee_exhaustion_hammer", today_str)
+    if not reports["eh"]:
+        _run_screener(
+            [
+                str(
+                    REPO_ROOT
+                    / "skills"
+                    / "stockbee-exhaustion-hammer-screener"
+                    / "scripts"
+                    / "screen_exhaustion_hammer.py"
+                ),
+                "--output-dir",
+                str(REPORTS_DIR),
+            ],
+            "Exhaustion Hammer screener",
+        )
+        reports["eh"] = _find_report("stockbee_exhaustion_hammer", today_str)
+
+    # Theme (optional, don't run if missing — it's slow)
+    reports["theme"] = _find_report("theme_detector", today_str)
+
+    return reports
+
+
+def _load_json(path: Path | None) -> dict | None:
+    if path and path.exists():
+        return json.loads(path.read_text())
+    return None
+
+
+def format_signal(today_str: str, reports: dict[str, Path | None]) -> list[str]:
+    """Format screener results into a Discord message."""
+    vcp_data = _load_json(reports.get("vcp"))
+    mb_data = _load_json(reports.get("mb"))
+    eh_data = _load_json(reports.get("eh"))
+
+    lines = [f"**Swing Daily Signal** — {today_str}", ""]
+
+    # Momentum Burst
+    if mb_data:
+        candidates = mb_data.get("candidates", mb_data.get("results", []))
+        actionable = [c for c in candidates if c.get("state", "").startswith("ACTIONABLE")]
+        if actionable:
+            lines.append("**⚡ 动量爆发 (今日可执行):**")
+            for c in actionable:
+                sym = c["symbol"]
+                score = c.get("setup_score", 0)
+                rating = c.get("rating", "")
+                gain = c.get("day_gain_pct", 0)
+                vol_r = c.get("volume_ratio_20d", 0)
+                trigger = c.get("primary_trigger", "")
+                lines.append(
+                    f"• {sym} {score}分 {rating} — {trigger}, "
+                    f"+{gain:.1f}%, 量比{vol_r:.1f}x"
+                )
+            lines.append("")
+
+    # Exhaustion Hammer
+    if eh_data:
+        candidates = eh_data.get("candidates", eh_data.get("results", []))
+        actionable = [c for c in candidates if c.get("state", "").startswith("ACTIONABLE")]
+        if actionable:
+            lines.append("**🔨 衰竭锤反弹 (收盘买入/次日确认):**")
+            for c in actionable:
+                sym = c["symbol"]
+                score = c.get("setup_score", 0)
+                rating = c.get("rating", "")
+                gain = c.get("day_gain_pct", 0)
+                trigger = c.get("primary_trigger", "")
+                lines.append(f"• {sym} {score}分 {rating} — {trigger}, +{gain:.1f}%")
+            lines.append("")
+
+    # Cross-reference
+    vcp_syms = set()
+    if vcp_data:
+        vcp_syms = {r["symbol"] for r in vcp_data.get("results", [])[:20]}
+    mb_syms = set()
+    if mb_data:
+        mb_syms = {
+            c["symbol"]
+            for c in mb_data.get("candidates", mb_data.get("results", []))[:30]
+        }
+    eh_syms = set()
+    if eh_data:
+        eh_syms = {
+            c["symbol"]
+            for c in eh_data.get("candidates", eh_data.get("results", []))[:20]
+        }
+
+    overlaps = []
+    for sym in sorted(vcp_syms | mb_syms | eh_syms):
+        sources = []
+        if sym in vcp_syms:
+            sources.append("VCP")
+        if sym in mb_syms:
+            sources.append("MomBurst")
+        if sym in eh_syms:
+            sources.append("ExhHammer")
+        if len(sources) >= 2:
+            overlaps.append(f"• {sym} — {' + '.join(sources)}")
+
+    if overlaps:
+        lines.append("**🔥 多重信号交叉:**")
+        lines.extend(overlaps[:6])
+        lines.append("")
+
+    # VCP near-pivot
+    if vcp_data:
+        pre_breakout = [
+            r
+            for r in vcp_data.get("results", [])[:15]
+            if r.get("execution_state") == "Pre-breakout"
+        ]
+        near = [r for r in pre_breakout if abs(r.get("distance_from_pivot_pct", 99)) < 6]
+        if near:
+            lines.append("**📊 VCP 接近突破:**")
+            for r in near[:4]:
+                sym = r["symbol"]
+                price = r["price"]
+                piv = r.get("pivot_proximity", {}).get("pivot_price", 0)
+                dist = r.get("distance_from_pivot_pct", 0)
+                lines.append(f"• {sym} ${price:.2f} → Pivot ${piv:.2f} ({dist:+.1f}%)")
+            lines.append("")
+
+    # Empty check
+    if len(lines) <= 2:
+        lines.append("今日无显著波段信号。")
+
+    return _split_for_discord("\n".join(lines))
+
+
+def _split_for_discord(text: str) -> list[str]:
+    """Split a long message into <=2000-char chunks on blank-line boundaries."""
+    if len(text) <= MAX_DISCORD_CHARS:
+        return [text]
+    chunks: list[str] = []
+    current: list[str] = []
+    current_len = 0
+    for line in text.split("\n"):
+        added = len(line) + (1 if current else 0)
+        if current_len + added > MAX_DISCORD_CHARS and current:
+            chunks.append("\n".join(current))
+            current = [line]
+            current_len = len(line)
+        else:
+            current.append(line)
+            current_len += added
+    if current:
+        chunks.append("\n".join(current))
+    return chunks
+
+
+def post_to_discord(content: str, url: str) -> dict:
+    """Post message to Discord webhook. Returns status dict."""
+    try:
+        import requests
+    except ImportError:
+        return {"posted": False, "error": "requests not installed"}
+
+    delay = 1.0
+    for attempt in range(4):
+        try:
+            resp = requests.post(url, json={"content": content}, timeout=15)
+        except Exception as exc:
+            if attempt < 3:
+                time.sleep(delay)
+                delay *= 2
+                continue
+            return {"posted": False, "error": str(exc)}
+        if 200 <= resp.status_code < 300:
+            return {"posted": True, "http_status": resp.status_code}
+        if resp.status_code == 429 and attempt < 3:
+            retry_after = float(resp.headers.get("Retry-After", delay))
+            time.sleep(retry_after)
+            delay *= 2
+            continue
+        if resp.status_code < 500:
+            return {"posted": False, "http_status": resp.status_code, "error": f"HTTP {resp.status_code}"}
+        if attempt < 3:
+            time.sleep(delay)
+            delay *= 2
+    return {"posted": False, "error": "max retries exceeded"}
+
+
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(description="Post swing daily signal to Discord")
+    mode = parser.add_mutually_exclusive_group(required=True)
+    mode.add_argument("--auto", action="store_true", help="launchd mode: check time + dedup")
+    mode.add_argument("--manual", action="store_true", help="send now, skip time check")
+    parser.add_argument("--dry-run", action="store_true", help="print message, don't post")
+    parser.add_argument(
+        "--date", default=None, help="override date (YYYY-MM-DD), default: today ET"
+    )
+    args = parser.parse_args(argv)
+
+    now = now_et()
+    target_date = date.fromisoformat(args.date) if args.date else now.date()
+    today_str = target_date.isoformat()
+
+    # Auto mode: check trading day + time window (16:45–17:30 ET)
+    if args.auto:
+        if not is_trading_day(target_date):
+            print(f"{today_str}: not a trading day, skipping")
+            return 0
+        if not args.date:
+            hour, minute = now.hour, now.minute
+            t = hour * 60 + minute
+            if t < 16 * 60 + 45 or t > 17 * 60 + 30:
+                return 0
+
+    # Dedup: check if already sent today
+    STATE_DIR.mkdir(parents=True, exist_ok=True)
+    sent_file = STATE_DIR / f"{today_str}_sent.json"
+    if sent_file.exists() and not args.dry_run:
+        print(f"Already sent for {today_str}, skipping")
+        return 0
+
+    # Find or run screeners
+    print(f"Preparing swing signal for {today_str}...")
+    reports = ensure_reports(today_str)
+
+    any_data = any(reports.get(k) for k in ("vcp", "mb", "eh"))
+    if not any_data:
+        print("No screener data available, skipping")
+        return 1
+
+    # Format
+    chunks = format_signal(today_str, reports)
+    total_chars = sum(len(c) for c in chunks)
+
+    if args.dry_run:
+        print("--- DRY RUN ---")
+        for i, chunk in enumerate(chunks, 1):
+            if len(chunks) > 1:
+                print(f"--- message {i}/{len(chunks)} ---")
+            print(chunk)
+        print(f"--- ({total_chars} chars, {len(chunks)} message(s)) ---")
+        return 0
+
+    # Post
+    url = os.environ.get("DISCORD_SWING_SIGNAL_URL")
+    if not url:
+        print("ERROR: DISCORD_SWING_SIGNAL_URL not set", file=sys.stderr)
+        return 1
+
+    all_ok = True
+    for i, chunk in enumerate(chunks, 1):
+        result = post_to_discord(chunk, url)
+        print(json.dumps({**result, "part": f"{i}/{len(chunks)}"}))
+        if not result["posted"]:
+            all_ok = False
+            break
+        if i < len(chunks):
+            time.sleep(0.5)
+
+    if all_ok:
+        sent_file.write_text(
+            json.dumps({
+                "date": today_str,
+                "sent_at": now_et().isoformat(),
+                "chars": total_chars,
+                "parts": len(chunks),
+            })
+        )
+
+    return 0 if all_ok else 1
+
+
+if __name__ == "__main__":
+    sys.exit(main())
