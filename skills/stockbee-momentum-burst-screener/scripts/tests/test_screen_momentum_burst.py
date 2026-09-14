@@ -8,7 +8,6 @@ SCRIPT_DIR = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(SCRIPT_DIR))
 
 from screen_momentum_burst import (  # noqa: E402
-    FMPClient,
     analyze_symbol,
     generate_markdown_report,
     normalize_bars,
@@ -158,29 +157,14 @@ def test_read_universe_file_csv_symbol_column(tmp_path):
     assert read_universe_file(str(path)) == ["AAPL", "NVDA"]
 
 
-def test_fmp_universe_routes_to_stable_company_screener(monkeypatch):
-    response = MagicMock()
-    response.status_code = 200
-    response.json.return_value = [
-        {"symbol": "AAPL", "marketCap": 100_000_000_000, "price": 200, "volume": 1_000_000},
-        {
-            "symbol": "SPY",
-            "marketCap": 500_000_000_000,
-            "price": 600,
-            "volume": 50_000_000,
-            "isEtf": True,
-        },
-    ]
+def test_polygon_universe_uses_sp500_constituents(monkeypatch):
+    monkeypatch.setattr(
+        "screen_momentum_burst.sp500_constituents",
+        lambda: ["AAPL", "MSFT", "NVDA"],
+    )
+    from screen_momentum_burst import sp500_constituents as _fn  # noqa: F811
 
-    session = MagicMock()
-    session.get.return_value = response
-    client = FMPClient(api_key="test", max_api_calls=10)
-    client.session = session
-
-    universe = client.get_universe(1_000_000_000, 5.0, 100_000, 10)
-
-    assert [row["symbol"] for row in universe] == ["AAPL"]
-    assert session.get.call_args_list[0][0][0].endswith("/stable/company-screener")
+    assert _fn()[:2] == ["AAPL", "MSFT"]
 
 
 def test_include_rejected_handles_insufficient_history(tmp_path):

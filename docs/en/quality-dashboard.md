@@ -35,10 +35,10 @@ Snapshot as of: `2026-09-12T00:00:00Z`
 
 | Provider | Count |
 |---|---:|
-| FMP | 23 |
+| FMP | 21 |
 | FINVIZ | 4 |
 | ALPACA | 2 |
-| other external provider | 16 |
+| other external provider | 18 |
 | offline (no external data source) | 34 |
 
 ## Beta pipeline

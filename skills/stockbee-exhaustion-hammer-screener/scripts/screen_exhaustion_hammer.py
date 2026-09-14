@@ -8,9 +8,10 @@ sessions, undercut or tested a short-term low, and then formed a near-close
 hammer / reversal candle with manageable risk to the day low.
 
 Input modes:
-  A. FMP universe scan: --fmp-universe
+  A. S&P 500 universe scan: --sp500-universe
   B. Explicit symbols: --symbols APP ENPH NVDA
   C. Offline OHLCV JSON: --prices-json data/daily_ohlcv.json
+  D. Fixture replay: --provider fixture --fixture-dir DIR
 
 Output:
   - JSON: stockbee_exhaustion_hammer_YYYY-MM-DD_HHMMSS.json
@@ -26,16 +27,17 @@ import json
 import math
 import os
 import sys
-import time
 from dataclasses import dataclass
-from datetime import date, datetime, timedelta
+from datetime import datetime
 from pathlib import Path
 from typing import Any
 
-try:
-    import requests
-except ImportError:  # pragma: no cover - environment guard
-    requests = None
+sys.path.insert(0, os.path.dirname(__file__))
+
+import _repo_bootstrap  # noqa: F401
+
+from scripts.market_data.legacy import PolygonCompatClient as MarketDataClient
+from scripts.market_data.universe import sp500_constituents
 
 SKILL_NAME = "stockbee-exhaustion-hammer-screener"
 SCHEMA_VERSION = "1.0"
@@ -98,7 +100,7 @@ class PullbackProfile:
 
 @dataclass
 class QualityProfile:
-    """Liquidity and optional FMP/profile quality metrics."""
+    """Liquidity and optional profile quality metrics."""
 
     avg_volume_20d: float
     avg_dollar_volume_20d: float
@@ -110,195 +112,7 @@ class QualityProfile:
     institutional_holders: int
 
 
-class ApiCallBudgetExceeded(Exception):
-    """Raised when the configured API call budget has been exhausted."""
-
-
-class FMPClient:
-    """Small FMP client with /stable-first routing and legacy v3 fallback."""
-
-    BASE_URL = "https://financialmodelingprep.com/api/v3"
-    STABLE_URL = "https://financialmodelingprep.com/stable"
-    RATE_LIMIT_DELAY = 0.30
-
-    def __init__(self, api_key: str | None = None, max_api_calls: int = 700):
-        if requests is None:
-            print(
-                "ERROR: requests library not found. Install with: pip install requests",
-                file=sys.stderr,
-            )
-            sys.exit(1)
-        self.api_key = api_key or os.getenv("FMP_API_KEY")
-        if not self.api_key:
-            raise ValueError(
-                "FMP API key required. Set FMP_API_KEY or use --prices-json for offline mode."
-            )
-        self.session = requests.Session()
-        self.session.headers.update({"apikey": self.api_key})
-        self.max_api_calls = max_api_calls
-        self.api_calls_made = 0
-        self.last_call_time = 0.0
-        self.cache: dict[str, Any] = {}
-        self.rate_limit_reached = False
-
-    def _request(self, url: str, params: dict[str, Any] | None = None, quiet: bool = False) -> Any:
-        if self.api_calls_made >= self.max_api_calls:
-            raise ApiCallBudgetExceeded(
-                f"API budget exhausted: {self.api_calls_made}/{self.max_api_calls} calls used"
-            )
-        if self.rate_limit_reached:
-            return None
-
-        request_params = dict(params or {})
-        request_params.setdefault("apikey", self.api_key)
-
-        elapsed = time.time() - self.last_call_time
-        if elapsed < self.RATE_LIMIT_DELAY:
-            time.sleep(self.RATE_LIMIT_DELAY - elapsed)
-
-        try:
-            response = self.session.get(url, params=request_params, timeout=30)
-            self.last_call_time = time.time()
-            self.api_calls_made += 1
-            if response.status_code == 200:
-                return response.json()
-            if response.status_code == 429:
-                print("ERROR: FMP daily rate limit reached.", file=sys.stderr)
-                self.rate_limit_reached = True
-                return None
-            if not quiet:
-                print(
-                    f"ERROR: FMP request failed: HTTP {response.status_code} - "
-                    f"{response.text[:200]}",
-                    file=sys.stderr,
-                )
-            return None
-        except requests.exceptions.RequestException as exc:
-            if not quiet:
-                print(f"ERROR: FMP request exception: {exc}", file=sys.stderr)
-            return None
-
-    def _stable_then_v3(self, stable_url: str, v3_url: str, params: dict[str, Any]) -> Any:
-        stable = self._request(stable_url, params, quiet=True)
-        if stable not in (None, [], {}):
-            return stable
-        return self._request(v3_url, params, quiet=False)
-
-    def get_universe(
-        self,
-        min_market_cap: float,
-        min_price: float,
-        min_volume: int,
-        max_symbols: int,
-    ) -> list[dict[str, Any]]:
-        """Fetch a broad liquid US-equity universe from FMP's company screener."""
-        cache_key = f"universe_{min_market_cap}_{min_price}_{min_volume}_{max_symbols}"
-        if cache_key in self.cache:
-            return self.cache[cache_key]
-
-        params = {
-            "marketCapMoreThan": int(min_market_cap),
-            "priceMoreThan": min_price,
-            "volumeMoreThan": int(min_volume),
-            "exchange": "NASDAQ,NYSE,AMEX",
-            "limit": 10000,
-        }
-        data = self._stable_then_v3(
-            f"{self.STABLE_URL}/company-screener",
-            f"{self.BASE_URL}/stock-screener",
-            params,
-        )
-        if not isinstance(data, list):
-            return []
-
-        universe = []
-        for item in data:
-            if not isinstance(item, dict):
-                continue
-            symbol = normalize_symbol(item.get("symbol", ""))
-            if not symbol:
-                continue
-            if item.get("isEtf") or item.get("isFund"):
-                continue
-            item = dict(item)
-            item["symbol"] = symbol
-            universe.append(item)
-
-        universe.sort(key=lambda row: row.get("marketCap") or row.get("mktCap") or 0, reverse=True)
-        universe = universe[:max_symbols]
-        self.cache[cache_key] = universe
-        return universe
-
-    def get_historical_prices(self, symbol: str, days: int = 120) -> list[dict[str, Any]]:
-        """Fetch most-recent-first daily OHLCV bars for one symbol."""
-        symbol = normalize_symbol(symbol)
-        cache_key = f"history_{symbol}_{days}"
-        if cache_key in self.cache:
-            return self.cache[cache_key]
-
-        today = date.today()
-        stable_params = {
-            "symbol": symbol,
-            "from": (today - timedelta(days=days * 2 + 10)).isoformat(),
-            "to": today.isoformat(),
-        }
-        stable_data = self._request(
-            f"{self.STABLE_URL}/historical-price-eod/full",
-            stable_params,
-            quiet=True,
-        )
-        bars = normalize_fmp_historical_response(stable_data, symbol, days)
-        if bars:
-            self.cache[cache_key] = bars
-            return bars
-
-        v3_data = self._request(
-            f"{self.BASE_URL}/historical-price-full/{symbol}",
-            {"timeseries": days},
-            quiet=False,
-        )
-        bars = normalize_fmp_historical_response(v3_data, symbol, days)
-        self.cache[cache_key] = bars
-        return bars
-
-    def get_quote_bar(self, symbol: str, asof_date: str | None = None) -> dict[str, Any] | None:
-        """Fetch best-effort current-day OHLCV from FMP quote endpoint."""
-        symbol = normalize_symbol(symbol)
-        cache_key = f"quote_{symbol}_{asof_date or 'today'}"
-        if cache_key in self.cache:
-            return self.cache[cache_key]
-        data = self._request(f"{self.BASE_URL}/quote/{symbol}", {}, quiet=True)
-        if not isinstance(data, list) or not data:
-            return None
-        row = data[0]
-        if not isinstance(row, dict):
-            return None
-        close = to_float(row.get("price") or row.get("close"))
-        open_ = to_float(row.get("open"), default=close)
-        high = to_float(row.get("dayHigh") or row.get("high"), default=max(open_, close))
-        low = to_float(row.get("dayLow") or row.get("low"), default=min(open_, close))
-        volume = to_int(row.get("volume"))
-        if close <= 0 or high <= 0 or low <= 0 or high < low:
-            return None
-        bar = {
-            "date": asof_date or date.today().isoformat(),
-            "open": open_,
-            "high": high,
-            "low": low,
-            "close": close,
-            "volume": volume,
-        }
-        self.cache[cache_key] = bar
-        return bar
-
-    def get_api_stats(self) -> dict[str, Any]:
-        return {
-            "api_calls_made": self.api_calls_made,
-            "max_api_calls": self.max_api_calls,
-            "budget_remaining": max(0, self.max_api_calls - self.api_calls_made),
-            "cache_entries": len(self.cache),
-            "rate_limit_reached": self.rate_limit_reached,
-        }
+from scripts.market_data.legacy import ApiCallBudgetExceeded  # noqa: F401
 
 
 def normalize_symbol(value: Any) -> str:
@@ -368,30 +182,6 @@ def normalize_bars(raw_bars: list[dict[str, Any]], limit: int | None = None) -> 
     if limit is not None:
         bars = bars[:limit]
     return bars
-
-
-def normalize_fmp_historical_response(data: Any, symbol: str, limit: int) -> list[dict[str, Any]]:
-    """Normalize FMP stable/v3 historical responses to raw bar dicts."""
-    if not data:
-        return []
-    if isinstance(data, list):
-        rows = []
-        for row in data:
-            if not isinstance(row, dict):
-                continue
-            row_symbol = normalize_symbol(row.get("symbol") or symbol)
-            if row_symbol == normalize_symbol(symbol):
-                rows.append({k: v for k, v in row.items() if k != "symbol"})
-        return rows[:limit]
-    if isinstance(data, dict):
-        if isinstance(data.get("historical"), list):
-            return data["historical"][:limit]
-        if isinstance(data.get("historicalStockList"), list):
-            target = normalize_symbol(symbol)
-            for entry in data["historicalStockList"]:
-                if normalize_symbol(entry.get("symbol")) == target:
-                    return (entry.get("historical") or [])[:limit]
-    return []
 
 
 def merge_quote_bar(bars: list[Bar], quote_bar: dict[str, Any] | None, limit: int) -> list[Bar]:
@@ -1058,9 +848,23 @@ def parse_arguments() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Stockbee Exhaustion Hammer Screener")
 
     # Input modes
-    parser.add_argument("--api-key", help="FMP API key; defaults to FMP_API_KEY")
     parser.add_argument(
-        "--fmp-universe", action="store_true", help="Fetch a broad US universe from FMP"
+        "--api-key",
+        help="Polygon API key (defaults to POLYGON_API_KEY environment variable)",
+    )
+    parser.add_argument(
+        "--provider",
+        choices=["polygon", "fixture"],
+        default="polygon",
+        help="polygon (live, cached) or fixture (offline replay of a cache directory)",
+    )
+    parser.add_argument(
+        "--fixture-dir", default=None, help="cache-layout dir for --provider fixture"
+    )
+    parser.add_argument(
+        "--sp500-universe",
+        action="store_true",
+        help="Scan S&P 500 constituents as the universe",
     )
     parser.add_argument("--symbols", nargs="*", default=[], help="Explicit symbols to scan")
     parser.add_argument("--universe-file", help="CSV, JSON, or TXT file containing symbols")
@@ -1073,11 +877,10 @@ def parse_arguments() -> argparse.Namespace:
     # API / universe controls
     parser.add_argument("--max-symbols", type=int, default=300, help="Maximum symbols to process")
     parser.add_argument("--history-days", type=int, default=120, help="Daily bars per symbol")
-    parser.add_argument("--max-api-calls", type=int, default=700, help="FMP API call budget")
     parser.add_argument(
         "--use-quote-latest",
         action="store_true",
-        help="Best-effort FMP quote override for near-close current-day OHLCV",
+        help="Best-effort Polygon snapshot override for near-close current-day OHLCV",
     )
     parser.add_argument(
         "--asof-date",
@@ -1145,10 +948,42 @@ def build_symbol_list(args: argparse.Namespace) -> list[str]:
     return sorted(symbols)[: args.max_symbols]
 
 
+def _build_client(args: argparse.Namespace) -> MarketDataClient:
+    """Build a :class:`MarketDataClient` from CLI arguments."""
+    if args.provider == "fixture":
+        return MarketDataClient(fixture_dir=args.fixture_dir, include_market_cap=True)
+    return MarketDataClient(api_key=args.api_key, include_market_cap=True)
+
+
+def _quote_bar_from_client(
+    client: MarketDataClient, symbol: str, asof_date: str | None = None,
+) -> dict[str, Any] | None:
+    """Extract an OHLCV bar dict from Polygon snapshot for near-close override."""
+    quotes = client.get_batch_quotes([symbol])
+    if symbol not in quotes:
+        return None
+    q = quotes[symbol]
+    close = to_float(q.get("price"))
+    open_ = to_float(q.get("open"), default=close)
+    high = to_float(q.get("dayHigh"), default=max(open_, close))
+    low = to_float(q.get("dayLow"), default=min(open_, close))
+    volume = to_int(q.get("volume"))
+    if close <= 0 or high <= 0 or low <= 0 or high < low:
+        return None
+    return {
+        "date": asof_date or datetime.now().strftime("%Y-%m-%d"),
+        "open": open_,
+        "high": high,
+        "low": low,
+        "close": close,
+        "volume": volume,
+    }
+
+
 def collect_price_data(
     args: argparse.Namespace,
 ) -> tuple[dict[str, list[Bar]], dict[str, dict[str, Any]], dict[str, Any] | None]:
-    """Collect price data from offline JSON or FMP."""
+    """Collect price data from offline JSON or Polygon."""
     profiles = read_profiles_json(args.profiles_json)
     if args.prices_json:
         offline = read_prices_json(args.prices_json)
@@ -1160,43 +995,39 @@ def collect_price_data(
             offline = {symbol: offline[symbol] for symbol in capped_symbols}
         return offline, profiles, None
 
-    client = FMPClient(api_key=args.api_key, max_api_calls=args.max_api_calls)
+    client = _build_client(args)
 
-    if args.fmp_universe:
-        universe_rows = client.get_universe(
-            min_market_cap=args.min_market_cap,
-            min_price=args.min_price,
-            min_volume=args.min_volume,
-            max_symbols=args.max_symbols,
-        )
-        symbols = [row["symbol"] for row in universe_rows]
-        for row in universe_rows:
-            profiles[row["symbol"]] = row
+    if args.sp500_universe:
+        rows = sp500_constituents()
+        if not rows:
+            raise ValueError("Failed to fetch S&P 500 constituents list.")
+        symbols = [normalize_symbol(r["symbol"]) for r in rows if normalize_symbol(r.get("symbol"))]
+        symbols = symbols[: args.max_symbols]
     else:
         symbols = build_symbol_list(args)
 
     if not symbols:
         raise ValueError(
-            "No symbols to process. Use --fmp-universe, --symbols, --universe-file, or --prices-json."
+            "No symbols to process. "
+            "Use --sp500-universe, --symbols, --universe-file, or --prices-json."
         )
 
     price_data: dict[str, list[Bar]] = {}
     for idx, symbol in enumerate(symbols, 1):
         if idx % 25 == 0 or idx == len(symbols):
             print(f"  Fetching history: {idx}/{len(symbols)}", flush=True)
-        try:
-            raw = client.get_historical_prices(symbol, days=args.history_days)
-            bars = normalize_bars(raw, limit=args.history_days)
-            if args.use_quote_latest:
-                quote_bar = client.get_quote_bar(symbol, asof_date=args.asof_date)
-                bars = merge_quote_bar(bars, quote_bar, limit=args.history_days)
-        except ApiCallBudgetExceeded:
-            print(f"WARNING: API budget exhausted at {symbol}. Processing collected data.")
-            break
+        data = client.get_historical_prices(symbol, days=args.history_days)
+        if not data:
+            continue
+        raw = data.get("historical") or []
+        bars = normalize_bars(raw, limit=args.history_days)
+        if args.use_quote_latest:
+            quote_bar = _quote_bar_from_client(client, symbol, asof_date=args.asof_date)
+            bars = merge_quote_bar(bars, quote_bar, limit=args.history_days)
         if bars:
             price_data[symbol] = bars
 
-    return price_data, profiles, client.get_api_stats()
+    return price_data, profiles, None
 
 
 def sort_results(results: list[dict[str, Any]]) -> list[dict[str, Any]]:
@@ -1343,7 +1174,11 @@ def main() -> None:
 
     results = sort_results(results)
     input_mode = (
-        "prices_json" if args.prices_json else "fmp_universe" if args.fmp_universe else "symbols"
+        "prices_json"
+        if args.prices_json
+        else "sp500_universe"
+        if args.sp500_universe
+        else "symbols"
     )
     metadata = {
         "generated_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),

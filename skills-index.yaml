@@ -1822,10 +1822,10 @@ skills:
   timeframe: daily
   difficulty: intermediate
   integrations:
-  - id: fmp
+  - id: polygon
     type: market_data
     requirement: required
-    note: Live US universe, daily OHLCV, and optional quote-derived near-close bar via Financial Modeling Prep
+    note: S&P 500 universe and daily OHLCV via Polygon (scripts/market_data); POLYGON_API_KEY
   - id: prices_json
     type: local_file
     requirement: optional
@@ -1860,10 +1860,10 @@ skills:
   timeframe: daily
   difficulty: intermediate
   integrations:
-  - id: fmp
+  - id: polygon
     type: market_data
     requirement: required
-    note: Live US universe and daily OHLCV via Financial Modeling Prep
+    note: S&P 500 universe and daily OHLCV via Polygon (scripts/market_data); POLYGON_API_KEY
   - id: prices_json
     type: local_file
     requirement: optional

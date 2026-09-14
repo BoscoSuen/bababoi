@@ -10,7 +10,6 @@ SCRIPT_DIR = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(SCRIPT_DIR))
 
 from screen_exhaustion_hammer import (  # noqa: E402
-    FMPClient,
     analyze_symbol,
     collect_price_data,
     generate_markdown_report,
@@ -18,26 +17,6 @@ from screen_exhaustion_hammer import (  # noqa: E402
     read_prices_json,
     read_universe_file,
 )
-
-
-class _FakeResponse:
-    def __init__(self, payload, status_code=200):
-        self._payload = payload
-        self.status_code = status_code
-        self.text = json.dumps(payload)
-
-    def json(self):
-        return self._payload
-
-
-class _FakeSession:
-    def __init__(self, responses):
-        self.responses = list(responses)
-        self.calls = []
-
-    def get(self, url, params=None, timeout=None):
-        self.calls.append({"url": url, "params": dict(params or {}), "timeout": timeout})
-        return self.responses.pop(0)
 
 
 def _args(**overrides):
@@ -139,26 +118,6 @@ def _profile():
         "mutualFundHolders": 3200,
         "institutionalOwnershipPct": 58.0,
     }
-
-
-def test_fmp_stable_and_v3_fallback_send_apikey_query_param(monkeypatch):
-    monkeypatch.setattr(FMPClient, "RATE_LIMIT_DELAY", 0)
-    client = FMPClient(api_key="k", max_api_calls=10)
-    fake_session = _FakeSession([_FakeResponse({}), _FakeResponse([{"symbol": "APP"}])])
-    client.session = fake_session
-    params = {"symbol": "APP"}
-
-    result = client._stable_then_v3(
-        "https://example.test/stable/company-screener",
-        "https://example.test/api/v3/stock-screener",
-        params,
-    )
-
-    assert result == [{"symbol": "APP"}]
-    assert params == {"symbol": "APP"}
-    assert len(fake_session.calls) == 2
-    assert fake_session.calls[0]["params"] == {"symbol": "APP", "apikey": "k"}
-    assert fake_session.calls[1]["params"] == {"symbol": "APP", "apikey": "k"}
 
 
 def test_good_exhaustion_hammer_scores_actionable():
@@ -355,7 +314,7 @@ def test_markdown_summary_counts_all_non_rejected_when_top_limits_display(tmp_pa
     assert text.count("### APP") == 1
 
 
-def test_cli_offline_smoke_does_not_require_fmp_key(tmp_path):
+def test_cli_offline_smoke_does_not_require_api_key(tmp_path):
     prices_path = tmp_path / "prices.json"
     profiles_path = tmp_path / "profiles.json"
     output_dir = tmp_path / "reports"
@@ -381,6 +340,7 @@ def test_cli_offline_smoke_does_not_require_fmp_key(tmp_path):
 
     env = os.environ.copy()
     env.pop("FMP_API_KEY", None)
+    env.pop("POLYGON_API_KEY", None)
     result = subprocess.run(
         [
             sys.executable,

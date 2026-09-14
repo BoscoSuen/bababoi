@@ -287,8 +287,8 @@ The table below is **auto-generated** from `skills-index.yaml` by `scripts/gener
 | **Stanley Druckenmiller Investment** | ❌ Not used | ❌ Not used | ❌ Not used | Synthesizes outputs from upstream skills; pure calculation |
 | **Stockbee 20% Study** | ✅ Required | ❌ Not used | ❌ Not used | Live US universe, daily OHLCV, symbol profile, and optional historical backfill data |
 | **Stockbee Episodic Pivot Analyzer** | 🟡 Optional | ❌ Not used | ❌ Not used | Optional OHLCV/profile enrichment via Financial Modeling Prep |
-| **Stockbee Exhaustion Hammer Screener** | ✅ Required | ❌ Not used | ❌ Not used | Live US universe, daily OHLCV, and optional quote-derived near-close bar via Financial Modeling Prep |
-| **Stockbee Momentum Burst Screener** | ✅ Required | ❌ Not used | ❌ Not used | Live US universe and daily OHLCV via Financial Modeling Prep |
+| **Stockbee Exhaustion Hammer Screener** | ❌ Not used | ❌ Not used | ❌ Not used | S&P 500 universe and daily OHLCV via Polygon (scripts/market_data); POLYGON_API_KEY; Offline or near-close provisional OHLCV JSON fallback for no-API screening and tests; Optional quality metadata keyed by symbol, such as marketCap and holder counts; Pullback context, hammer geometry, risk-distance scoring, and report generation |
+| **Stockbee Momentum Burst Screener** | ❌ Not used | ❌ Not used | ❌ Not used | S&P 500 universe and daily OHLCV via Polygon (scripts/market_data); POLYGON_API_KEY; Offline OHLCV JSON fallback for no-API screening and tests; Trigger detection, setup scoring, risk-distance checks, and report generation |
 | **Stockbee Setup Fluency Trainer** | 🟡 Optional | ❌ Not used | ❌ Not used | Financial Modeling Prep daily OHLCV for automatic outcome updates when local prices are unavailable |
 | **Strategy Pivot Designer** | ❌ Not used | ❌ Not used | ❌ Not used | Pivot proposal generator; pure calculation |
 | **Technical Analyst** | ❌ Not used | ❌ Not used | ❌ Not used | Chart screenshot input; Optional weekly OHLCV via Polygon ETF proxies for contrarian confirmation (Shapiro step 3); POLYGON_API_KEY |
