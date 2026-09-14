@@ -1216,7 +1216,7 @@
       "id": "stockbee-exhaustion-hammer-screener",
       "integrations": [
         {
-          "id": "fmp",
+          "id": "polygon",
           "requirement": "required",
           "type": "market_data"
         },
@@ -1250,7 +1250,7 @@
       "id": "stockbee-momentum-burst-screener",
       "integrations": [
         {
-          "id": "fmp",
+          "id": "polygon",
           "requirement": "required",
           "type": "market_data"
         },
