@@ -18,7 +18,7 @@ Classify Day 1 Episodic Pivot (EP) candidates using both **catalyst quality** an
 ## Prerequisites
 
 - Python 3.10+
-- Optional: FMP API key for OHLCV/profile enrichment
+- Optional: `POLYGON_API_KEY` for OHLCV enrichment (Polygon Stocks Starter plan)
 - One of:
   - Catalyst/events JSON
   - `earnings-trade-analyzer` JSON output
@@ -76,10 +76,10 @@ python3 skills/stockbee-episodic-pivot-analyzer/scripts/analyze_ep.py \
   --output-dir reports/
 ```
 
-Optional FMP enrichment:
+Optional Polygon OHLCV enrichment:
 
 ```bash
-export FMP_API_KEY=your_key
+export POLYGON_API_KEY=your_key
 python3 skills/stockbee-episodic-pivot-analyzer/scripts/analyze_ep.py \
   --events-json data/catalysts.json \
   --max-api-calls 200 \

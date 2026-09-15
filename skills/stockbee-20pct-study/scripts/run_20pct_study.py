@@ -16,18 +16,25 @@ import math
 import os
 import statistics
 import sys
-import time
 from collections import defaultdict
 from collections.abc import Iterable
 from dataclasses import dataclass
-from datetime import date, datetime, timedelta
+from datetime import date, datetime
 from pathlib import Path
 from typing import Any, Union
+
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[3]))
 
 try:  # Optional live-data path.
     import requests
 except ImportError:  # pragma: no cover - optional dependency
     requests = None
+
+_PROJECT_ROOT = Path(__file__).resolve().parents[3]
+if str(_PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(_PROJECT_ROOT))
 
 SCHEMA_VERSION = "1.0"
 SKILL_NAME = "stockbee-20pct-study"
@@ -58,125 +65,30 @@ class ApiCallBudgetExceeded(Exception):
     """Raised when max_api_calls is exhausted."""
 
 
-class FMPClient:
-    """Small FMP client for optional universe and OHLCV retrieval."""
+def _get_finviz_universe(max_symbols: int = 10000) -> list[str]:
+    """Fetch a liquid US stock universe from finviz (price>$5, ex-funds)."""
+    try:
+        from finvizfinance.screener.overview import Overview
+    except ImportError:
+        print("ERROR: finvizfinance not installed; use --prices-json or pip install finvizfinance",
+              file=sys.stderr)
+        return []
+    foverview = Overview()
+    foverview.set_filter(filters_dict={
+        "Price": "Over $5",
+        "Industry": "Stocks only (ex-Funds)",
+    })
+    df = foverview.screener_view()
+    if df is None or df.empty:
+        return []
+    symbols = sorted(dict.fromkeys(normalize_symbol(t) for t in df["Ticker"].tolist() if t))
+    return symbols[:max_symbols]
 
-    STABLE_URL = "https://financialmodelingprep.com/stable"
-    V3_URL = "https://financialmodelingprep.com/api/v3"
-    RATE_LIMIT_DELAY = 0.30
 
-    def __init__(self, api_key: str | None = None, max_api_calls: int = 500):
-        if requests is None:
-            raise RuntimeError("requests is not installed; use --prices-json or install requests")
-        self.api_key = api_key or os.getenv("FMP_API_KEY")
-        if not self.api_key:
-            raise ValueError("FMP API key required. Set FMP_API_KEY or pass --api-key.")
-        self.session = requests.Session()
-        self.max_api_calls = max_api_calls
-        self.api_calls_made = 0
-        self.last_call_time = 0.0
-        self.cache: dict[str, Any] = {}
-
-    def _get(self, url: str, params: dict[str, Any] | None = None, quiet: bool = False) -> Any:
-        if self.api_calls_made >= self.max_api_calls:
-            raise ApiCallBudgetExceeded(
-                f"API budget exhausted: {self.api_calls_made}/{self.max_api_calls} calls used"
-            )
-        params = dict(params or {})
-        params.setdefault("apikey", self.api_key)
-        elapsed = time.time() - self.last_call_time
-        if elapsed < self.RATE_LIMIT_DELAY:
-            time.sleep(self.RATE_LIMIT_DELAY - elapsed)
-        try:
-            response = self.session.get(url, params=params, timeout=30)
-            self.last_call_time = time.time()
-            self.api_calls_made += 1
-            if response.status_code == 200:
-                return response.json()
-            if not quiet:
-                print(
-                    f"ERROR: FMP request failed: HTTP {response.status_code} - {response.text[:200]}",
-                    file=sys.stderr,
-                )
-        except Exception as exc:  # pragma: no cover - defensive live-data path
-            if not quiet:
-                print(f"ERROR: FMP request exception: {exc}", file=sys.stderr)
-        return None
-
-    def _stable_then_v3(self, stable_url: str, v3_url: str, params: dict[str, Any]) -> Any:
-        stable = self._get(stable_url, params, quiet=True)
-        if stable not in (None, [], {}):
-            return stable
-        return self._get(v3_url, params, quiet=False)
-
-    def get_stock_list(self, limit: int | None = None) -> list[str]:
-        cache_key = f"stock_list:{limit}"
-        if cache_key in self.cache:
-            return self.cache[cache_key]
-        params = {
-            "exchange": "NASDAQ,NYSE,AMEX",
-            "priceMoreThan": 0,
-            "limit": max(int(limit or 10000), 10000),
-        }
-        payload = self._stable_then_v3(
-            f"{self.STABLE_URL}/company-screener",
-            f"{self.V3_URL}/stock-screener",
-            params,
-        )
-        symbols: list[str] = []
-        if isinstance(payload, list):
-            for row in payload:
-                if not isinstance(row, dict):
-                    continue
-                symbol = normalize_symbol(row.get("symbol"))
-                exchange = str(row.get("exchangeShortName") or row.get("exchange") or "").upper()
-                stock_type = str(row.get("type") or "stock").lower()
-                price = to_float(row.get("price"), default=0)
-                if not symbol:
-                    continue
-                if row.get("isEtf") or row.get("isFund"):
-                    continue
-                if exchange and exchange not in {"NASDAQ", "NYSE", "AMEX", "NYSEARCA"}:
-                    continue
-                if stock_type and stock_type not in {"stock", "common stock", "etf"}:
-                    continue
-                if price <= 0:
-                    continue
-                symbols.append(symbol)
-        result = sorted(dict.fromkeys(symbols))
-        if limit:
-            result = result[:limit]
-        self.cache[cache_key] = result
-        return result
-
-    def get_historical_prices(self, symbol: str, days: int = 320) -> list[dict[str, Any]]:
-        symbol = normalize_symbol(symbol)
-        cache_key = f"history:{symbol}:{days}"
-        if cache_key in self.cache:
-            return self.cache[cache_key]
-        today = date.today()
-        params = {
-            "symbol": symbol,
-            "from": (today - timedelta(days=days * 2 + 20)).isoformat(),
-            "to": today.isoformat(),
-        }
-        payload = self._get(f"{self.STABLE_URL}/historical-price-eod/full", params, quiet=True)
-        bars = normalize_price_bars(payload, symbol=symbol)
-        if not bars:
-            payload = self._get(
-                f"{self.V3_URL}/historical-price-full/{symbol}", {"timeseries": days}
-            )
-            bars = normalize_price_bars(payload, symbol=symbol)
-        result = [bar_to_dict(bar) for bar in bars[-days:]]
-        self.cache[cache_key] = result
-        return result
-
-    def stats(self) -> dict[str, Any]:
-        return {
-            "api_calls_made": self.api_calls_made,
-            "max_api_calls": self.max_api_calls,
-            "budget_remaining": max(0, self.max_api_calls - self.api_calls_made),
-        }
+def _get_polygon_client() -> Any:
+    """Return a PolygonCompatClient from scripts/market_data/legacy.py."""
+    from scripts.market_data.legacy import PolygonCompatClient
+    return PolygonCompatClient()
 
 
 def normalize_symbol(value: Any) -> str:
@@ -330,28 +242,30 @@ def rows_to_prices_by_symbol(rows: list[Any]) -> dict[str, list[Bar]]:
     return result
 
 
-def fetch_prices_from_fmp(
+def fetch_prices_live(
     args: argparse.Namespace, days: int = 320
 ) -> tuple[dict[str, list[Bar]], dict[str, Any]]:
-    client = FMPClient(api_key=args.api_key, max_api_calls=args.max_api_calls)
-    if args.fmp_universe:
-        symbols = client.get_stock_list(limit=args.max_symbols)
+    """Fetch prices via Polygon and universe via finviz."""
+    client = _get_polygon_client()
+    use_universe = getattr(args, "finviz_universe", False) or getattr(args, "fmp_universe", False)
+    if use_universe:
+        symbols = _get_finviz_universe(max_symbols=args.max_symbols)
+        print(f"finviz universe: {len(symbols)} symbols", file=sys.stderr)
     else:
         symbols = [normalize_symbol(symbol) for symbol in (args.symbols or [])]
     prices: dict[str, list[Bar]] = {}
     for symbol in symbols:
         try:
-            bars = normalize_price_bars(
-                client.get_historical_prices(symbol, days=days), symbol=symbol
-            )
-        except ApiCallBudgetExceeded:
-            raise
-        except Exception as exc:  # pragma: no cover - defensive live-data path
+            data = client.get_historical_prices(symbol, days=days)
+            bars = normalize_price_bars(data, symbol=symbol)
+        except Exception as exc:
             print(f"WARN: failed to fetch {symbol}: {exc}", file=sys.stderr)
             continue
         if bars:
             prices[symbol] = bars
-    return prices, client.stats()
+    stats = client.get_api_stats() if hasattr(client, "get_api_stats") else {}
+    stats["source"] = "polygon+finviz" if use_universe else "polygon"
+    return prices, stats
 
 
 def load_state(path: PathLike) -> list[dict[str, Any]]:
@@ -1517,11 +1431,10 @@ def load_prices_for_args(
             "source": "prices_json",
             "path": args.prices_json,
         }
-    if getattr(args, "fmp_universe", False) or getattr(args, "symbols", None):
-        prices, stats = fetch_prices_from_fmp(args, days=days)
-        stats["source"] = "fmp"
-        return prices, stats
-    raise ValueError("Provide --prices-json, --symbols, or --fmp-universe.")
+    use_universe = getattr(args, "finviz_universe", False) or getattr(args, "fmp_universe", False)
+    if use_universe or getattr(args, "symbols", None):
+        return fetch_prices_live(args, days=days)
+    raise ValueError("Provide --prices-json, --symbols, or --finviz-universe.")
 
 
 def command_scan(args: argparse.Namespace) -> int:
@@ -1727,19 +1640,20 @@ def add_common_data_args(parser: argparse.ArgumentParser) -> None:
         help="Offline OHLCV JSON. Supports {'prices': {'AAPL': [bars]}} or row-list shapes.",
     )
     parser.add_argument(
-        "--symbols", nargs="*", help="Symbols to fetch via FMP when --prices-json is not provided."
+        "--symbols", nargs="*", help="Symbols to fetch via Polygon when --prices-json is not provided."
+    )
+    parser.add_argument(
+        "--finviz-universe",
+        action="store_true",
+        help="Fetch a broad liquid US universe from finviz. Use --max-symbols to cap.",
     )
     parser.add_argument(
         "--fmp-universe",
         action="store_true",
-        help="Fetch a broad US universe from FMP. Use --max-symbols to cap API usage.",
+        help=argparse.SUPPRESS,
     )
     parser.add_argument(
-        "--max-symbols", type=int, default=300, help="Maximum FMP universe symbols to fetch."
-    )
-    parser.add_argument("--api-key", help="FMP API key. Defaults to FMP_API_KEY.")
-    parser.add_argument(
-        "--max-api-calls", type=int, default=500, help="Safety cap for FMP API calls."
+        "--max-symbols", type=int, default=300, help="Maximum universe symbols to fetch."
     )
 
 

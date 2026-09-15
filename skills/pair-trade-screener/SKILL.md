@@ -43,13 +43,14 @@ Example user requests:
 ## Prerequisites
 
 - Python 3.9 or newer
-- An FMP API key with access to the company screener and historical-price endpoints
+- Polygon API key (`POLYGON_API_KEY` environment variable) for price history
+- `finvizfinance` for sector-based stock screening
 - `statsmodels>=0.14,<0.15` for ADF and autoregression calculations
 
 Set the API key without placing it on the command line or in a committed file:
 
 ```bash
-export FMP_API_KEY="<fmp-api-key>"
+export POLYGON_API_KEY="<polygon-api-key>"
 ```
 
 Run the scripts from the repository root with the statistical dependency isolated
@@ -112,10 +113,7 @@ Narrow focus to specific industry within sector:
 - Adjustments: Adjusted for splits and dividends
 - Clean data: No gaps or missing values
 
-**FMP API Endpoint:**
-```
-GET /v3/historical-price-full/{symbol}?apikey=YOUR_API_KEY
-```
+**Data Source:** Polygon via `PolygonCompatClient` (scripts/market_data/legacy.py)
 
 **Data Validation:**
 - Verify consistent date ranges across all symbols
@@ -469,7 +467,7 @@ uv run --with 'statsmodels>=0.14,<0.15' python \
 - `--min-market-cap`: Minimum market cap filter (default: $2B)
 - `--lookback-days`: Historical data period (default: 730 days)
 - `--output`: Output JSON file (default: `pair_analysis.json`)
-- `--api-key`: FMP API key (or set FMP_API_KEY env var)
+- Uses `POLYGON_API_KEY` env var for price data and `finvizfinance` for sector screening
 
 **Output:**
 ```json
@@ -518,7 +516,6 @@ uv run --with 'statsmodels>=0.14,<0.15' python \
 - `--lookback-days`: Analysis period (default: 365)
 - `--entry-zscore`: Z-score threshold for entry (default: 2.0)
 - `--exit-zscore`: Z-score threshold for exit (default: 0.0)
-- `--api-key`: FMP API key
 
 **Output:**
 - Current spread analysis
@@ -584,8 +581,8 @@ Deep dive into cointegration testing:
 - **Statistical foundation**: No discretionary interpretation
 - **Market neutral focus**: Minimize directional beta exposure
 - **Data quality critical**: Garbage in, garbage out
-- **Requires FMP API key**: Free tier sufficient for basic screening
-- **Python dependencies**: pandas, numpy, scipy, requests, and `statsmodels>=0.14,<0.15`
+- **Requires Polygon API key** and `finvizfinance` for sector screening
+- **Python dependencies**: pandas, numpy, scipy, and `statsmodels>=0.14,<0.15`
 
 ## Common Use Cases
 
@@ -655,20 +652,18 @@ Solutions:
 
 ## API Requirements
 
-- **Required**: FMP API key (free tier sufficient)
-- **Rate Limits**: ~250 requests/day on free tier
-- **Data Usage**: ~2 requests per symbol for 2-year history
-- **Upgrade**: Professional plan ($29/mo) recommended for frequent screening
+- **Required**: Polygon API key (`POLYGON_API_KEY`) — Stocks Starter plan (unlimited calls)
+- **Required**: `finvizfinance` for sector stock screening (no API key needed)
+- **Data Usage**: ~1 request per symbol for 2-year history
 
 ## Resources
 
-- **FMP Historical Price API**: https://site.financialmodelingprep.com/developer/docs/historical-price-full
-- **Stock Screener API**: https://site.financialmodelingprep.com/developer/docs/stock-screener-api
+- **Polygon API**: https://polygon.io/docs/stocks
 - **Statsmodels Documentation**: https://www.statsmodels.org/stable/index.html
 - **Cointegration Paper**: Engle & Granger (1987) - "Co-Integration and Error Correction"
 
 ---
 
-**Version**: 1.0
-**Last Updated**: 2025-11-08
-**Dependencies**: Python 3.8+, pandas, numpy, scipy, statsmodels, requests
+**Version**: 2.0
+**Last Updated**: 2026-09-15
+**Dependencies**: Python 3.9+, pandas, numpy, scipy, statsmodels, finvizfinance

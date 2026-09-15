@@ -20,8 +20,9 @@ Analyze historical price data to identify downtrend periods (peak-to-trough) and
 ## Prerequisites
 
 - Python 3.9+
-- FMP API key (set `FMP_API_KEY` environment variable or use `--api-key`)
-- Required packages: `requests`, `pandas`, `numpy` (standard data analysis stack)
+- Polygon API key (set `POLYGON_API_KEY` environment variable)
+- `finvizfinance` for stock universe screening
+- Required packages: `pandas`, `numpy` (standard data analysis stack)
 
 ## Workflow
 

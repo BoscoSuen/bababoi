@@ -3,11 +3,15 @@
 Pair Trade Screener - Find Cointegrated Stock Pairs
 
 This script screens for statistically significant pair trading opportunities by:
-1. Fetching historical price data from FMP API
+1. Fetching historical price data from Polygon API
 2. Calculating pairwise correlations
 3. Testing for cointegration (ADF test)
 4. Estimating half-life of mean reversion
 5. Ranking pairs by statistical strength
+
+Data sources:
+- Stock universe: finvizfinance (sector screening)
+- Price history: Polygon via PolygonCompatClient
 
 Usage:
     # Sector-based screening
@@ -20,26 +24,13 @@ Usage:
         skills/pair-trade-screener/scripts/find_pairs.py \
         --symbols AAPL,MSFT,GOOGL,META --min-correlation 0.75
 
-    # Full options
-    uv run --with 'statsmodels>=0.14,<0.15' python \
-        skills/pair-trade-screener/scripts/find_pairs.py \
-        --sector Financials \\
-        --min-correlation 0.70 \\
-        --min-market-cap 2000000000 \\
-        --lookback-days 730 \\
-        --output /tmp/pair-trade/financials.json
-
 Requirements:
     Python 3.9+ and statsmodels>=0.14,<0.15
-
-Author: Claude Trading Skills
-Version: 1.0
 """
 
 import argparse
 import json
 import math
-import os
 import sys
 import time
 from datetime import datetime
@@ -48,76 +39,56 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
-import requests
 from scipy import stats
 from statsmodels_support import require_statsmodels
 
-# =============================================================================
-# FMP API Functions
-# =============================================================================
+sys.path.insert(0, str(Path(__file__).resolve().parents[3]))
+from scripts.market_data.legacy import PolygonCompatClient
+
+FINVIZ_SECTOR_MAP = {
+    "Financial Services": "Financial",
+}
 
 
-def get_api_key(args_api_key):
-    """Get API key from args or environment variable"""
-    if args_api_key:
-        return args_api_key
-    api_key = os.environ.get("FMP_API_KEY")
-    if not api_key:
-        print("ERROR: FMP_API_KEY not found. Set environment variable or use --api-key")
-        sys.exit(1)
-    return api_key
+def fetch_sector_stocks_finviz(sector: str, min_market_cap: float = 2_000_000_000) -> list[dict]:
+    """Fetch stocks in a sector from finviz."""
+    from finvizfinance.screener.overview import Overview
 
+    print(f"\n[1/5] Fetching {sector} sector stocks from finviz...")
 
-def fetch_sector_stocks(sector, api_key, min_market_cap=2_000_000_000):
-    """Fetch stocks in a sector from FMP API"""
-    print(f"\n[1/5] Fetching {sector} sector stocks from FMP API...")
-
-    # Stock screener: stable /company-screener, with a v3 /stock-screener
-    # fallback for legacy keys. Both accept the same query params and return
-    # the same fields (symbol, companyName, marketCap, sector,
-    # exchangeShortName, isActivelyTrading).
-    params = {
-        "sector": sector,
-        "marketCapMoreThan": min_market_cap,
-        "limit": 1000,
+    foverview = Overview()
+    finviz_sector = FINVIZ_SECTOR_MAP.get(sector, sector)
+    filters: dict[str, str] = {
+        "Sector": finviz_sector,
+        "Price": "Over $20",
+        "Average Volume": "Over 2M",
+        "Industry": "Stocks only (ex-Funds)",
     }
-    endpoints = [
-        "https://financialmodelingprep.com/stable/company-screener",
-        "https://financialmodelingprep.com/api/v3/stock-screener",
-    ]
 
-    data = None
-    for url in endpoints:
-        try:
-            response = requests.get(url, params=params, headers={"apikey": api_key}, timeout=30)
-        except requests.exceptions.RequestException as e:
-            print(f"  WARNING: screener request failed ({url}): {e}")
-            continue
-        if response.status_code != 200:
-            continue
-        try:
-            payload = response.json()
-        except ValueError:
-            continue
-        if payload:
-            data = payload
-            break
+    foverview.set_filter(filters_dict=filters)
+    df = foverview.screener_view()
 
-    if not data:
-        print(f"ERROR: No stocks found in {sector} sector with market cap > ${min_market_cap:,}")
-        sys.exit(1)
-
-    # Extract symbols and basic info
     stocks = []
-    for item in data:
-        if item.get("isActivelyTrading", True):
+    if df is not None and not df.empty:
+        for _, row in df.iterrows():
+            market_cap_raw = row.get("Market Cap")
+            market_cap = 0
+            if market_cap_raw is not None:
+                try:
+                    market_cap = float(market_cap_raw)
+                except (TypeError, ValueError):
+                    pass
+
+            if market_cap < min_market_cap:
+                continue
+
             stocks.append(
                 {
-                    "symbol": item["symbol"],
-                    "name": item.get("companyName", ""),
-                    "marketCap": item.get("marketCap", 0),
-                    "sector": item.get("sector", sector),
-                    "exchange": item.get("exchangeShortName", ""),
+                    "symbol": str(row.get("Ticker", "")),
+                    "name": str(row.get("Company", "")),
+                    "marketCap": market_cap,
+                    "sector": str(row.get("Sector", sector)),
+                    "exchange": "",
                 }
             )
 
@@ -125,66 +96,19 @@ def fetch_sector_stocks(sector, api_key, min_market_cap=2_000_000_000):
     return stocks
 
 
-# --- FMP endpoint fallback: stable (new users) -> v3 (legacy users) ---
-_FMP_HIST_ENDPOINTS = [
-    (
-        "https://financialmodelingprep.com/stable/historical-price-eod/full",
-        True,
-    ),  # stable: symbol in query
-    ("https://financialmodelingprep.com/api/v3/historical-price-full", False),  # v3: symbol in path
-]
-_endpoint_failures: dict[str, int] = {}
-_BREAKER_THRESHOLD = 3
-
-
-def _fetch_raw_historical(symbol, api_key, params=None):
-    """Try stable endpoint first, fall back to v3. Returns dict or None."""
-    for base_url, is_stable in _FMP_HIST_ENDPOINTS:
-        if _endpoint_failures.get(base_url, 0) >= _BREAKER_THRESHOLD:
-            continue
-        if is_stable:
-            url = base_url
-            req_params = dict(params or {})
-            req_params["symbol"] = symbol
-        else:
-            url = f"{base_url}/{symbol}"
-            req_params = dict(params or {})
-        try:
-            resp = requests.get(url, headers={"apikey": api_key}, params=req_params, timeout=30)
-            if resp.status_code != 200:
-                _endpoint_failures[base_url] = _endpoint_failures.get(base_url, 0) + 1
-                continue
-            data = resp.json()
-            if isinstance(data, dict) and "historical" in data:
-                _endpoint_failures[base_url] = 0
-                return data
-            if isinstance(data, dict) and "historicalStockList" in data:
-                for entry in data["historicalStockList"]:
-                    if entry.get("symbol", "").replace("-", ".") == symbol.replace("-", "."):
-                        _endpoint_failures[base_url] = 0
-                        return {
-                            "symbol": entry["symbol"],
-                            "historical": entry.get("historical", []),
-                        }
-            _endpoint_failures[base_url] = _endpoint_failures.get(base_url, 0) + 1
-        except requests.exceptions.RequestException:
-            _endpoint_failures[base_url] = _endpoint_failures.get(base_url, 0) + 1
-    return None
-
-
-def fetch_historical_prices(symbol, api_key, lookback_days=730):
-    """Fetch historical adjusted close prices for a symbol"""
-    data = _fetch_raw_historical(symbol, api_key)
-    if not data:
+def fetch_historical_prices(
+    client: PolygonCompatClient, symbol: str, lookback_days: int = 730
+) -> pd.Series | None:
+    """Fetch historical adjusted close prices for a symbol via Polygon."""
+    data = client.get_historical_prices(symbol, days=lookback_days)
+    if not data or not data.get("historical"):
         return None
 
-    # Extract historical prices
     historical = data["historical"][:lookback_days]
-    historical = historical[::-1]  # Reverse to chronological order
+    historical = historical[::-1]
 
-    # Convert to pandas Series
     prices = pd.Series(
-        [item.get("adjClose") or item["close"] for item in historical],  # stable shape compat
+        [item.get("adjClose") or item["close"] for item in historical],
         index=[pd.to_datetime(item["date"]) for item in historical],
         name=symbol,
     )
@@ -192,8 +116,10 @@ def fetch_historical_prices(symbol, api_key, lookback_days=730):
     return prices
 
 
-def fetch_price_data_batch(symbols, api_key, lookback_days=730):
-    """Fetch historical prices for multiple symbols"""
+def fetch_price_data_batch(
+    client: PolygonCompatClient, symbols: list[str], lookback_days: int = 730
+) -> dict[str, pd.Series]:
+    """Fetch historical prices for multiple symbols."""
     print(f"\n[2/5] Fetching {lookback_days} days of price data for {len(symbols)} stocks...")
 
     price_data = {}
@@ -202,17 +128,16 @@ def fetch_price_data_batch(symbols, api_key, lookback_days=730):
     for i, symbol in enumerate(symbols, 1):
         print(f"  [{i}/{len(symbols)}] Fetching {symbol}...", end="", flush=True)
 
-        prices = fetch_historical_prices(symbol, api_key, lookback_days)
+        prices = fetch_historical_prices(client, symbol, lookback_days)
 
-        if prices is not None and len(prices) >= 250:  # Require at least 250 days
+        if prices is not None and len(prices) >= 250:
             price_data[symbol] = prices
             print(f" ✓ ({len(prices)} days)")
         else:
             failed_symbols.append(symbol)
             print(" ✗ (insufficient data)")
 
-        # Rate limiting
-        time.sleep(0.3)
+        time.sleep(0.15)
 
     print(f"\n  → Successfully fetched {len(price_data)} stocks")
     if failed_symbols:
@@ -263,7 +188,6 @@ def calculate_beta(prices_a, prices_b):
     if aligned_a.nunique() < 2 or aligned_b.nunique() < 2:
         raise ValueError("at least two finite observations and non-constant prices are required")
 
-    # Linear regression: A = alpha + beta * B
     slope, intercept, r_value, p_value, std_err = stats.linregress(aligned_b, aligned_a)
 
     return {"beta": slope, "intercept": intercept, "r_squared": r_value**2}
@@ -273,7 +197,6 @@ def test_cointegration(prices_a, prices_b, beta):
     """Test for cointegration using Augmented Dickey-Fuller test"""
     _, adfuller = require_statsmodels()
 
-    # ADF test
     try:
         aligned_a, aligned_b = _align_finite_prices(prices_a, prices_b)
         spread = aligned_a - (beta * aligned_b)
@@ -300,16 +223,13 @@ def calculate_half_life(spread):
     AutoReg, _ = require_statsmodels()
 
     try:
-        # Fit AR(1) model
         model = AutoReg(spread.dropna(), lags=1)
         result = model.fit()
 
-        # Extract autocorrelation coefficient
         phi = result.params.iloc[1]
 
-        # Calculate half-life
         if phi >= 1.0 or phi <= 0:
-            return None  # No mean reversion
+            return None
 
         half_life = -np.log(2) / np.log(phi)
 
@@ -344,40 +264,33 @@ def calculate_current_zscore(spread, window=90):
 def analyze_pair(symbol_a, symbol_b, prices_a, prices_b, min_correlation=0.70):
     """Analyze a single pair for cointegration"""
 
-    # Step 1: Calculate correlation
     correlation = calculate_correlation(prices_a, prices_b)
     if correlation is None or correlation < min_correlation:
         return None
 
-    # Step 2: Calculate beta (hedge ratio)
     try:
         beta_result = calculate_beta(prices_a, prices_b)
     except ValueError:
         return None
     beta = beta_result["beta"]
 
-    # Step 3: Test for cointegration
     coint_result = test_cointegration(prices_a, prices_b, beta)
     if coint_result is None:
         return None
 
-    # Step 4: Calculate half-life (if cointegrated)
     half_life = None
     if coint_result["is_cointegrated"]:
         half_life = calculate_half_life(coint_result["spread"])
 
-    # Step 5: Calculate current z-score
     current_zscore = calculate_current_zscore(coint_result["spread"])
 
-    # Step 6: Determine trade signal
     signal = "NONE"
     if current_zscore is not None:
         if current_zscore > 2.0:
-            signal = "SHORT"  # Short A, Long B
+            signal = "SHORT"
         elif current_zscore < -2.0:
-            signal = "LONG"  # Long A, Short B
+            signal = "LONG"
 
-    # Step 7: Determine strength rating
     strength = "☆"
     if coint_result["p_value"] < 0.01:
         strength = "★★★"
@@ -415,7 +328,6 @@ def screen_all_pairs(price_data, min_correlation=0.70):
     pairs_analyzed = 0
     cointegrated_pairs = []
 
-    # Analyze all combinations
     for symbol_a, symbol_b in combinations(symbols, 2):
         pairs_analyzed += 1
 
@@ -441,7 +353,6 @@ def rank_pairs(pairs):
     """Rank pairs by statistical strength"""
     print("\n[4/5] Ranking pairs by statistical strength...")
 
-    # Sort by p-value (ascending) and then by absolute z-score (descending)
     ranked = sorted(
         pairs, key=lambda x: (x["cointegration_pvalue"], -abs(x["current_zscore"] or 0))
     )
@@ -580,11 +491,9 @@ Examples:
         default="pair_analysis.json",
         help="Output JSON file (default: pair_analysis.json)",
     )
-    parser.add_argument("--api-key", type=str, help="FMP API key (or set FMP_API_KEY env variable)")
 
     args = parser.parse_args()
 
-    # Validate inputs
     if not args.sector and not args.symbols:
         parser.error("Either --sector or --symbols must be provided")
 
@@ -602,9 +511,6 @@ Examples:
         if any(not symbol for symbol in custom_symbols) or len(set(custom_symbols)) < 2:
             parser.error("--symbols must contain at least two distinct, non-empty symbols")
 
-    # Get API key
-    api_key = get_api_key(args.api_key)
-
     print("\n" + "=" * 70)
     print("PAIR TRADE SCREENER")
     print("=" * 70)
@@ -613,21 +519,20 @@ Examples:
     print(f"  Lookback Days: {args.lookback_days}")
     print(f"  Min Market Cap: ${args.min_market_cap:,.0f}")
 
-    # Get list of stocks to analyze
+    client = PolygonCompatClient()
+
     if args.sector:
-        stocks = fetch_sector_stocks(args.sector, api_key, args.min_market_cap)
+        stocks = fetch_sector_stocks_finviz(args.sector, args.min_market_cap)
         symbols = [s["symbol"] for s in stocks]
     else:
         symbols = custom_symbols
 
-    # Fetch price data
-    price_data = fetch_price_data_batch(symbols, api_key, args.lookback_days)
+    price_data = fetch_price_data_batch(client, symbols, args.lookback_days)
 
     if len(price_data) < 2:
         print("\nERROR: Need at least 2 stocks with valid data")
         sys.exit(1)
 
-    # Screen all pairs
     pairs = screen_all_pairs(price_data, args.min_correlation)
 
     if not pairs:
@@ -637,13 +542,10 @@ Examples:
         print("  - Increasing --lookback-days")
         ranked_pairs = []
     else:
-        # Rank pairs
         ranked_pairs = rank_pairs(pairs)
 
-    # Save results
     save_results(ranked_pairs, args.output)
 
-    # Print summary
     print_summary(ranked_pairs)
 
 

@@ -21,7 +21,8 @@ This skill is a research, model-book, and setup-fluency workflow. It does not ge
 ## Prerequisites
 
 - Python 3.9+
-- FMP API key for live US universe scans, or offline OHLCV JSON via `--prices-json`
+- `POLYGON_API_KEY` for live OHLCV (Stocks Starter plan), or offline OHLCV JSON via `--prices-json`
+- `finvizfinance` for universe scans (`--finviz-universe`)
 - Optional structured news/catalyst JSON for higher-quality catalyst classification
 - Recommended market regime artifact from `market-regime-daily`
 - Recommended local state path: `state/stockbee/20pct_study_events.jsonl`
@@ -34,7 +35,7 @@ Run after the US market close, or against the latest complete daily bar in an of
 
 ```bash
 python3 skills/stockbee-20pct-study/scripts/run_20pct_study.py scan \
-  --fmp-universe \
+  --finviz-universe \
   --max-symbols 300 \
   --as-of 2026-06-28 \
   --lookback-days 5 \
@@ -46,7 +47,7 @@ python3 skills/stockbee-20pct-study/scripts/run_20pct_study.py scan \
   --output-dir reports/
 ```
 
-Use offline data instead of FMP:
+Use offline data instead of live API:
 
 ```bash
 python3 skills/stockbee-20pct-study/scripts/run_20pct_study.py scan \

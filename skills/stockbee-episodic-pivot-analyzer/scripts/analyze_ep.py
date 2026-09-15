@@ -24,15 +24,19 @@ import math
 import os
 import re
 import sys
-import time
 from dataclasses import dataclass
-from datetime import date, datetime, timedelta
+from datetime import date, datetime
+from pathlib import Path
 from typing import Any
 
 try:
     import requests
 except ImportError:  # pragma: no cover - only hit in stripped Python envs
     requests = None
+
+_PROJECT_ROOT = str(Path(__file__).resolve().parents[3])
+if _PROJECT_ROOT not in sys.path:
+    sys.path.insert(0, _PROJECT_ROOT)
 
 
 CATALYST_ALIASES = {
@@ -147,69 +151,27 @@ class PriceStats:
     prior_20d_return_pct: float | None = None
 
 
-class FMPClient:
-    """Minimal stable-first FMP OHLCV/profile client for optional enrichment."""
+class PolygonEnrichmentClient:
+    """Polygon-based OHLCV enrichment client replacing the former FMPClient."""
 
-    HIST_URLS = [
-        "https://financialmodelingprep.com/stable/historical-price-eod/full",
-        "https://financialmodelingprep.com/api/v3/historical-price-full",
-    ]
-    PROFILE_URLS = [
-        "https://financialmodelingprep.com/stable/profile",
-        "https://financialmodelingprep.com/api/v3/profile",
-    ]
-
-    def __init__(self, api_key: str | None, max_api_calls: int = 200):
-        if requests is None:
-            raise RuntimeError("requests is required for FMP mode")
-        self.api_key = api_key or os.getenv("FMP_API_KEY")
-        if not self.api_key:
-            raise ValueError("FMP API key required for FMP enrichment")
+    def __init__(self, max_api_calls: int = 200):
+        from scripts.market_data.legacy import PolygonCompatClient
+        self._client = PolygonCompatClient()
         self.max_api_calls = max_api_calls
         self.api_calls = 0
-        self.session = requests.Session()
-        self.session.headers.update({"apikey": self.api_key})
-
-    def _get(self, url: str, params: dict[str, Any]) -> Any | None:
-        if self.api_calls >= self.max_api_calls:
-            return None
-        self.api_calls += 1
-        try:
-            resp = self.session.get(url, params=params, timeout=30)
-            time.sleep(0.3)
-            if resp.status_code == 200:
-                return resp.json()
-        except requests.RequestException:
-            return None
-        return None
 
     def get_historical_prices(self, symbol: str, days: int = 90) -> list[dict[str, Any]]:
-        today = date.today()
-        params_stable = {
-            "symbol": symbol,
-            "from": (today - timedelta(days=days * 2 + 10)).isoformat(),
-            "to": today.isoformat(),
-        }
-        data = self._get(self.HIST_URLS[0], params_stable)
-        if isinstance(data, list) and data:
-            return normalize_bars(data)[-days:]
-
-        data = self._get(f"{self.HIST_URLS[1]}/{symbol}", {"timeseries": days})
-        if isinstance(data, dict) and isinstance(data.get("historical"), list):
+        self.api_calls += 1
+        data = self._client.get_historical_prices(symbol, days=days)
+        if data and isinstance(data.get("historical"), list):
             return normalize_bars(data["historical"])[-days:]
         return []
 
-    def get_profile(self, symbol: str) -> dict[str, Any]:
-        data = self._get(self.PROFILE_URLS[0], {"symbol": symbol})
-        if isinstance(data, list) and data:
-            return data[0]
-        data = self._get(f"{self.PROFILE_URLS[1]}/{symbol}", {})
-        if isinstance(data, list) and data:
-            return data[0]
-        return {}
-
     def stats(self) -> dict[str, Any]:
-        return {"api_calls_made": self.api_calls, "max_api_calls": self.max_api_calls}
+        base = self._client.get_api_stats() if hasattr(self._client, "get_api_stats") else {}
+        base["api_calls_made"] = self.api_calls
+        base["max_api_calls"] = self.max_api_calls
+        return base
 
 
 def safe_float(value: Any, default: float | None = None) -> float | None:
@@ -878,7 +840,7 @@ def analyze_candidate(
     event: dict[str, Any],
     prices: dict[str, list[dict[str, Any]]],
     momentum_enrichment: dict[tuple[str, str | None], dict[str, Any]],
-    fmp: FMPClient | None,
+    fmp: PolygonEnrichmentClient | None,
     max_risk_pct: float,
 ) -> dict[str, Any]:
     symbol = normalize_symbol(event.get("symbol"))
@@ -1134,10 +1096,9 @@ def parse_args() -> argparse.Namespace:
         "--momentum-json",
         help="stockbee-momentum-burst-screener JSON output for price/volume enrichment",
     )
-    parser.add_argument("--prices-json", help="Offline OHLCV JSON by symbol; avoids FMP calls")
-    parser.add_argument("--api-key", help="FMP API key for optional OHLCV/profile enrichment")
+    parser.add_argument("--prices-json", help="Offline OHLCV JSON by symbol; avoids Polygon calls")
     parser.add_argument(
-        "--max-api-calls", type=int, default=200, help="FMP API call budget (default: 200)"
+        "--max-api-calls", type=int, default=200, help="API call budget (default: 200)"
     )
     parser.add_argument(
         "--max-risk-pct",
@@ -1176,11 +1137,11 @@ def main() -> None:
     prices = load_prices_json(args.prices_json)
     momentum = load_momentum_enrichment(args.momentum_json)
     fmp = None
-    if args.api_key or os.getenv("FMP_API_KEY"):
+    if os.getenv("POLYGON_API_KEY"):
         try:
-            fmp = FMPClient(args.api_key, max_api_calls=args.max_api_calls)
+            fmp = PolygonEnrichmentClient(max_api_calls=args.max_api_calls)
         except Exception as exc:  # pragma: no cover - defensive for CLI users
-            print(f"WARNING: FMP enrichment disabled: {exc}", file=sys.stderr)
+            print(f"WARNING: Polygon enrichment disabled: {exc}", file=sys.stderr)
 
     print("=" * 72)
     print("Stockbee Episodic Pivot Analyzer")
