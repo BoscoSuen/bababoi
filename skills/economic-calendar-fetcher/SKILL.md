@@ -56,6 +56,8 @@ Use this skill when the user requests:
 
 ## Prerequisites
 
+> **FMP Premium Required:** The economic calendar endpoint requires FMP Premium+ plan (not available on free tier). Confirm with the user before executing any API-calling scripts.
+
 - **FMP API Key** (required): Sign up at https://financialmodelingprep.com for a free key (250 requests/day). Set via `FMP_API_KEY` environment variable or pass `--api-key` to the script.
 - **Python 3.10+**: Required to run `skills/economic-calendar-fetcher/scripts/get_economic_calendar.py`.
 - **No third-party packages**: The script uses only the Python standard library.

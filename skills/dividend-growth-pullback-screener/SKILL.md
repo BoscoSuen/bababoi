@@ -9,6 +9,8 @@ description: Use this skill to find high-quality dividend growth stocks (12%+ an
 
 This skill screens for dividend growth stocks that exhibit strong fundamental characteristics but are experiencing temporary technical weakness. It targets stocks with exceptional dividend growth rates (12%+ CAGR) that have pulled back to RSI oversold levels (≤40), creating potential entry opportunities for long-term dividend growth investors.
 
+> **FMP Free Tier:** This skill uses FMP API (free plan: 250 calls/day). Confirm before running to avoid exhausting daily quota.
+
 **Investment Thesis:** High-quality dividend growth stocks (often yielding 1-2.5%) compound wealth through dividend increases rather than high current yield. Buying these stocks during temporary pullbacks (RSI ≤40) can enhance total returns by combining strong fundamental growth with favorable technical entry timing.
 
 ## When to Use This Skill

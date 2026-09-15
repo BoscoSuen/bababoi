@@ -29,9 +29,15 @@ Author: Claude Trading Skills
 Version: 1.0
 """
 
+from pathlib import Path as _Path
+import sys as _sys
+
 import numpy as np
 import requests
 from scipy.stats import norm
+
+_sys.path.insert(0, str(_Path(__file__).resolve().parents[3] / "scripts"))
+from fmp_compat import v3_to_stable
 
 
 class OptionPricer:
@@ -349,8 +355,10 @@ def fetch_historical_prices_for_hv(symbol, api_key, days=90):
                     url, headers={"apikey": api_key}, params={"symbol": symbol}, timeout=30
                 )
             else:
-                url = f"{base_url}/{symbol}"
-                resp = requests.get(url, headers={"apikey": api_key}, timeout=30)
+                url, v3_params = v3_to_stable(f"{base_url}/{symbol}", {})
+                resp = requests.get(
+                    url, headers={"apikey": api_key}, params=v3_params, timeout=30
+                )
             if resp.status_code != 200:
                 continue
             data = resp.json()
@@ -393,8 +401,9 @@ def get_current_stock_price(symbol, api_key):
                     base_url, headers={"apikey": api_key}, params={"symbol": symbol}, timeout=30
                 )
             else:
+                url, v3_params = v3_to_stable(f"{base_url}/{symbol}", {})
                 response = requests.get(
-                    f"{base_url}/{symbol}", headers={"apikey": api_key}, timeout=30
+                    url, headers={"apikey": api_key}, params=v3_params, timeout=30
                 )
             if response.status_code != 200:
                 continue
@@ -422,8 +431,9 @@ def get_dividend_yield(symbol, api_key):
                     base_url, headers={"apikey": api_key}, params={"symbol": symbol}, timeout=30
                 )
             else:
+                url, v3_params = v3_to_stable(f"{base_url}/{symbol}", {})
                 response = requests.get(
-                    f"{base_url}/{symbol}", headers={"apikey": api_key}, timeout=30
+                    url, headers={"apikey": api_key}, params=v3_params, timeout=30
                 )
             if response.status_code != 200:
                 continue

@@ -124,6 +124,8 @@ Do not use it for:
 
 ## Prerequisites
 
+> **FMP Free Tier:** This skill uses the Financial Modeling Prep API (free plan: 250 calls/day, 512 MB/30 days). Confirm with the user before executing any API-calling scripts.
+
 - Python 3.9 or later.
 - `requests` for the generated direct-FMP client; deterministic evaluation and audit scripts otherwise use the standard library.
 - `FMP_API_KEY` in the environment for Claude Code direct mode. Never commit or print the key.

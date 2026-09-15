@@ -12,6 +12,8 @@ This skill identifies high-quality dividend stocks that combine value characteri
 1. **FINVIZ Elite API (Optional but Recommended)**: Pre-screen stocks with basic criteria (fast, cost-effective)
 2. **Financial Modeling Prep (FMP) API**: Detailed fundamental analysis of candidates
 
+> **FMP Free Tier:** This skill uses FMP API (free plan: 250 calls/day). Confirm before running to avoid exhausting daily quota.
+
 Screen US equities based on quantitative criteria including valuation ratios, dividend metrics, financial health, and profitability. Generate comprehensive reports ranking stocks by composite quality scores with detailed fundamental analysis.
 
 **Efficiency Advantage**: Using FINVIZ pre-screening can reduce FMP API calls by 90%, making this approach ideal for free-tier API users.
@@ -25,6 +27,8 @@ Invoke this skill when the user requests:
 - "Find income stocks trading at reasonable valuations"
 - "Screen for sustainable high-yield stocks"
 - Any request combining dividend yield, valuation metrics, and fundamental analysis
+
+## Prerequisites
 
 ## Workflow
 

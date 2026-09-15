@@ -28,6 +28,8 @@ Three phases:
   every 1–5 min via `watch` or cron; replay-deterministic so re-runs
   are byte-identical.
 
+> **FMP Free Tier:** This skill uses FMP API (free plan: 250 calls/day). Confirm before running to avoid exhausting daily quota.
+
 ## When to Use
 
 Invoke this skill when the user wants to:
@@ -46,6 +48,8 @@ Do NOT invoke for:
 - Live order routing — this skill is detection-only by design;
   Phase 3 emits a `triggered` state with concrete entry/stop/share
   count, but the trader fires the order manually.
+
+## Prerequisites
 
 ## Workflow
 

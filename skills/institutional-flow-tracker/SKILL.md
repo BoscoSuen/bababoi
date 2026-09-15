@@ -13,6 +13,8 @@ This skill tracks institutional investor activity through 13F SEC filings to ide
 
 ## Prerequisites
 
+> **FMP Free Tier:** This skill uses the Financial Modeling Prep API (free plan: 250 calls/day, 512 MB/30 days). Confirm with the user before executing any API-calling scripts.
+
 - **FMP API Key:** Set `FMP_API_KEY` environment variable or pass `--api-key` to scripts
 - **Python 3.9+:** Required for running analysis scripts
 - **Dependencies:** `pip install requests` (scripts handle missing dependencies gracefully)

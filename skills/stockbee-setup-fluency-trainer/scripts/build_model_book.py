@@ -28,6 +28,12 @@ import time
 from collections.abc import Iterable
 from dataclasses import dataclass
 from datetime import date, datetime, timedelta
+from pathlib import Path as _Path
+
+_sys_path_dir = str(_Path(__file__).resolve().parents[3] / "scripts")
+if _sys_path_dir not in sys.path:
+    sys.path.insert(0, _sys_path_dir)
+from fmp_compat import v3_to_stable
 from pathlib import Path
 from typing import Any
 
@@ -117,7 +123,10 @@ class FMPClient:
             self.cache[cache_key] = result
             return result
 
-        data = self._get(f"{self.V3_URL}/historical-price-full/{symbol}", {"timeseries": days})
+        v3_url, v3_params = v3_to_stable(
+            f"{self.V3_URL}/historical-price-full/{symbol}", {"timeseries": days}
+        )
+        data = self._get(v3_url, v3_params)
         bars = normalize_price_bars(data, symbol=symbol)
         result = [bar_to_dict(b) for b in bars[-days:]]
         self.cache[cache_key] = result

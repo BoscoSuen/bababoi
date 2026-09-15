@@ -10,6 +10,8 @@ description: Convert Kanchi-style dividend investing into a repeatable US-stock 
 Implement Kanchi's 5-step method as a deterministic workflow for US dividend investing.
 Prioritize safety and repeatability over aggressive yield chasing.
 
+> **FMP Free Tier:** This skill uses FMP API (free plan: 250 calls/day). Confirm before running to avoid exhausting daily quota.
+
 ## When to Use
 
 Use this skill when the user needs:

@@ -75,6 +75,8 @@ override with `--rs-benchmark SPY/QQQ/IWM/...`.
 
 ## Prerequisites
 
+> **FMP Free Tier:** This skill uses the Financial Modeling Prep API (free plan: 250 calls/day, 512 MB/30 days). Confirm with the user before executing any API-calling scripts.
+
 **API Requirements:**
 - **FMP API key** (free tier: 250 calls/day, sufficient for 35 stocks; Starter tier $29.99/mo for 40+ stocks)
   - Sign up: https://site.financialmodelingprep.com/developer/docs

@@ -12,8 +12,13 @@ Selects representative stocks for market themes using a fallback chain:
 import csv
 import io
 import logging
+import sys as _sys
 import time
+from pathlib import Path as _Path
 from typing import Optional
+
+_sys.path.insert(0, str(_Path(__file__).resolve().parents[3] / "scripts"))
+from fmp_compat import v3_to_stable
 
 try:
     import requests
@@ -468,7 +473,7 @@ class RepresentativeStockSelector:
         # Both return a list of holdings with `asset` (ticker) and `marketValue`.
         endpoints = [
             ("https://financialmodelingprep.com/stable/etf/holdings", {"symbol": etf_symbol}),
-            (f"https://financialmodelingprep.com/api/v3/etf-holder/{etf_symbol}", None),
+            v3_to_stable(f"https://financialmodelingprep.com/api/v3/etf-holder/{etf_symbol}", {}),
         ]
 
         try:

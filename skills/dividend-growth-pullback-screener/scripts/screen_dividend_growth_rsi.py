@@ -33,6 +33,10 @@ from typing import Optional
 
 import requests
 
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parents[3] / "scripts"))
+from fmp_compat import v3_to_stable
+
 
 class FINVIZClient:
     """Client for FINVIZ Elite API"""
@@ -235,7 +239,8 @@ class FMPClient:
         spec = self._stable_spec(endpoint, params)
         if spec:
             attempts.append(spec)  # /stable first
-        attempts.append((f"{self.BASE_URL}/{endpoint}", dict(params)))  # v3 fallback
+        v3_url, v3_params = v3_to_stable(f"{self.BASE_URL}/{endpoint}", dict(params))
+        attempts.append((v3_url, v3_params))  # v3 → stable via shim
         for i, (url, req_params) in enumerate(attempts):
             quiet = i < len(attempts) - 1
             data = self._request(url, req_params, quiet=quiet)
@@ -273,6 +278,7 @@ class FMPClient:
             else:
                 url = f"{base_url}/{symbol}"
                 params = {"timeseries": days}
+                url, params = v3_to_stable(url, params)
             try:
                 response = self.session.get(url, params=params, timeout=30)
                 time.sleep(0.3)

@@ -18,6 +18,8 @@ Build and maintain a model book for Stockbee-style Momentum Burst setups. This s
 
 ## Prerequisites
 
+> **FMP Free Tier:** This skill optionally uses the Financial Modeling Prep API for outcome updates (free plan: 250 calls/day, 512 MB/30 days). Confirm with the user before executing any API-calling scripts.
+
 - Python 3.10+
 - A `stockbee-momentum-burst-screener` JSON report, or compatible candidate JSON
 - Optional: FMP API key for outcome updates when offline OHLCV JSON is not supplied

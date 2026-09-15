@@ -19,6 +19,8 @@ This skill retrieves upcoming earnings announcements for US stocks using the Fin
 
 ## Prerequisites
 
+> **FMP Free Tier:** This skill uses FMP API (free plan: 250 calls/day). Confirm before running to avoid exhausting daily quota.
+
 ### FMP API Key
 
 This skill requires a Financial Modeling Prep API key.

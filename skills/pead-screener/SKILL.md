@@ -7,6 +7,8 @@ description: Screen post-earnings gap-up stocks for PEAD (Post-Earnings Announce
 
 Screen post-earnings gap-up stocks for PEAD (Post-Earnings Announcement Drift) patterns using weekly candle analysis to detect red candle pullbacks and breakout signals.
 
+> **FMP Free Tier:** This skill uses FMP API (free plan: 250 calls/day). Confirm before running to avoid exhausting daily quota.
+
 ## When to Use
 
 - User asks for PEAD screening or post-earnings drift analysis

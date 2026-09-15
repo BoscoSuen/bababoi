@@ -23,6 +23,8 @@ This skill provides comprehensive options strategy analysis and education using 
 
 ## Prerequisites
 
+> **FMP Free Tier:** This skill optionally uses the Financial Modeling Prep API (free plan: 250 calls/day, 512 MB/30 days). Confirm with the user before executing any API-calling scripts.
+
 **Required:**
 - Python 3.9+ with `numpy`, `scipy`, `requests`
 
