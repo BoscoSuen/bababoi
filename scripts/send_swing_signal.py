@@ -92,6 +92,7 @@ def ensure_reports(today_str: str) -> dict[str, Path | None]:
                     / "scripts"
                     / "screen_momentum_burst.py"
                 ),
+                "--polygon-universe",
                 "--output-dir",
                 str(REPORTS_DIR),
             ],
@@ -111,6 +112,7 @@ def ensure_reports(today_str: str) -> dict[str, Path | None]:
                     / "scripts"
                     / "screen_exhaustion_hammer.py"
                 ),
+                "--sp500-universe",
                 "--output-dir",
                 str(REPORTS_DIR),
             ],
@@ -180,13 +182,15 @@ def format_signal(today_str: str, reports: dict[str, Path | None]) -> list[str]:
     if mb_data:
         mb_syms = {
             c["symbol"]
-            for c in mb_data.get("candidates", mb_data.get("results", []))[:30]
+            for c in mb_data.get("candidates", mb_data.get("results", []))
+            if c.get("state", "") != "REJECTED"
         }
     eh_syms = set()
     if eh_data:
         eh_syms = {
             c["symbol"]
-            for c in eh_data.get("candidates", eh_data.get("results", []))[:20]
+            for c in eh_data.get("candidates", eh_data.get("results", []))
+            if c.get("state", "") != "REJECTED"
         }
 
     overlaps = []
