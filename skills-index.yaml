@@ -310,6 +310,14 @@ skills:
   timeframe: research
   difficulty: intermediate
   integrations:
+  - id: polygon
+    type: market_data
+    requirement: required
+    note: Daily OHLCV via Polygon (scripts/market_data); POLYGON_API_KEY
+  - id: finviz
+    type: screener
+    requirement: required
+    note: Stock universe screening via finvizfinance; no API key
   - id: local_calculation
     type: calculation
     requirement: not_required
@@ -1320,10 +1328,14 @@ skills:
   timeframe: research
   difficulty: advanced
   integrations:
-  - id: fmp
+  - id: polygon
     type: market_data
     requirement: required
-    note: Financial Modeling Prep API
+    note: Daily OHLCV via Polygon (scripts/market_data); POLYGON_API_KEY
+  - id: finviz
+    type: screener
+    requirement: required
+    note: Sector stock screening via finvizfinance; no API key
   inputs:
   - sector_universe
   - lookback_period
@@ -1740,10 +1752,14 @@ skills:
   timeframe: daily
   difficulty: advanced
   integrations:
-  - id: fmp
+  - id: polygon
     type: market_data
     requirement: required
-    note: Live US universe, daily OHLCV, symbol profile, and optional historical backfill data
+    note: Daily OHLCV via Polygon (scripts/market_data); POLYGON_API_KEY
+  - id: finviz
+    type: screener
+    requirement: optional
+    note: Universe scanning via finvizfinance (--finviz-universe); no API key
   - id: prices_json
     type: local_file
     requirement: optional
@@ -1789,10 +1805,10 @@ skills:
     type: local_file
     requirement: required
     note: User-provided or upstream-generated catalyst/event records; the skill does not discover news by itself
-  - id: fmp
+  - id: polygon
     type: market_data
     requirement: optional
-    note: Optional OHLCV/profile enrichment via Financial Modeling Prep
+    note: Optional OHLCV enrichment via Polygon (scripts/market_data); POLYGON_API_KEY
   - id: local_calculation
     type: calculation
     requirement: not_required

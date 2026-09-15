@@ -239,7 +239,7 @@ The table below is **auto-generated** from `skills-index.yaml` by `scripts/gener
 | **Crypto Regime Analyzer** | ❌ Not used | ❌ Not used | ❌ Not used | Free public API, no key; universe, price history, BTC dominance; Public futures endpoint for perp funding; component skipped if unreachable; Offline snapshot path (--input-json); schema in references |
 | **Data Quality Checker** | ❌ Not used | ❌ Not used | ❌ Not used | Local markdown validation; works offline |
 | **Dividend Growth Pullback Screener** | ✅ Required | 🟡 Optional (Recommended) | ❌ Not used | Financial Modeling Prep API |
-| **Downtrend Duration Analyzer** | ❌ Not used | ❌ Not used | ❌ Not used | Duration analysis from market data; pure calculation |
+| **Downtrend Duration Analyzer** | ❌ Not used | ❌ Not used | ❌ Not used | Daily OHLCV via Polygon (scripts/market_data); POLYGON_API_KEY; Stock universe via finvizfinance |
 | **Drawdown Circuit Breaker** | ❌ Not used | ❌ Not used | ❌ Not used | Reads trader-memory-core thesis YAML files; pure calculation, works offline |
 | **Dual Axis Skill Reviewer** | ❌ Not used | ❌ Not used | ❌ Not used | Deterministic scoring + optional LLM review |
 | **Earnings Calendar** | ✅ Required | ❌ Not used | ❌ Not used | Financial Modeling Prep API |
@@ -272,7 +272,7 @@ The table below is **auto-generated** from `skills-index.yaml` by `scripts/gener
 | **News Reaction Failure Analyzer** | ✅ Required | ❌ Not used | ❌ Not used | Historical EOD price data; per-symbol coverage varies (ETF proxy fallback documented) |
 | **Options Strategy Advisor** | 🟡 Optional | ❌ Not used | ❌ Not used | Financial Modeling Prep API |
 | **PEAD Screener** | ✅ Required | ❌ Not used | ❌ Not used | Financial Modeling Prep API |
-| **Pair Trade Screener** | ✅ Required | ❌ Not used | ❌ Not used | Financial Modeling Prep API |
+| **Pair Trade Screener** | ❌ Not used | ❌ Not used | ❌ Not used | Daily OHLCV via Polygon (scripts/market_data); POLYGON_API_KEY; Sector screening via finvizfinance |
 | **Parabolic Short Trade Planner** | ✅ Required | ❌ Not used | 🟡 Optional | Financial Modeling Prep API |
 | **Portfolio Manager** | ❌ Not used | ❌ Not used | ✅ Required | Alpaca brokerage MCP/API |
 | **Position Sizer** | ❌ Not used | ❌ Not used | ❌ Not used | Pure calculation; works offline |
@@ -285,8 +285,8 @@ The table below is **auto-generated** from `skills-index.yaml` by `scripts/gener
 | **Skill Idea Miner** | ❌ Not used | ❌ Not used | ❌ Not used | Mines session logs for skill ideas |
 | **Skill Integration Tester** | ❌ Not used | ❌ Not used | ❌ Not used | Validates multi-skill workflow contracts |
 | **Stanley Druckenmiller Investment** | ❌ Not used | ❌ Not used | ❌ Not used | Synthesizes outputs from upstream skills; pure calculation |
-| **Stockbee 20% Study** | ✅ Required | ❌ Not used | ❌ Not used | Live US universe, daily OHLCV, symbol profile, and optional historical backfill data |
-| **Stockbee Episodic Pivot Analyzer** | 🟡 Optional | ❌ Not used | ❌ Not used | Optional OHLCV/profile enrichment via Financial Modeling Prep |
+| **Stockbee 20% Study** | ❌ Not used | ❌ Not used | ❌ Not used | Daily OHLCV via Polygon (scripts/market_data); POLYGON_API_KEY; Optional universe via finvizfinance |
+| **Stockbee Episodic Pivot Analyzer** | ❌ Not used | ❌ Not used | ❌ Not used | Optional OHLCV enrichment via Polygon (scripts/market_data); POLYGON_API_KEY |
 | **Stockbee Exhaustion Hammer Screener** | ❌ Not used | ❌ Not used | ❌ Not used | S&P 500 universe and daily OHLCV via Polygon (scripts/market_data); POLYGON_API_KEY; Offline or near-close provisional OHLCV JSON fallback for no-API screening and tests; Optional quality metadata keyed by symbol, such as marketCap and holder counts; Pullback context, hammer geometry, risk-distance scoring, and report generation |
 | **Stockbee Momentum Burst Screener** | ❌ Not used | ❌ Not used | ❌ Not used | S&P 500 universe and daily OHLCV via Polygon (scripts/market_data); POLYGON_API_KEY; Offline OHLCV JSON fallback for no-API screening and tests; Trigger detection, setup scoring, risk-distance checks, and report generation |
 | **Stockbee Setup Fluency Trainer** | 🟡 Optional | ❌ Not used | ❌ Not used | Financial Modeling Prep daily OHLCV for automatic outcome updates when local prices are unavailable |
@@ -456,7 +456,7 @@ python3 dividend-growth-pullback-screener/scripts/screen_dividend_growth_rsi.py 
   --min-div-growth 15
 ```
 
-**Pair Trade Screener:** ⚠️ Requires FMP API key
+**Pair Trade Screener:** Requires `POLYGON_API_KEY` + `finvizfinance`
 ```bash
 # Screen for pairs in specific sector
 python3 pair-trade-screener/scripts/find_pairs.py --sector Technology
