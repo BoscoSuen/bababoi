@@ -56,3 +56,7 @@ scripts/weekly_portfolio_review_fetch.py
 htmlcov/
 .coverage
 # .secrets.baseline is tracked — needed by detect-secrets pre-commit hook
+
+
+# downloaded docs
+market_analysis/
