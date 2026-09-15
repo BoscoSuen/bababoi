@@ -29,6 +29,7 @@ ET = ZoneInfo("America/New_York")
 REPO_ROOT = Path(__file__).resolve().parents[1]
 REPORTS_DIR = REPO_ROOT / "reports"
 STATE_DIR = REPO_ROOT / "state" / "swing_signal"
+UNIVERSE_FILE = STATE_DIR / "liquid_pool_universe.txt"
 MAX_DISCORD_CHARS = 1950
 
 
@@ -53,11 +54,41 @@ def _find_report(prefix: str, today_str: str) -> Path | None:
     return Path(matches[-1]) if matches else None
 
 
+def _build_finviz_universe() -> Path:
+    """Build liquid pool universe (source: finviz, price>$20, avg vol>2M, ex-funds)."""
+    from finvizfinance.screener.overview import Overview
+
+    foverview = Overview()
+    foverview.set_filter(filters_dict={
+        "Price": "Over $20",
+        "Average Volume": "Over 2M",
+        "Industry": "Stocks only (ex-Funds)",
+    })
+    df = foverview.screener_view()
+    tickers = sorted(df["Ticker"].tolist())
+    STATE_DIR.mkdir(parents=True, exist_ok=True)
+    header = f"# liquid_pool_universe — source: finviz (price>$20, avg_vol>2M, ex-funds)\n"
+    UNIVERSE_FILE.write_text(header + "\n".join(tickers) + "\n")
+    print(f"  Liquid pool universe: {len(tickers)} tickers (source: finviz)", flush=True)
+    return UNIVERSE_FILE
+
+
+def _get_universe_file() -> Path:
+    """Return cached liquid_pool_universe file, or rebuild if stale (>18h old)."""
+    if UNIVERSE_FILE.exists():
+        age_h = (time.time() - UNIVERSE_FILE.stat().st_mtime) / 3600
+        if age_h < 18:
+            lines = [l for l in UNIVERSE_FILE.read_text().strip().splitlines() if not l.startswith("#")]
+            print(f"  Reusing liquid pool universe ({len(lines)} tickers, {age_h:.1f}h old)", flush=True)
+            return UNIVERSE_FILE
+    return _build_finviz_universe()
+
+
 def _run_screener(cmd: list[str], label: str) -> int:
     py = str(REPO_ROOT / ".venv" / "bin" / "python3")
     full = [py] + cmd
     print(f"  Running {label}...", flush=True)
-    result = subprocess.run(full, cwd=str(REPO_ROOT), capture_output=True, text=True, timeout=300)
+    result = subprocess.run(full, cwd=str(REPO_ROOT), capture_output=True, text=True, timeout=600)
     if result.returncode != 0:
         print(f"  WARNING: {label} failed (rc={result.returncode}): {result.stderr[:200]}")
     return result.returncode
@@ -67,57 +98,73 @@ def ensure_reports(today_str: str) -> dict[str, Path | None]:
     """Find or generate today's screener reports."""
     reports = {}
 
+    needs_screener = False
+    for prefix in ("vcp_screener", "stockbee_momentum_burst", "stockbee_exhaustion_hammer"):
+        if not _find_report(prefix, today_str):
+            needs_screener = True
+            break
+
+    universe_file = None
+    if needs_screener:
+        try:
+            universe_file = str(_get_universe_file())
+        except Exception as exc:
+            print(f"  WARNING: finviz universe failed ({exc}), falling back to S&P 500")
+
     # VCP
     reports["vcp"] = _find_report("vcp_screener", today_str)
     if not reports["vcp"]:
-        _run_screener(
-            [
-                str(REPO_ROOT / "skills" / "vcp-screener" / "scripts" / "screen_vcp.py"),
-                "--output-dir",
-                str(REPORTS_DIR),
-            ],
-            "VCP screener",
-        )
+        cmd = [
+            str(REPO_ROOT / "skills" / "vcp-screener" / "scripts" / "screen_vcp.py"),
+            "--output-dir",
+            str(REPORTS_DIR),
+        ]
+        if universe_file:
+            syms = [s for s in Path(universe_file).read_text().strip().splitlines() if not s.startswith("#")]
+            cmd += ["--universe"] + syms
+        _run_screener(cmd, "VCP screener")
         reports["vcp"] = _find_report("vcp_screener", today_str)
 
     # Momentum Burst
     reports["mb"] = _find_report("stockbee_momentum_burst", today_str)
     if not reports["mb"]:
-        _run_screener(
-            [
-                str(
-                    REPO_ROOT
-                    / "skills"
-                    / "stockbee-momentum-burst-screener"
-                    / "scripts"
-                    / "screen_momentum_burst.py"
-                ),
-                "--polygon-universe",
-                "--output-dir",
-                str(REPORTS_DIR),
-            ],
-            "Momentum Burst screener",
-        )
+        cmd = [
+            str(
+                REPO_ROOT
+                / "skills"
+                / "stockbee-momentum-burst-screener"
+                / "scripts"
+                / "screen_momentum_burst.py"
+            ),
+            "--output-dir",
+            str(REPORTS_DIR),
+        ]
+        if universe_file:
+            cmd += ["--universe-file", universe_file]
+        else:
+            cmd += ["--polygon-universe"]
+        _run_screener(cmd, "Momentum Burst screener")
         reports["mb"] = _find_report("stockbee_momentum_burst", today_str)
 
     # Exhaustion Hammer
     reports["eh"] = _find_report("stockbee_exhaustion_hammer", today_str)
     if not reports["eh"]:
-        _run_screener(
-            [
-                str(
-                    REPO_ROOT
-                    / "skills"
-                    / "stockbee-exhaustion-hammer-screener"
-                    / "scripts"
-                    / "screen_exhaustion_hammer.py"
-                ),
-                "--sp500-universe",
-                "--output-dir",
-                str(REPORTS_DIR),
-            ],
-            "Exhaustion Hammer screener",
-        )
+        cmd = [
+            str(
+                REPO_ROOT
+                / "skills"
+                / "stockbee-exhaustion-hammer-screener"
+                / "scripts"
+                / "screen_exhaustion_hammer.py"
+            ),
+            "--output-dir",
+            str(REPORTS_DIR),
+        ]
+        if universe_file:
+            cmd += ["--universe-file", universe_file]
+        else:
+            cmd += ["--sp500-universe"]
+        _run_screener(cmd, "Exhaustion Hammer screener")
         reports["eh"] = _find_report("stockbee_exhaustion_hammer", today_str)
 
     # Theme (optional, don't run if missing — it's slow)
