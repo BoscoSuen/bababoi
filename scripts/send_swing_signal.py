@@ -42,8 +42,7 @@ def is_trading_day(d: date) -> bool:
     try:
         from scripts.market_calendar.market_calendar import session_for_date
 
-        session_for_date("XNYS", d)
-        return True
+        return session_for_date("XNYS", d) is not None
     except Exception:
         return d.weekday() < 5
 
