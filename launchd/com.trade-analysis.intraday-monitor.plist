@@ -2,9 +2,9 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <!--
-  Intraday Market Monitor — fires at :20 and :50 past every hour (local time).
+  Intraday Market Monitor — fires at :20 and :50 past every hour (local time), i.e. every 30 min.
   The script converts to ET, exits silently on non-session days and outside the
-  configured slots (09:50, 10:20 … 15:20, 15:50, 16:20 ET), and catches up the
+  configured slots (09:50, 10:20, 10:50 … 15:50, 16:20 ET), and catches up the
   latest pending slot after a sleep/wake.
 
   SETUP: Replace $HOME and $PROJECT_DIR before installing.

@@ -20,17 +20,42 @@ from scripts.market_data.timeutil import cumulative_vwap, hourly_bars, parse_ts_
 FIRST_HOUR = timedelta(minutes=60)
 
 
+def _watchlist_entries(path: Path | None) -> list[dict]:
+    """Rows of ``state/daily_watchlist.json`` (written by scripts/send_swing_signal.py):
+    the screener-derived ``symbols`` list followed by the hand-kept ``manual`` list.
+    Each row is normalised to ``{"symbol", "pivot", "stop"}``. YAML input (the old
+    ``watchlist.yaml`` shape) still parses because JSON is a YAML subset."""
+    if not path or not Path(path).is_file():
+        return []
+    try:
+        data = yaml.safe_load(Path(path).read_text(encoding="utf-8")) or {}
+    except yaml.YAMLError:
+        return []
+    if isinstance(data, dict):
+        raw = list(data.get("symbols") or []) + list(data.get("manual") or [])
+    else:
+        raw = data
+    out: list[dict] = []
+    for item in raw or []:
+        if isinstance(item, dict):
+            sym, pivot, stop = item.get("symbol"), item.get("pivot"), item.get("stop")
+        else:
+            sym, pivot, stop = item, None, None
+        if sym:
+            out.append(
+                {
+                    "symbol": str(sym).strip().upper(),
+                    "pivot": float(pivot) if pivot is not None else None,
+                    "stop": float(stop) if stop is not None else None,
+                }
+            )
+    return out
+
+
 def load_watchlist(
     path: Path | None, *, vcp_json: Path | None = None, vcp_min_rating: str = "B"
 ) -> list[str]:
-    symbols: list[str] = []
-    if path and Path(path).is_file():
-        data = yaml.safe_load(Path(path).read_text(encoding="utf-8")) or {}
-        raw = data.get("symbols") if isinstance(data, dict) else data
-        for item in raw or []:
-            sym = item.get("symbol") if isinstance(item, dict) else item
-            if sym:
-                symbols.append(str(sym).strip().upper())
+    symbols = [e["symbol"] for e in _watchlist_entries(path)]
     if vcp_json:
         symbols.extend(vcp_symbols(vcp_json, min_rating=vcp_min_rating))
     seen: set[str] = set()
@@ -40,6 +65,14 @@ def load_watchlist(
             seen.add(s)
             out.append(s)
     return out
+
+
+def load_watchlist_levels(path: Path | None) -> dict[str, dict]:
+    """``{symbol: {"pivot", "stop"}}``; the first row naming a symbol wins."""
+    levels: dict[str, dict] = {}
+    for e in _watchlist_entries(path):
+        levels.setdefault(e["symbol"], {"pivot": e["pivot"], "stop": e["stop"]})
+    return levels
 
 
 def latest_vcp_json(reports_dir: Path) -> Path | None:
@@ -74,9 +107,11 @@ def evaluate_symbol(
     session_close: datetime,
     rel_vol_breakout_min: float = 1.2,
     gap_min_pct: float = 2.0,
+    pivot: float | None = None,
+    stop: float | None = None,
 ) -> dict:
     if not bars5:
-        return {"symbol": symbol, "available": False, "signals": []}
+        return {"symbol": symbol, "available": False, "signals": [], "pivot": pivot, "stop": stop}
     hours = hourly_bars(bars5, session_close=session_close)
     closed = [h for h in hours if h["closed"]]
     vwaps = cumulative_vwap(bars5)
@@ -121,6 +156,14 @@ def evaluate_symbol(
                 signals.append("VWAP_LOSS")
     else:
         vwap_at_close = vwaps[-1]
+    # Level signals are judged on the latest *confirmed* 5-minute close, not the
+    # hourly bar: a pivot break or stop hit is the reason this symbol is on the list,
+    # and a half-hourly slot should report it as soon as the feed confirms it.
+    last_close = bars5[-1]["c"]
+    if pivot is not None and last_close > pivot and (rel_vol or 0) >= rel_vol_breakout_min:
+        signals.append("PIVOT_BREAK")
+    if stop is not None and last_close < stop:
+        signals.append("STOP_HIT")
     return {
         "symbol": symbol,
         "available": True,
@@ -135,5 +178,7 @@ def evaluate_symbol(
         "fhr_low": fhr_low,
         "gap_pct": gap_pct,
         "rel_vol": rel_vol,
+        "pivot": pivot,
+        "stop": stop,
         "signals": signals,
     }

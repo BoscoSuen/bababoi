@@ -7,7 +7,7 @@ description: Run an hourly, deterministic intraday market read on 15-minute-dela
 
 ## Overview
 
-A launchd-driven script that, at fixed ET slots (09:50, 10:20 … 15:20, 15:50, 16:20),
+A launchd-driven script that, every 30 minutes at fixed ET slots (09:50, 10:20, 10:50 … 15:50, 16:20),
 pulls Polygon Stocks Starter data (15-minute delayed), computes an hourly market
 posture, writes `reports/intraday/<date>/intraday_<HHMM>.{json,md}`, posts a compact
 summary to Discord, and at 10:20 / 15:20 / on a posture flip asks Claude (`claude -p`)
@@ -20,7 +20,7 @@ minutes; that is out of scope on this plan tier.
 
 ## When to Use
 
-- Hourly during the US regular session, via launchd (`--auto-slot`).
+- Every 30 minutes during the US regular session, via launchd (`--auto-slot`). Watchlist names and pivot/stop levels come from `state/daily_watchlist.json`, written after the close by `scripts/send_swing_signal.py`.
 - After the close (16:20 slot) to record the full-session posture for the next morning.
 - To replay a past session from the on-disk cache (`replay --date`) when tuning thresholds.
 - Not for entry timing on a single stock; not a substitute for the daily

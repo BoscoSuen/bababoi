@@ -16,7 +16,13 @@ import _repo_bootstrap  # noqa: F401
 
 from scripts.market_data.timeutil import ET, floor5
 
-DEFAULT_SLOTS = ("0950", "1020", "1120", "1220", "1320", "1420", "1520", "1550", "1620")
+# Half-hourly: HH:20 confirms the clock-hour bar that closed at HH:00, HH:50 the
+# half-hour through HH:30 (posture inputs are hourly, so HH:50 mostly re-checks
+# watchlist levels). 09:50 = opening read, 16:20 = full-session wrap-up.
+DEFAULT_SLOTS = (
+    "0950", "1020", "1050", "1120", "1150", "1220", "1250",
+    "1320", "1350", "1420", "1450", "1520", "1550", "1620",
+)  # fmt: skip
 
 
 def slot_time(session_date: date, slot: str) -> datetime:

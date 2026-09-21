@@ -88,9 +88,12 @@ def env(tmp_path, monkeypatch):
     monkeypatch.setattr(cli, "REPO_ROOT", tmp_path)  # no daily baseline, watchlist under tmp
     out = tmp_path / "reports" / "intraday"
     state = tmp_path / "state" / "intraday"
-    wl = tmp_path / "state" / "watchlist.yaml"
+    wl = tmp_path / "state" / "daily_watchlist.json"
     wl.parent.mkdir(parents=True)
-    wl.write_text("symbols: [AAPL, XLK]\n", encoding="utf-8")
+    wl.write_text(
+        '{"date": "2026-09-11", "symbols": [{"symbol": "AAPL", "pivot": 1.0}, "XLK"]}',
+        encoding="utf-8",
+    )
     return {"out": out, "state": state}
 
 
@@ -127,6 +130,7 @@ def test_cli_end_to_end_writes_reports_and_state(env):
     assert payload["metrics"]["index"]["SPY"]["available"]
     assert payload["metrics"]["sectors"]["available"] and payload["metrics"]["sectors"]["sectors"]
     assert [w["symbol"] for w in payload["watchlist_signals"]] == ["AAPL", "XLK"]
+    assert payload["watchlist_signals"][0]["pivot"] == 1.0
     assert payload["discord"]["posted"] is False and payload["narrative"]["requested"] is False
     assert (day / "intraday_1020.md").is_file() and (env["out"] / "latest.json").is_file()
     assert json.loads((env["state"] / "2026-09-11" / "slots_done.json").read_text())["done"] == [
@@ -190,7 +194,7 @@ def test_cli_auto_slot_picks_latest_pending(env, capsys):
             "run",
             "--auto-slot",
             "--now-et",
-            "2026-09-11T13:50:00-04:00",
+            "2026-09-11T13:35:00-04:00",
             "--output-dir",
             str(env["out"]),
             "--state-dir",
@@ -227,6 +231,8 @@ def test_replay_runs_every_slot(env):
     assert rc == 0
     files = sorted(p.name for p in (env["out"] / "2026-09-11").glob("intraday_*.json"))
     assert (
-        len(files) == 9 and files[0] == "intraday_0950.json" and files[-1] == "intraday_1620.json"
+        len(files) == 14
+        and files[0] == "intraday_0950.json"
+        and files[-1] == "intraday_1620.json"
     )
     Path(env["out"] / "latest.json").is_file()

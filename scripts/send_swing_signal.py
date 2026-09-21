@@ -30,6 +30,9 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 REPORTS_DIR = REPO_ROOT / "reports"
 STATE_DIR = REPO_ROOT / "state" / "swing_signal"
 UNIVERSE_FILE = STATE_DIR / "liquid_pool_universe.txt"
+# Consumed by skills/intraday-market-monitor (config watchlist.file). Overwritten daily;
+# only its "manual" list survives regeneration.
+DAILY_WATCHLIST_FILE = REPO_ROOT / "state" / "daily_watchlist.json"
 MAX_DISCORD_CHARS = 1950
 
 
@@ -178,107 +181,192 @@ def _load_json(path: Path | None) -> dict | None:
     return None
 
 
+def _candidates(data: dict | None) -> list[dict]:
+    if not data:
+        return []
+    return data.get("candidates", data.get("results", []))
+
+
+def select_sections(reports: dict[str, Path | None]) -> dict:
+    """Pick the rows each Discord section shows. One place, so the message and the
+    daily watchlist can never disagree about what was signalled."""
+    vcp_rows = _candidates(_load_json(reports.get("vcp")))
+    mb_rows = _candidates(_load_json(reports.get("mb")))
+    eh_rows = _candidates(_load_json(reports.get("eh")))
+
+    mb_actionable = [c for c in mb_rows if c.get("state", "").startswith("ACTIONABLE")]
+    eh_actionable = [c for c in eh_rows if c.get("state", "").startswith("ACTIONABLE")]
+
+    vcp_by = {r["symbol"]: r for r in vcp_rows[:20]}
+    mb_by = {c["symbol"]: c for c in mb_rows if c.get("state", "") != "REJECTED"}
+    eh_by = {c["symbol"]: c for c in eh_rows if c.get("state", "") != "REJECTED"}
+
+    overlaps = []
+    for sym in sorted(set(vcp_by) | set(mb_by) | set(eh_by)):
+        sources = []
+        if sym in vcp_by:
+            sources.append("VCP")
+        if sym in mb_by:
+            sources.append("MomBurst")
+        if sym in eh_by:
+            sources.append("ExhHammer")
+        if len(sources) >= 2:
+            overlaps.append({"symbol": sym, "sources": sources})
+    overlaps = overlaps[:6]
+
+    pre_breakout = [r for r in vcp_rows[:15] if r.get("execution_state") == "Pre-breakout"]
+    near_pivot = [r for r in pre_breakout if abs(r.get("distance_from_pivot_pct", 99)) < 6][:4]
+
+    return {
+        "mb_actionable": mb_actionable,
+        "eh_actionable": eh_actionable,
+        "overlaps": overlaps,
+        "near_pivot": near_pivot,
+        "vcp_by": vcp_by,
+        "mb_by": mb_by,
+        "eh_by": eh_by,
+    }
+
+
 def format_signal(today_str: str, reports: dict[str, Path | None]) -> list[str]:
     """Format screener results into a Discord message."""
-    vcp_data = _load_json(reports.get("vcp"))
-    mb_data = _load_json(reports.get("mb"))
-    eh_data = _load_json(reports.get("eh"))
+    sec = select_sections(reports)
 
     lines = [f"**Swing Daily Signal** — {today_str}", ""]
 
     # Momentum Burst
-    if mb_data:
-        candidates = mb_data.get("candidates", mb_data.get("results", []))
-        actionable = [c for c in candidates if c.get("state", "").startswith("ACTIONABLE")]
-        if actionable:
-            lines.append("**⚡ 动量爆发 (今日可执行):**")
-            for c in actionable:
-                sym = c["symbol"]
-                score = c.get("setup_score", 0)
-                rating = c.get("rating", "")
-                gain = c.get("day_gain_pct", 0)
-                vol_r = c.get("volume_ratio_20d", 0)
-                trigger = c.get("primary_trigger", "")
-                lines.append(
-                    f"• {sym} {score}分 {rating} — {trigger}, "
-                    f"+{gain:.1f}%, 量比{vol_r:.1f}x"
-                )
-            lines.append("")
+    if sec["mb_actionable"]:
+        lines.append("**⚡ 动量爆发 (今日可执行):**")
+        for c in sec["mb_actionable"]:
+            sym = c["symbol"]
+            score = c.get("setup_score", 0)
+            rating = c.get("rating", "")
+            gain = c.get("day_gain_pct", 0)
+            vol_r = c.get("volume_ratio_20d", 0)
+            trigger = c.get("primary_trigger", "")
+            lines.append(
+                f"• {sym} {score}分 {rating} — {trigger}, "
+                f"+{gain:.1f}%, 量比{vol_r:.1f}x"
+            )
+        lines.append("")
 
     # Exhaustion Hammer
-    if eh_data:
-        candidates = eh_data.get("candidates", eh_data.get("results", []))
-        actionable = [c for c in candidates if c.get("state", "").startswith("ACTIONABLE")]
-        if actionable:
-            lines.append("**🔨 衰竭锤反弹 (收盘买入/次日确认):**")
-            for c in actionable:
-                sym = c["symbol"]
-                score = c.get("setup_score", 0)
-                rating = c.get("rating", "")
-                gain = c.get("day_gain_pct", 0)
-                trigger = c.get("primary_trigger", "")
-                lines.append(f"• {sym} {score}分 {rating} — {trigger}, +{gain:.1f}%")
-            lines.append("")
+    if sec["eh_actionable"]:
+        lines.append("**🔨 衰竭锤反弹 (收盘买入/次日确认):**")
+        for c in sec["eh_actionable"]:
+            sym = c["symbol"]
+            score = c.get("setup_score", 0)
+            rating = c.get("rating", "")
+            gain = c.get("day_gain_pct", 0)
+            trigger = c.get("primary_trigger", "")
+            lines.append(f"• {sym} {score}分 {rating} — {trigger}, +{gain:.1f}%")
+        lines.append("")
 
     # Cross-reference
-    vcp_syms = set()
-    if vcp_data:
-        vcp_syms = {r["symbol"] for r in vcp_data.get("results", [])[:20]}
-    mb_syms = set()
-    if mb_data:
-        mb_syms = {
-            c["symbol"]
-            for c in mb_data.get("candidates", mb_data.get("results", []))
-            if c.get("state", "") != "REJECTED"
-        }
-    eh_syms = set()
-    if eh_data:
-        eh_syms = {
-            c["symbol"]
-            for c in eh_data.get("candidates", eh_data.get("results", []))
-            if c.get("state", "") != "REJECTED"
-        }
-
-    overlaps = []
-    for sym in sorted(vcp_syms | mb_syms | eh_syms):
-        sources = []
-        if sym in vcp_syms:
-            sources.append("VCP")
-        if sym in mb_syms:
-            sources.append("MomBurst")
-        if sym in eh_syms:
-            sources.append("ExhHammer")
-        if len(sources) >= 2:
-            overlaps.append(f"• {sym} — {' + '.join(sources)}")
-
-    if overlaps:
+    if sec["overlaps"]:
         lines.append("**🔥 多重信号交叉:**")
-        lines.extend(overlaps[:6])
+        for o in sec["overlaps"]:
+            lines.append(f"• {o['symbol']} — {' + '.join(o['sources'])}")
         lines.append("")
 
     # VCP near-pivot
-    if vcp_data:
-        pre_breakout = [
-            r
-            for r in vcp_data.get("results", [])[:15]
-            if r.get("execution_state") == "Pre-breakout"
-        ]
-        near = [r for r in pre_breakout if abs(r.get("distance_from_pivot_pct", 99)) < 6]
-        if near:
-            lines.append("**📊 VCP 接近突破:**")
-            for r in near[:4]:
-                sym = r["symbol"]
-                price = r["price"]
-                piv = r.get("pivot_proximity", {}).get("pivot_price", 0)
-                dist = r.get("distance_from_pivot_pct", 0)
-                lines.append(f"• {sym} ${price:.2f} → Pivot ${piv:.2f} ({dist:+.1f}%)")
-            lines.append("")
+    if sec["near_pivot"]:
+        lines.append("**📊 VCP 接近突破:**")
+        for r in sec["near_pivot"]:
+            sym = r["symbol"]
+            price = r["price"]
+            piv = r.get("pivot_proximity", {}).get("pivot_price", 0)
+            dist = r.get("distance_from_pivot_pct", 0)
+            lines.append(f"• {sym} ${price:.2f} → Pivot ${piv:.2f} ({dist:+.1f}%)")
+        lines.append("")
 
     # Empty check
     if len(lines) <= 2:
         lines.append("今日无显著波段信号。")
 
     return _split_for_discord("\n".join(lines))
+
+
+def _score_note(sym: str, sec: dict) -> str:
+    """Compact per-screener score/state summary, e.g. 'VCP 61 Pre-breakout + MB 62 WATCH_ONLY'."""
+    parts = []
+    v = sec["vcp_by"].get(sym)
+    if v:
+        parts.append(f"VCP {round(v.get('composite_score') or 0)} {v.get('execution_state', '')}")
+    m = sec["mb_by"].get(sym)
+    if m:
+        parts.append(f"MB {m.get('setup_score', 0)} {m.get('state', '')}")
+    e = sec["eh_by"].get(sym)
+    if e:
+        parts.append(f"EH {e.get('setup_score', 0)} {e.get('state', '')}")
+    return " + ".join(parts)
+
+
+def build_watchlist(reports: dict[str, Path | None]) -> list[dict]:
+    """Every symbol the Discord message names, with the levels the intraday monitor
+    needs: pivot (VCP), stop/entry (VCP stop first, else the screener's stop_reference)."""
+    sec = select_sections(reports)
+    entries: dict[str, dict] = {}
+
+    def _add(sym: str, source: str) -> None:
+        e = entries.setdefault(sym, {"symbol": sym, "sources": []})
+        if source not in e["sources"]:
+            e["sources"].append(source)
+
+    for c in sec["mb_actionable"]:
+        _add(c["symbol"], "momentum_burst")
+    for c in sec["eh_actionable"]:
+        _add(c["symbol"], "exhaustion_hammer")
+    for r in sec["near_pivot"]:
+        _add(r["symbol"], "vcp_near_pivot")
+    for o in sec["overlaps"]:
+        _add(o["symbol"], "cross")
+
+    for sym, e in entries.items():
+        v = sec["vcp_by"].get(sym)
+        pp = (v or {}).get("pivot_proximity") or {}
+        if pp.get("pivot_price") is not None:
+            e["pivot"] = pp["pivot_price"]
+        if pp.get("stop_loss_price") is not None:
+            e["stop"] = pp["stop_loss_price"]  # VCP stop wins: it is pattern-based
+        else:
+            row = sec["mb_by"].get(sym) or sec["eh_by"].get(sym) or {}
+            if row.get("entry_reference") is not None:
+                e["entry"] = row["entry_reference"]
+            if row.get("stop_reference") is not None:
+                e["stop"] = row["stop_reference"]
+        e["note"] = _score_note(sym, sec)
+    return list(entries.values())
+
+
+def write_daily_watchlist(path: Path, today_str: str, entries: list[dict]) -> Path:
+    """Overwrite ``state/daily_watchlist.json``. The screener-derived ``symbols`` list is
+    replaced wholesale each run; a hand-maintained ``manual`` list (positions, ad-hoc
+    names) is carried over untouched."""
+    manual: list = []
+    if path.exists():
+        try:
+            prev = json.loads(path.read_text() or "{}")
+            if isinstance(prev, dict) and isinstance(prev.get("manual"), list):
+                manual = prev["manual"]
+        except ValueError:
+            pass
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(
+        json.dumps(
+            {
+                "date": today_str,
+                "generated_at": now_et().isoformat(timespec="seconds"),
+                "source": "send_swing_signal",
+                "symbols": entries,
+                "manual": manual,
+            },
+            indent=1,
+            ensure_ascii=False,
+        )
+        + "\n"
+    )
+    return path
 
 
 def _split_for_discord(text: str) -> list[str]:
@@ -379,6 +467,11 @@ def main(argv: list[str] | None = None) -> int:
     # Format
     chunks = format_signal(today_str, reports)
     total_chars = sum(len(c) for c in chunks)
+
+    # Hand the signalled names to the intraday monitor for tomorrow's session.
+    watchlist = build_watchlist(reports)
+    wl_path = write_daily_watchlist(DAILY_WATCHLIST_FILE, today_str, watchlist)
+    print(f"Daily watchlist: {len(watchlist)} symbols -> {wl_path}")
 
     if args.dry_run:
         print("--- DRY RUN ---")

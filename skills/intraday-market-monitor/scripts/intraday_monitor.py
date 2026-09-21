@@ -114,8 +114,10 @@ def collect(
     session_open: datetime,
     session_close: datetime,
     watchlist: list[str],
+    watchlist_levels: dict[str, dict] | None = None,
 ) -> dict:
     """Pull everything for one slot and compute all metrics (pure given the provider)."""
+    watchlist_levels = watchlist_levels or {}
     sec_cfg = cfg["sectors"]
     etfs = list(dict.fromkeys(sec_cfg["core"] + sec_cfg["spdr"] + sec_cfg["risk_gauges"]))
     warnings: list[str] = []
@@ -210,6 +212,8 @@ def collect(
                 session_close=session_close,
                 rel_vol_breakout_min=cfg["watchlist"]["rel_vol_breakout_min"],
                 gap_min_pct=cfg["watchlist"]["gap_min_pct"],
+                pivot=(watchlist_levels.get(sym) or {}).get("pivot"),
+                stop=(watchlist_levels.get(sym) or {}).get("stop"),
             )
         )
     return {
@@ -251,6 +255,7 @@ def run_slot(
     watchlist = watchlist_signals.load_watchlist(
         watchlist_path, vcp_json=vcp_json, vcp_min_rating=cfg["watchlist"]["vcp_min_rating"]
     )
+    watchlist_levels = watchlist_signals.load_watchlist_levels(watchlist_path)
 
     metrics = collect(
         provider,
@@ -261,6 +266,7 @@ def run_slot(
         session_open=session_open,
         session_close=session_close,
         watchlist=watchlist,
+        watchlist_levels=watchlist_levels,
     )
 
     # Posture.

@@ -6,10 +6,12 @@ provider:
   name: polygon            # polygon | fixture
   delay_minutes: 15        # Polygon Stocks Starter is 15-minute delayed
 
-# ET run slots. HH:20 → the clock-hour bar closing at HH:00 is confirmed
-# (data through HH:05). 09:50 = opening read, 15:50 = pre-close read,
-# 16:20 = full-session wrap-up.
-slots: ["0950", "1020", "1120", "1220", "1320", "1420", "1520", "1550", "1620"]
+# ET run slots, every 30 minutes. HH:20 → the clock-hour bar closing at HH:00 is
+# confirmed (data through HH:05); HH:50 → data through HH:35, used mainly to
+# re-check watchlist pivot/stop levels. 09:50 = opening read, 15:50 = pre-close
+# read, 16:20 = full-session wrap-up.
+slots: ["0950", "1020", "1050", "1120", "1150", "1220", "1250",
+        "1320", "1350", "1420", "1450", "1520", "1550", "1620"]
 narrative_slots: ["1020", "1520"]   # plus any slot where the posture flips
 
 universe:
@@ -41,8 +43,10 @@ volume_curve:
   - [390, 1.00]
 
 watchlist:
-  file: state/watchlist.yaml
-  vcp_min_rating: B            # include vcp_screener_*.json rows rated A/B
+  # Written after the close by scripts/send_swing_signal.py: every name the swing
+  # signal posted (+ pivot/stop levels), plus a hand-kept "manual" list.
+  file: state/daily_watchlist.json
+  vcp_min_rating: B            # --vcp-json rows rated A/B (optional extra source)
   rel_vol_breakout_min: 1.2
   gap_min_pct: 2.0
 
@@ -52,7 +56,7 @@ posture:
   cash_max_score: 40
   cash_breadth_pct_advancers_max: 30
   cash_ud_ratio_max: 0.5
-  hysteresis_slots: 2          # flips need two consecutive slots ...
+  hysteresis_slots: 3          # flips need three consecutive half-hour slots (~1h) ...
   hysteresis_override_delta: 15  # ... unless |Δscore| >= this
   daily_baseline_glob: "reports/exposure_posture_*.json"
   daily_cap_steps: 1           # never more than one step above the daily posture

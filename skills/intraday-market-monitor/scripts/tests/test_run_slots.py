@@ -18,7 +18,14 @@ def test_slot_time_and_due_slots():
     d = date(2026, 9, 11)
     assert slot_time(d, "1520").hour == 15 and slot_time(d, "1520").minute == 20
     now = datetime(2026, 9, 11, 12, 30, tzinfo=ET)
-    assert due_slots(now) == ["0950", "1020", "1120", "1220"]
+    assert due_slots(now) == ["0950", "1020", "1050", "1120", "1150", "1220"]
+
+
+def test_default_slots_are_half_hourly():
+    assert len(DEFAULT_SLOTS) == 14
+    assert DEFAULT_SLOTS[:3] == ("0950", "1020", "1050")
+    assert DEFAULT_SLOTS[-3:] == ("1520", "1550", "1620")
+    assert all(s.endswith(("20", "50")) for s in DEFAULT_SLOTS)
 
 
 def test_resolve_auto_slot_catches_up_to_latest_pending():

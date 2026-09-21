@@ -158,3 +158,49 @@ def test_watchlist_empty_and_loader(tmp_path):
     )
     assert ws.load_watchlist(wl, vcp_json=vcp) == ["AAPL", "MSFT", "NVDA"]
     assert ws.load_watchlist(tmp_path / "missing.yaml") == []
+
+
+def test_load_watchlist_json_with_levels_and_manual(tmp_path):
+    wl = tmp_path / "daily_watchlist.json"
+    wl.write_text(
+        '{"date": "2026-09-21", "symbols": ['
+        '{"symbol": "anet", "pivot": 206.13, "stop": 179.46, "sources": ["cross"]},'
+        '{"symbol": "ADBE", "stop": 243.99}],'
+        '"manual": [{"symbol": "AMD", "stop": 582.27}, "anet"]}',
+        encoding="utf-8",
+    )
+    assert ws.load_watchlist(wl) == ["ANET", "ADBE", "AMD"]
+    levels = ws.load_watchlist_levels(wl)
+    assert levels["ANET"] == {"pivot": 206.13, "stop": 179.46}
+    assert levels["ADBE"] == {"pivot": None, "stop": 243.99}
+    assert levels["AMD"] == {"pivot": None, "stop": 582.27}
+    # empty / corrupt file → no watchlist, no crash
+    wl.write_text("", encoding="utf-8")
+    assert ws.load_watchlist(wl) == [] and ws.load_watchlist_levels(wl) == {}
+
+
+def test_pivot_break_and_stop_hit_use_latest_confirmed_bar():
+    bars = _bars([100, 101, 102, 103, 104, 105, 106, 107])  # last close 107, 09:30..10:05
+    # Close above pivot with enough relative volume → PIVOT_BREAK.
+    out = ws.evaluate_symbol(
+        "T", bars, prev_day={"c": 99, "h": 100, "l": 98}, avg_volume=1000, elapsed=0.5,
+        session_open=OPEN, session_close=CLOSE, pivot=106.5, stop=95.0,
+    )  # rel_vol = 800 / 500 = 1.6
+    assert "PIVOT_BREAK" in out["signals"] and "STOP_HIT" not in out["signals"]
+    assert out["pivot"] == 106.5 and out["stop"] == 95.0
+    # Same bars, thin volume → no PIVOT_BREAK.
+    thin = ws.evaluate_symbol(
+        "T", bars, prev_day=None, avg_volume=100000, elapsed=0.5,
+        session_open=OPEN, session_close=CLOSE, pivot=106.5,
+    )
+    assert "PIVOT_BREAK" not in thin["signals"]
+    # Below stop → STOP_HIT regardless of volume; pivot untouched.
+    down = ws.evaluate_symbol(
+        "T", _bars([100, 99, 98, 97]), prev_day=None, avg_volume=None, elapsed=0.2,
+        session_open=OPEN, session_close=CLOSE, pivot=110.0, stop=97.5,
+    )
+    assert down["signals"] == ["STOP_HIT"]
+    # No levels → neither signal, keys still present.
+    none = _eval(bars)
+    assert none["pivot"] is None and none["stop"] is None
+    assert not {"PIVOT_BREAK", "STOP_HIT"} & set(none["signals"])
