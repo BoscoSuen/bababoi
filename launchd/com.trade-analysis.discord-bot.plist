@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<!--
+  Discord bot (discord/bot.py). Long-running: launchd keeps it alive and
+  restarts it if it exits abnormally. Token comes from the gitignored .envrc
+  via scripts/run_discord_bot.sh.
+
+  INSTALL:
+    sed "s|\$HOME|$HOME|g; s|\$PROJECT_DIR|$(pwd)|g" \
+      launchd/com.trade-analysis.discord-bot.plist > ~/Library/LaunchAgents/com.trade-analysis.discord-bot.plist
+    launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.trade-analysis.discord-bot.plist
+  RESTART:  launchctl kickstart -k gui/$(id -u)/com.trade-analysis.discord-bot
+  REMOVE:   launchctl bootout gui/$(id -u)/com.trade-analysis.discord-bot
+-->
+<dict>
+	<key>Label</key>
+	<string>com.trade-analysis.discord-bot</string>
+
+	<key>ProgramArguments</key>
+	<array>
+		<string>/bin/bash</string>
+		<string>$PROJECT_DIR/scripts/run_discord_bot.sh</string>
+	</array>
+
+	<key>WorkingDirectory</key>
+	<string>$PROJECT_DIR</string>
+
+	<key>RunAtLoad</key>
+	<true/>
+
+	<key>KeepAlive</key>
+	<dict>
+		<key>SuccessfulExit</key>
+		<false/>
+	</dict>
+
+	<key>ThrottleInterval</key>
+	<integer>30</integer>
+
+	<key>EnvironmentVariables</key>
+	<dict>
+		<key>PATH</key>
+		<string>/opt/homebrew/bin:/opt/homebrew/sbin:$HOME/.local/bin:/usr/local/bin:/usr/bin:/bin</string>
+		<key>HOME</key>
+		<string>$HOME</string>
+	</dict>
+
+	<key>StandardOutPath</key>
+	<string>$PROJECT_DIR/logs/discord-bot.log</string>
+	<key>StandardErrorPath</key>
+	<string>$PROJECT_DIR/logs/discord-bot.log</string>
+</dict>
+</plist>
