@@ -127,8 +127,8 @@ def test_build_watchlist_mirrors_signal_sections(tmp_path: Path) -> None:
     assert by["ANET"]["sources"] == ["vcp_near_pivot", "cross"]
     assert by["ANET"]["pivot"] == 206.13 and by["ANET"]["stop"] == 179.46
     assert "VCP 61 Pre-breakout" in by["ANET"]["note"] and "MB 62 WATCH_ONLY" in by["ANET"]["note"]
-    # FTNT is Overextended: cross-signal only, but still carries its VCP pivot.
-    assert by["FTNT"]["sources"] == ["cross"] and by["FTNT"]["pivot"] == 172.09
+    # FTNT is Overextended: cross-signal only, no pivot (stop kept for reference).
+    assert by["FTNT"]["sources"] == ["cross"] and "pivot" not in by["FTNT"]  # Overextended: no buy level
     # Symbols deduplicate: one entry per ticker, ordered by first appearance.
     assert [e["symbol"] for e in wl] == ["AMGN", "ADBE", "ANET", "FTNT"]
 

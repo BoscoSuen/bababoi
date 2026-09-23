@@ -325,7 +325,10 @@ def build_watchlist(reports: dict[str, Path | None]) -> list[dict]:
     for sym, e in entries.items():
         v = sec["vcp_by"].get(sym)
         pp = (v or {}).get("pivot_proximity") or {}
-        if pp.get("pivot_price") is not None:
+        # Only a Pre-breakout pivot is a buy level. An Overextended/Early-post-breakout
+        # name keeps its VCP stop for reference but gets no pivot, so the intraday
+        # monitor cannot re-trigger a breakout that already happened.
+        if pp.get("pivot_price") is not None and v.get("execution_state") == "Pre-breakout":
             e["pivot"] = pp["pivot_price"]
         if pp.get("stop_loss_price") is not None:
             e["stop"] = pp["stop_loss_price"]  # VCP stop wins: it is pattern-based

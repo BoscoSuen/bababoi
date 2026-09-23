@@ -61,11 +61,28 @@ posture:
   daily_baseline_glob: "reports/exposure_posture_*.json"
   daily_cap_steps: 1           # never more than one step above the daily posture
 
+# Tiered buy/hold/exit signals (scripts/signal_engine.py). Candidates = the daily
+# watchlist (state/daily_watchlist.json) + two finviz scans run each slot. Volume is
+# judged per symbol against its own 20-session same-time-of-day history. No market
+# gate, no cooldown, no once-per-day: every slot lists everything that qualifies.
+signals:
+  enabled: true
+  scans: true                  # finviz bullish_flow ∪ close_stronger as MB candidates
+  history_sessions: 21         # prior sessions pulled for daily context + volume baseline
+  thresholds:                  # overrides for signal_engine.DEFAULT_CFG
+    vol_pct_trigger: 90
+    vol_pct_strong: 100
+    pivot_chase_pct: 2.0
+    pivot_stop_pct: 5.0
+    rs_pct: 4.0
+    close_loc: 0.70
+    below_vwap_slots: 2
+
 discord:
   enabled: true
   max_chars: 1900
 
 narrative:
-  mode: auto                   # auto | always | never
+  mode: never                  # auto | always | never — code block only, no claude -p narrative
   timeout_seconds: 180
   claude_bin: claude

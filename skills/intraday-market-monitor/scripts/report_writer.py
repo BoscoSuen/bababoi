@@ -57,7 +57,15 @@ def render_markdown(p: dict) -> str:
         )
     if post.get("capped_by_daily"):
         lines.append(f"- Capped by daily posture: {p['daily_baseline'].get('recommendation')}")
-    lines += ["- Reasons: " + ", ".join(post.get("reason_codes") or []), "", "## Breadth", ""]
+    lines += ["- Reasons: " + ", ".join(post.get("reason_codes") or []), "", "## Signals", ""]
+    sig = p.get("signals") or {}
+    if sig.get("error"):
+        lines.append(f"- unavailable: {sig['error']}")
+    elif sig.get("lines"):
+        lines += ["```", *sig["lines"], "```"]
+    else:
+        lines.append("- none")
+    lines += ["", "## Breadth", ""]
     if b.get("available"):
         lines += [
             "| Metric | Value |",

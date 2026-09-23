@@ -52,13 +52,27 @@ def format_summary(p: dict, *, max_chars: int = MAX_CHARS) -> str:
         lines.append(
             f"Sectors : top {top} / bottom {bot} | risk-on spread {_fmt(sec.get('risk_on_spread_pct'), 2)}"
         )
-    sigs = [
-        f"{w['symbol']} {'+'.join(w['signals'])}"
-        for w in p.get("watchlist_signals") or []
-        if w.get("signals")
-    ]
-    lines.append("Signals : " + (", ".join(sigs) if sigs else "none"))
-    body = head + "\n```\n" + "\n".join(lines) + "\n```"
+    sig = p.get("signals") or {}
+    sig_lines = list(sig.get("lines") or [])
+    if sig.get("error"):
+        lines.append(f"Signals : unavailable ({sig['error'][:80]})")
+    elif not sig_lines:
+        scan = sig.get("scan") or {}
+        note = "  (scan unavailable)" if scan.get("failed") and not scan.get("n") else ""
+        lines.append("Signals : none" + note)
+    else:
+        lines.append("Signals :")
+
+    def _body(extra: list[str]) -> str:
+        return head + "\n```\n" + "\n".join(lines + extra) + "\n```"
+
+    body = _body(sig_lines)
+    # Too long: drop armed names first, then position HOLD rows, then hard-truncate.
+    for prefix in ("⚪", "HOLD"):
+        if len(body) <= max_chars:
+            break
+        sig_lines = [ln for ln in sig_lines if not ln.startswith(prefix)]
+        body = _body(sig_lines)
     if len(body) > max_chars:
         body = body[: max_chars - 4] + "…```"
     return body

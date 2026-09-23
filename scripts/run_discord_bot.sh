@@ -11,6 +11,9 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"
 cd "${PROJECT_DIR}" || exit 1
 mkdir -p logs
+# claude -p runs skill scripts as `python3 skills/...`; make that resolve to the
+# venv (markitdown etc. live there, not in the system python).
+export PATH="${PROJECT_DIR}/.venv/bin:${PATH}"
 
 if [ -f .envrc ]; then
     set -a

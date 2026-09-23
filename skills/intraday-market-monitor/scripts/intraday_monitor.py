@@ -40,6 +40,7 @@ import narrative
 import posture as posture_mod
 import report_writer
 import sector_rs
+import signals_runner
 import watchlist_signals
 from run_slots import SlotLedger, due_slots, resolve_auto_slot, slot_time, until_for
 
@@ -269,6 +270,27 @@ def run_slot(
         watchlist_levels=watchlist_levels,
     )
 
+    # Signals: watchlist + finviz scans → tiered BUY / HOLD / EXIT rows. A failure
+    # here is recorded in the payload and never blocks the posture message.
+    signals: dict = {"rows": [], "lines": [], "error": None}
+    if (cfg.get("signals") or {}).get("enabled", True):
+        try:
+            signals = signals_runner.run(
+                provider,
+                cfg,
+                session_date=session_date,
+                slot=slot,
+                until_et=until_et,
+                watchlist_path=watchlist_path,
+                state_dir=state_dir,
+                previous_sessions=previous_sessions(
+                    session_date, int((cfg.get("signals") or {}).get("history_sessions", 21))
+                ),
+            )
+        except Exception as exc:  # noqa: BLE001
+            signals = {"rows": [], "lines": [], "error": f"{type(exc).__name__}: {exc}"}
+            metrics["warnings"].append(f"signals failed: {exc}")
+
     # Posture.
     pcfg = cfg["posture"]
     parts = {
@@ -329,6 +351,7 @@ def run_slot(
         },
         "watchlist_symbols": watchlist,
         "watchlist_signals": metrics["watchlist"],
+        "signals": signals,
         "daily_baseline": baseline,
         "warnings": metrics["warnings"],
         "api_stats": provider.stats() if hasattr(provider, "stats") else {},
