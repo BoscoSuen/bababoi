@@ -115,12 +115,12 @@ chronological):
 
 ```bash
 # 1. ingest → IDEA (stamped at entry_date)
-python3 .../trader_memory_cli.py ingest --source manual --input amd.json --state-dir state/theses/
+python3 skills/trader-memory-core/scripts/trader_memory_cli.py ingest --source manual --input amd.json --state-dir state/theses/
 # 2. IDEA → ENTRY_READY (backdated)
-python3 .../trader_memory_cli.py store --state-dir state/theses/ transition <id> ENTRY_READY \
+python3 skills/trader-memory-core/scripts/trader_memory_cli.py store --state-dir state/theses/ transition <id> ENTRY_READY \
   --reason "existing IBI Smart position" --event-date 2026-05-02
 # 3. ENTRY_READY → ACTIVE (fractional shares, backdated)
-python3 .../trader_memory_cli.py store --state-dir state/theses/ open-position <id> \
+python3 skills/trader-memory-core/scripts/trader_memory_cli.py store --state-dir state/theses/ open-position <id> \
   --actual-price 142.10 --actual-date 2026-05-02 --shares 7.86 --event-date 2026-05-02
 ```
 
@@ -153,7 +153,7 @@ Python: `thesis_store.transition(state_dir, thesis_id, "ENTRY_READY", reason, ev
 **Open position** (ENTRY_READY → ACTIVE — the only path to ACTIVE):
 
 ```bash
-python3 .../trader_memory_cli.py store --state-dir state/theses/ open-position <id> \
+python3 skills/trader-memory-core/scripts/trader_memory_cli.py store --state-dir state/theses/ open-position <id> \
   --actual-price 142.10 --actual-date 2026-05-02 [--shares 7.86] [--event-date 2026-05-02]
 ```
 
@@ -174,7 +174,7 @@ the position, omit `--contracts` and only pass `--actual-price`/`--actual-date`.
 CLOSED when the whole remainder is sold):
 
 ```bash
-python3 .../trader_memory_cli.py store --state-dir state/theses/ trim <id> \
+python3 skills/trader-memory-core/scripts/trader_memory_cli.py store --state-dir state/theses/ trim <id> \
   --shares-sold 4 --price 120.00 --date 2026-05-10
 ```
 
@@ -200,9 +200,9 @@ dispatch automatically (see "Futures positions" below).
 **Close or invalidate** (→ CLOSED or INVALIDATED):
 
 ```bash
-python3 .../trader_memory_cli.py store --state-dir state/theses/ close <id> \
+python3 skills/trader-memory-core/scripts/trader_memory_cli.py store --state-dir state/theses/ close <id> \
   --exit-reason target_hit --actual-price 165.00 --actual-date 2026-06-01
-python3 .../trader_memory_cli.py store --state-dir state/theses/ terminate <id> \
+python3 skills/trader-memory-core/scripts/trader_memory_cli.py store --state-dir state/theses/ terminate <id> \
   --terminal-status INVALIDATED --exit-reason "thesis broke"
 ```
 
@@ -218,7 +218,7 @@ Use `thesis_store.mark_reviewed(state_dir, thesis_id, review_date=..., outcome="
 **Attach position-sizer output:**
 
 ```bash
-python3 .../trader_memory_cli.py store --state-dir state/theses/ attach-position <id> \
+python3 skills/trader-memory-core/scripts/trader_memory_cli.py store --state-dir state/theses/ attach-position <id> \
   --report reports/position_report.json
 ```
 
@@ -243,7 +243,7 @@ the wrong currency's magnitude.
 contrarian pipeline — futures-position-sizer → trader-memory-core):
 
 ```bash
-python3 .../trader_memory_cli.py store --state-dir state/theses/ \
+python3 skills/trader-memory-core/scripts/trader_memory_cli.py store --state-dir state/theses/ \
   attach-futures-position <id> --report reports/futures_position_es_2026-05-10.json
 ```
 
@@ -262,7 +262,7 @@ SIZED report — `--contract-currency` is **required** here since there is no
 `contract_spec` to read a currency from, and must be `USD`):
 
 ```bash
-python3 .../trader_memory_cli.py store --state-dir state/theses/ open-position <id> \
+python3 skills/trader-memory-core/scripts/trader_memory_cli.py store --state-dir state/theses/ open-position <id> \
   --actual-price 5000 --actual-date 2026-05-10 \
   --contracts 2 --multiplier 50 --direction SHORT --contract-symbol ES \
   --contract-currency USD
@@ -272,9 +272,9 @@ python3 .../trader_memory_cli.py store --state-dir state/theses/ open-position <
 in place of `--shares-sold`:
 
 ```bash
-python3 .../trader_memory_cli.py store --state-dir state/theses/ trim <id> \
+python3 skills/trader-memory-core/scripts/trader_memory_cli.py store --state-dir state/theses/ trim <id> \
   --contracts-sold 1 --price 4950.00 --date 2026-05-12
-python3 .../trader_memory_cli.py store --state-dir state/theses/ close <id> \
+python3 skills/trader-memory-core/scripts/trader_memory_cli.py store --state-dir state/theses/ close <id> \
   --exit-reason target_hit --actual-price 4900.00 --actual-date 2026-05-15
 ```
 

@@ -41,16 +41,16 @@ pip install numpy scipy requests
 **Quick Start Examples:**
 ```bash
 # Basic call option pricing (no API key needed)
-python3 scripts/black_scholes.py
+python3 skills/options-strategy-advisor/scripts/black_scholes.py
 
 # With FMP API key for real-time data
-python3 scripts/black_scholes.py --ticker AAPL --api-key $FMP_API_KEY
+python3 skills/options-strategy-advisor/scripts/black_scholes.py --ticker AAPL
 
 # Custom option parameters
-python3 scripts/black_scholes.py --stock-price 180 --strike 185 --days 30 --volatility 0.25
+python3 skills/options-strategy-advisor/scripts/black_scholes.py --stock-price 180 --strike 185 --days 30 --volatility 0.25
 
 # Put option analysis
-python3 scripts/black_scholes.py --stock-price 180 --strike 175 --days 30 --option-type put
+python3 skills/options-strategy-advisor/scripts/black_scholes.py --stock-price 180 --strike 175 --days 30 --option-type put
 ```
 
 ## When to Use This Skill

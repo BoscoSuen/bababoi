@@ -81,24 +81,24 @@ Uses FINVIZ for pre-screening, then FMP for detailed analysis:
 
 **Default execution (Top 20 stocks):**
 ```bash
-python3 scripts/screen_dividend_stocks.py --use-finviz
+python3 skills/value-dividend-screener/scripts/screen_dividend_stocks.py --use-finviz
 ```
 
 **With explicit API keys:**
 ```bash
-python3 scripts/screen_dividend_stocks.py --use-finviz \
-  --fmp-api-key $FMP_API_KEY \
-  --finviz-api-key $FINVIZ_API_KEY
+python3 skills/value-dividend-screener/scripts/screen_dividend_stocks.py --use-finviz \
+  --fmp-api-key YOUR_FMP_KEY \
+  --finviz-api-key YOUR_FINVIZ_KEY
 ```
 
 **Custom top N:**
 ```bash
-python3 scripts/screen_dividend_stocks.py --use-finviz --top 50
+python3 skills/value-dividend-screener/scripts/screen_dividend_stocks.py --use-finviz --top 50
 ```
 
 **Custom output location:**
 ```bash
-python3 scripts/screen_dividend_stocks.py --use-finviz --output /path/to/results.json
+python3 skills/value-dividend-screener/scripts/screen_dividend_stocks.py --use-finviz --output /path/to/results.json
 ```
 
 **Script behavior (Two-Stage):**
@@ -128,12 +128,12 @@ Uses only FMP Stock Screener API (higher API usage):
 
 **Default execution:**
 ```bash
-python3 scripts/screen_dividend_stocks.py
+python3 skills/value-dividend-screener/scripts/screen_dividend_stocks.py
 ```
 
 **With explicit API key:**
 ```bash
-python3 scripts/screen_dividend_stocks.py --fmp-api-key $FMP_API_KEY
+python3 skills/value-dividend-screener/scripts/screen_dividend_stocks.py --fmp-api-key YOUR_KEY
 ```
 
 **Script behavior (FMP-Only):**
@@ -469,7 +469,7 @@ pip install requests
 ```bash
 export FMP_API_KEY=your_key_here
 # OR
-python3 scripts/screen_dividend_stocks.py --fmp-api-key your_key_here
+python3 skills/value-dividend-screener/scripts/screen_dividend_stocks.py --fmp-api-key your_key_here
 ```
 
 ### "ERROR: FINVIZ API key required when using --use-finviz"
@@ -477,7 +477,7 @@ python3 scripts/screen_dividend_stocks.py --fmp-api-key your_key_here
 ```bash
 export FINVIZ_API_KEY=your_key_here
 # OR
-python3 scripts/screen_dividend_stocks.py --use-finviz --finviz-api-key your_key_here
+python3 skills/value-dividend-screener/scripts/screen_dividend_stocks.py --use-finviz --finviz-api-key your_key_here
 ```
 
 **Note:** FINVIZ Elite subscription required (~$40/month or ~$330/year)
@@ -505,7 +505,7 @@ python3 scripts/screen_dividend_stocks.py --use-finviz --finviz-api-key your_key
 - Verify FINVIZ Elite website is accessible
 - Try FMP-only method as fallback:
   ```bash
-  python3 scripts/screen_dividend_stocks.py
+  python3 skills/value-dividend-screener/scripts/screen_dividend_stocks.py
   ```
 
 ### "WARNING: Rate limit exceeded"

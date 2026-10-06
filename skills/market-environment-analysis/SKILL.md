@@ -61,7 +61,7 @@ Evaluate the following from collected data:
 Provides common functions for report creation:
 ```bash
 # Generate report header
-python scripts/market_utils.py
+python3 skills/market-environment-analysis/scripts/market_utils.py
 
 # Available functions:
 - format_market_report_header(): Create header

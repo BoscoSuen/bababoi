@@ -182,23 +182,20 @@ User can provide sector-focused list (Technology, Healthcare, etc.)
 Run the main screening script with appropriate parameters:
 
 ```bash
-cd skills/canslim-screener/scripts
-
 # Basic run (40 stocks, top 20 in report)
-python3 screen_canslim.py --api-key $FMP_API_KEY
+python3 skills/canslim-screener/scripts/screen_canslim.py
 
 # Custom parameters
-python3 screen_canslim.py \
-  --api-key $FMP_API_KEY \
+python3 skills/canslim-screener/scripts/screen_canslim.py \
   --max-candidates 40 \
   --top 20 \
-  --output-dir ../../../
+  --output-dir reports/
 
 # Custom RS benchmark (Phase 3.1)
-python3 screen_canslim.py --rs-benchmark SPY
+python3 skills/canslim-screener/scripts/screen_canslim.py --rs-benchmark SPY
 
 # Disable L component (saves per-stock 365-day fetch; L fixed at neutral 50)
-python3 screen_canslim.py --disable-rs
+python3 skills/canslim-screener/scripts/screen_canslim.py --disable-rs
 ```
 
 **Script Workflow (Phase 3 - Full CANSLIM):**
@@ -374,7 +371,7 @@ Create a concise, actionable summary for the user:
 - `screen_canslim.py` - Main orchestrator script
   - Entry point for screening workflow
   - Handles argument parsing, API coordination, ranking, reporting
-  - Usage: `python3 screen_canslim.py --api-key KEY [options]`
+  - Usage: `python3 skills/canslim-screener/scripts/screen_canslim.py --api-key KEY [options]`
 
 - `fmp_client.py` - FMP API client wrapper
   - Rate limiting (0.3s between calls)

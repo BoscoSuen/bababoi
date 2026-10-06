@@ -105,7 +105,6 @@ Run the script with collected data as CLI arguments:
 
 ```bash
 python3 skills/market-top-detector/scripts/market_top_detector.py \
-  --api-key $POLYGON_API_KEY \
   --breadth-50dma [VALUE] --breadth-50dma-date [YYYY-MM-DD] \
   --put-call [VALUE] --put-call-date [YYYY-MM-DD] \
   --vix-term [steep_contango|contango|flat|backwardation] \

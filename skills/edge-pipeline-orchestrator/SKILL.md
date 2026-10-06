@@ -33,29 +33,29 @@ Coordinate all edge research stages into a single automated pipeline run.
 
 ```bash
 # Full pipeline from tickets
-python3 scripts/orchestrate_edge_pipeline.py \
+python3 skills/edge-pipeline-orchestrator/scripts/orchestrate_edge_pipeline.py \
   --tickets-dir path/to/tickets/ \
   --output-dir reports/edge_pipeline/
 
 # Full pipeline from OHLCV
-python3 scripts/orchestrate_edge_pipeline.py \
+python3 skills/edge-pipeline-orchestrator/scripts/orchestrate_edge_pipeline.py \
   --from-ohlcv path/to/ohlcv.csv \
   --output-dir reports/edge_pipeline/
 
 # Resume from drafts stage
-python3 scripts/orchestrate_edge_pipeline.py \
+python3 skills/edge-pipeline-orchestrator/scripts/orchestrate_edge_pipeline.py \
   --resume-from drafts \
   --drafts-dir path/to/drafts/ \
   --output-dir reports/edge_pipeline/
 
 # Review-only mode
-python3 scripts/orchestrate_edge_pipeline.py \
+python3 skills/edge-pipeline-orchestrator/scripts/orchestrate_edge_pipeline.py \
   --review-only \
   --drafts-dir path/to/drafts/ \
   --output-dir reports/edge_pipeline/
 
 # Dry run (no export)
-python3 scripts/orchestrate_edge_pipeline.py \
+python3 skills/edge-pipeline-orchestrator/scripts/orchestrate_edge_pipeline.py \
   --tickets-dir path/to/tickets/ \
   --output-dir reports/edge_pipeline/ \
   --dry-run
@@ -101,7 +101,7 @@ Run the LLM-augmented pipeline entirely within Claude Code:
 4. Run orchestrator with `--llm-ideas-file` and `--promote-hints`:
 
 ```bash
-python3 scripts/orchestrate_edge_pipeline.py \
+python3 skills/edge-pipeline-orchestrator/scripts/orchestrate_edge_pipeline.py \
   --tickets-dir path/to/tickets/ \
   --llm-ideas-file llm_hints.yaml \
   --promote-hints \

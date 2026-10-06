@@ -73,8 +73,6 @@ uv run --python 3.12 \
   --with pandas --with numpy --with yfinance \
   --with finvizfinance --with PyYAML \
   python skills/theme-detector/scripts/theme_detector.py \
-  --finviz-api-key "$FINVIZ_API_KEY" \
-  --fmp-api-key "$FMP_API_KEY" \
   --output-dir reports/
 ```
 Use this as a setup workaround, not as evidence that the detector is broken; still report FINVIZ/FMP/API-data caveats separately.
@@ -129,12 +127,12 @@ python3 skills/theme-detector/scripts/theme_detector.py \
 
 # With FINVIZ Elite API key
 python3 skills/theme-detector/scripts/theme_detector.py \
-  --finviz-api-key $FINVIZ_API_KEY \
+  --finviz-api-key YOUR_FINVIZ_KEY \
   --output-dir reports/
 
 # With FMP API key for enhanced stock data
 python3 skills/theme-detector/scripts/theme_detector.py \
-  --fmp-api-key $FMP_API_KEY \
+  --fmp-api-key YOUR_FMP_KEY \
   --output-dir reports/
 
 # Custom limits

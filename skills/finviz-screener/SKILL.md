@@ -136,17 +136,17 @@ Ask the user to confirm or adjust before proceeding.
 Run the screener script to build the URL and open Chrome:
 
 ```bash
-python3 scripts/open_finviz_screener.py \
+python3 skills/finviz-screener/scripts/open_finviz_screener.py \
   --filters "cap_small,fa_div_o3,fa_pe_u20,geo_usa" \
   --view overview
 
 # Theme-only screening (no --filters required)
-python3 scripts/open_finviz_screener.py \
+python3 skills/finviz-screener/scripts/open_finviz_screener.py \
   --themes "artificialintelligence,cybersecurity" \
   --url-only
 
 # Theme + sub-theme + filters combined
-python3 scripts/open_finviz_screener.py \
+python3 skills/finviz-screener/scripts/open_finviz_screener.py \
   --themes "artificialintelligence" \
   --subthemes "aicloud,aicompute" \
   --filters "cap_midover" \

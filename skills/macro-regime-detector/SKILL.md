@@ -86,7 +86,7 @@ Detect structural macro regime transitions using monthly-frequency cross-asset r
 ## Script Arguments
 
 ```bash
-python3 macro_regime_detector.py [options]
+python3 skills/macro-regime-detector/scripts/macro_regime_detector.py [options]
 
 Options:
   --api-key KEY       Polygon API key (default: $POLYGON_API_KEY)

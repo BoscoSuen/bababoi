@@ -46,7 +46,7 @@ This skill uses Financial Modeling Prep (FMP) API to access 13F filing data:
 export FMP_API_KEY=your_key_here
 
 # Or provide when running scripts
-python3 scripts/track_institutional_flow.py --api-key YOUR_KEY
+python3 skills/institutional-flow-tracker/scripts/track_institutional_flow.py --api-key YOUR_KEY
 ```
 
 **API Tier Requirements:**
@@ -68,21 +68,21 @@ Execute the main screening script to find stocks with notable institutional acti
 
 **Quick scan (top 50 stocks by institutional change):**
 ```bash
-python3 scripts/track_institutional_flow.py \
+python3 skills/institutional-flow-tracker/scripts/track_institutional_flow.py \
   --top 50 \
   --min-change-percent 10
 ```
 
 **Sector-focused scan:**
 ```bash
-python3 scripts/track_institutional_flow.py \
+python3 skills/institutional-flow-tracker/scripts/track_institutional_flow.py \
   --sector Technology \
   --min-institutions 20
 ```
 
 **Custom screening:**
 ```bash
-python3 scripts/track_institutional_flow.py \
+python3 skills/institutional-flow-tracker/scripts/track_institutional_flow.py \
   --min-market-cap 2000000000 \
   --min-change-percent 15 \
   --top 100 \
@@ -102,7 +102,7 @@ python3 scripts/track_institutional_flow.py \
 For detailed analysis of a specific stock's institutional ownership:
 
 ```bash
-python3 scripts/analyze_single_stock.py AAPL
+python3 skills/institutional-flow-tracker/scripts/analyze_single_stock.py AAPL
 ```
 
 **This generates:**

@@ -174,12 +174,12 @@ scripts/fetch_earnings_fmp.py
 
 **Option A: With Environment Variable (CLI)**:
 ```bash
-python scripts/fetch_earnings_fmp.py 2025-11-03 2025-11-09
+python3 skills/earnings-calendar/scripts/fetch_earnings_fmp.py 2025-11-03 2025-11-09
 ```
 
 **Option B: With Session API Key (Desktop/Web)**:
 ```bash
-python scripts/fetch_earnings_fmp.py 2025-11-03 2025-11-09 "${API_KEY}"
+python3 skills/earnings-calendar/scripts/fetch_earnings_fmp.py 2025-11-03 2025-11-09 YOUR_API_KEY
 ```
 
 **Script Workflow** (automatic):
@@ -214,12 +214,7 @@ python scripts/fetch_earnings_fmp.py 2025-11-03 2025-11-09 "${API_KEY}"
 
 **Save to file** (recommended for use with report generator):
 ```bash
-python scripts/fetch_earnings_fmp.py 2025-11-03 2025-11-09 "${API_KEY}" > earnings_data.json
-```
-
-Or capture to variable:
-```bash
-earnings_data=$(python scripts/fetch_earnings_fmp.py 2025-11-03 2025-11-09 "${API_KEY}")
+python3 skills/earnings-calendar/scripts/fetch_earnings_fmp.py 2025-11-03 2025-11-09 YOUR_API_KEY > earnings_data.json
 ```
 
 **Error Handling**:
@@ -310,12 +305,12 @@ scripts/generate_report.py
 
 **Option A: Output to stdout**:
 ```bash
-python scripts/generate_report.py earnings_data.json
+python3 skills/earnings-calendar/scripts/generate_report.py earnings_data.json
 ```
 
 **Option B: Save to file**:
 ```bash
-python scripts/generate_report.py earnings_data.json earnings_calendar_2025-11-02.md
+python3 skills/earnings-calendar/scripts/generate_report.py earnings_data.json earnings_calendar_2025-11-02.md
 ```
 
 **What the script does**:
@@ -552,18 +547,18 @@ I will format this into the standard earnings calendar report.
 4. Detect/request API key
 5. Fetch earnings data:
    ```bash
-   python scripts/fetch_earnings_fmp.py 2025-11-03 2025-11-09 > earnings_data.json
+   python3 skills/earnings-calendar/scripts/fetch_earnings_fmp.py 2025-11-03 2025-11-09 > earnings_data.json
    ```
 6. Generate markdown report:
    ```bash
-   python scripts/generate_report.py earnings_data.json earnings_calendar_2025-11-02.md
+   python3 skills/earnings-calendar/scripts/generate_report.py earnings_data.json earnings_calendar_2025-11-02.md
    ```
 7. Notify user with summary
 
 **Complete One-Liner**:
 ```bash
-python scripts/fetch_earnings_fmp.py 2025-11-03 2025-11-09 > earnings_data.json && \
-python scripts/generate_report.py earnings_data.json earnings_calendar_2025-11-02.md
+python3 skills/earnings-calendar/scripts/fetch_earnings_fmp.py 2025-11-03 2025-11-09 > earnings_data.json && \
+python3 skills/earnings-calendar/scripts/generate_report.py earnings_data.json earnings_calendar_2025-11-02.md
 ```
 
 ### Use Case 2: Focused on Specific Day
