@@ -2,11 +2,14 @@
 """Minimal Discord bot that runs claude -p on @mention messages."""
 
 import asyncio
+import contextlib
+import functools
 import json
 import os
 import re
 import shutil
 import time
+import uuid
 
 import discord
 
@@ -57,6 +60,9 @@ nobody can approve them, so follow these rules:
 - Only write files under reports/ (pass --output-dir reports/ to scripts).
 - If a step you needed was denied, name the exact command that was denied
   instead of vaguely saying the data was unavailable.
+- This may be a follow-up in a multi-turn Discord thread. Tool outputs and
+  reports from earlier turns may be stale; when the user asks about current
+  prices or setups, re-run the scripts and state the data timestamp.
 """
 
 # Tools claude -p may use without an interactive permission prompt. Anything
@@ -87,6 +93,14 @@ MAX_DENIALS_SHOWN = 5
 # claude-opus-5 to claude-opus-5-5 with CLI 2.1.280).
 MODEL = "claude-opus-5-5"
 
+# One claude session per Discord thread. The session id is derived from the
+# thread id, so the mapping survives bot restarts without a state file.
+SESSION_NAMESPACE = uuid.UUID("5d3c9f0e-8a1b-4c2d-9e7f-6a5b4c3d2e1f")
+MISSING_SESSION_MARKER = "No conversation found"
+QUEUED_REACTION = "\N{HOURGLASS WITH FLOWING SAND}"
+
+_thread_locks: dict[int, asyncio.Lock] = {}
+
 AUTH_RETRY_DELAY_SEC = 5
 AUTH_ERROR_MARKER = "authenticate"
 
@@ -106,10 +120,35 @@ def is_authorized(author_id: int, owner_id: int | None) -> bool:
     return owner_id is None or author_id == owner_id
 
 
-def claude_argv(prompt: str, system_prompt: str | None = None) -> list[str]:
+def mentions_bot(mentions, bot_id: int) -> bool:
+    """True only for a direct user mention (or a pinging reply), not @everyone/@here."""
+    return any(user.id == bot_id for user in mentions)
+
+
+def session_id_for_thread(thread_id: int) -> str:
+    return str(uuid.uuid5(SESSION_NAMESPACE, f"discord-thread:{thread_id}"))
+
+
+def thread_lock(thread_id: int) -> asyncio.Lock:
+    """Serialize turns per thread: concurrent --resume on one session corrupts it."""
+    return _thread_locks.setdefault(thread_id, asyncio.Lock())
+
+
+def claude_argv(
+    prompt: str,
+    system_prompt: str | None = None,
+    session_id: str | None = None,
+    resume: bool = False,
+    name: str | None = None,
+) -> list[str]:
     full_system_prompt = BASE_SYSTEM_PROMPT
     if system_prompt:
         full_system_prompt += "\n" + system_prompt
+    session_args: list[str] = []
+    if session_id:
+        session_args += ["--resume" if resume else "--session-id", session_id]
+    if name:
+        session_args += ["--name", name]
     return [
         "claude",
         "-p",
@@ -124,6 +163,7 @@ def claude_argv(prompt: str, system_prompt: str | None = None) -> list[str]:
         ALLOWED_TOOLS,
         "--append-system-prompt",
         full_system_prompt,
+        *session_args,
     ]
 
 
@@ -185,6 +225,11 @@ def is_auth_failure(stdout: str, stderr: str) -> bool:
     return AUTH_ERROR_MARKER in (stdout + stderr).lower()
 
 
+def is_missing_session(stdout: str, stderr: str) -> bool:
+    """--resume on an unknown id (first mention in a thread, or a cleaned-up session)."""
+    return MISSING_SESSION_MARKER in stdout + stderr
+
+
 def parse_claude_json(stdout: str) -> dict | None:
     """Parse `--output-format json` output; None if claude printed plain text."""
     try:
@@ -228,9 +273,25 @@ def render_result(rc: int, stdout: str, stderr: str) -> str:
     return text.strip() + denial_footer(denials)
 
 
-async def _run_once(prompt: str, system_prompt: str | None) -> tuple[int, str, str]:
+def turn_log_line(thread_id, session_id: str, mode: str, rc: int, stdout: str) -> str:
+    head = f"turn thread={thread_id} session={session_id} mode={mode} rc={rc}"
+    data = parse_claude_json(stdout)
+    if data is None:
+        return f"{head} (no json)"
+    cost = data.get("total_cost_usd") or 0
+    denials = len(data.get("permission_denials") or [])
+    return f"{head} cost=${cost:.4f} turns={data.get('num_turns')} denials={denials}"
+
+
+async def _run_once(
+    prompt: str,
+    system_prompt: str | None,
+    session_id: str | None = None,
+    resume: bool = False,
+    name: str | None = None,
+) -> tuple[int, str, str]:
     proc = await asyncio.create_subprocess_exec(
-        *claude_argv(prompt, system_prompt),
+        *claude_argv(prompt, system_prompt, session_id, resume, name),
         stdin=asyncio.subprocess.DEVNULL,
         stdout=asyncio.subprocess.PIPE,
         stderr=asyncio.subprocess.PIPE,
@@ -240,12 +301,26 @@ async def _run_once(prompt: str, system_prompt: str | None) -> tuple[int, str, s
     return proc.returncode, stdout.decode(errors="replace"), stderr.decode(errors="replace")
 
 
-async def run_claude(prompt: str, system_prompt: str | None = None) -> str:
-    rc, out, err = await _run_once(prompt, system_prompt)
+async def run_claude(
+    prompt: str,
+    system_prompt: str | None = None,
+    session_id: str | None = None,
+    resume: bool = False,
+    name: str | None = None,
+    thread_id: int | None = None,
+) -> str:
+    run = functools.partial(_run_once, prompt, system_prompt, session_id=session_id, name=name)
+    mode = "resume" if resume else "new"
+    rc, out, err = await run(resume=resume)
     if rc != 0 and is_auth_failure(out, err):
         # OAuth refresh races are transient; one retry usually clears it.
         await asyncio.sleep(AUTH_RETRY_DELAY_SEC)
-        rc, out, err = await _run_once(prompt, system_prompt)
+        rc, out, err = await run(resume=resume)
+    if resume and rc != 0 and is_missing_session(out, err):
+        mode = "resume-missed->new"
+        rc, out, err = await run(resume=False)
+    if session_id:
+        print(turn_log_line(thread_id, session_id, mode, rc, out), flush=True)
     return render_result(rc, out, err)
 
 
@@ -269,7 +344,7 @@ def make_client(owner_id: int | None) -> discord.Client:
     async def on_message(message: discord.Message):
         if message.author == client.user:
             return
-        if not client.user.mentioned_in(message):
+        if not mentions_bot(message.mentions, client.user.id):
             return
         if not is_authorized(message.author.id, owner_id):
             await message.reply("Sorry, only the bot owner can run commands.")
@@ -280,19 +355,38 @@ def make_client(owner_id: int | None) -> discord.Client:
             await message.reply("Give me a prompt (or a file) after the mention.")
             return
 
-        # Decide where to reply: create thread for top-level, use existing thread
+        # Top-level mention starts a new thread (and session); a mention inside
+        # any thread, bot- or user-created, resumes that thread's session.
         if isinstance(message.channel, discord.Thread):
-            thread = message.channel
+            thread, resume = message.channel, True
         else:
             thread = await message.create_thread(name=(prompt or DEFAULT_ATTACHMENT_PROMPT)[:100])
-        thinking = await thread.send("Thinking...")
+            resume = False
 
-        attachment_paths = await save_attachments(message)
-        full_prompt = build_prompt(prompt, attachment_paths)
-        system_prompt = ATTACHMENT_SYSTEM_PROMPT if attachment_paths else None
-        result = await run_claude(full_prompt, system_prompt)
-        await thinking.delete()
-        await send_long(thread, result)
+        lock = thread_lock(thread.id)
+        queued = lock.locked()
+        if queued:
+            with contextlib.suppress(discord.HTTPException):
+                await message.add_reaction(QUEUED_REACTION)
+        async with lock:
+            if queued:
+                with contextlib.suppress(discord.HTTPException):
+                    await message.remove_reaction(QUEUED_REACTION, client.user)
+            thinking = await thread.send("Thinking...")
+
+            attachment_paths = await save_attachments(message)
+            full_prompt = build_prompt(prompt, attachment_paths)
+            system_prompt = ATTACHMENT_SYSTEM_PROMPT if attachment_paths else None
+            result = await run_claude(
+                full_prompt,
+                system_prompt,
+                session_id=session_id_for_thread(thread.id),
+                resume=resume,
+                name=f"discord: {thread.name}"[:100],
+                thread_id=thread.id,
+            )
+            await thinking.delete()
+            await send_long(thread, result)
 
     return client
 

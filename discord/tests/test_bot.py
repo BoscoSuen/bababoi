@@ -202,3 +202,106 @@ def test_claude_argv_pins_exact_model():
     argv = bot.claude_argv("hi")
     # Pinned ID, not the `opus` alias, which silently moves with CLI updates.
     assert argv[argv.index("--model") + 1] == "claude-opus-5-5"
+
+
+# --- multi-turn threads -----------------------------------------------------
+
+
+def test_session_id_for_thread_is_stable_uuid():
+    import uuid
+
+    sid = bot.session_id_for_thread(123)
+    assert sid == str(uuid.uuid5(bot.SESSION_NAMESPACE, "discord-thread:123"))
+    assert sid == bot.session_id_for_thread(123)
+    assert sid != bot.session_id_for_thread(124)
+    uuid.UUID(sid)  # valid UUID, as --session-id requires
+
+
+def test_claude_argv_session_flags():
+    argv = bot.claude_argv("hi")
+    assert "--session-id" not in argv and "--resume" not in argv and "--name" not in argv
+
+    argv = bot.claude_argv("hi", session_id="S", resume=False, name="discord: t")
+    assert argv[argv.index("--session-id") + 1] == "S"
+    assert "--resume" not in argv
+    assert argv[argv.index("--name") + 1] == "discord: t"
+
+    argv = bot.claude_argv("hi", session_id="S", resume=True)
+    assert argv[argv.index("--resume") + 1] == "S"
+    assert "--session-id" not in argv
+
+
+def test_is_missing_session():
+    assert bot.is_missing_session("No conversation found with session ID: abc", "")
+    assert bot.is_missing_session("", "No conversation found with session ID: abc")
+    assert not bot.is_missing_session("Session ID abc is already in use.", "")
+
+
+class _User:
+    def __init__(self, uid):
+        self.id = uid
+
+
+def test_mentions_bot_ignores_everyone_and_other_users():
+    assert bot.mentions_bot([_User(1), _User(7)], 7)
+    assert not bot.mentions_bot([_User(1)], 7)
+    assert not bot.mentions_bot([], 7)  # @everyone / @here carry no user mention
+
+
+def test_thread_lock_is_per_thread():
+    assert bot.thread_lock(1) is bot.thread_lock(1)
+    assert bot.thread_lock(1) is not bot.thread_lock(2)
+
+
+def test_turn_log_line():
+    out = json.dumps(
+        {
+            "result": "x",
+            "session_id": "S",
+            "total_cost_usd": 0.0586,
+            "num_turns": 4,
+            "permission_denials": [{"tool_name": "Bash", "tool_input": {}}],
+        }
+    )
+    line = bot.turn_log_line(42, "S", "resume", 0, out)
+    assert line == "turn thread=42 session=S mode=resume rc=0 cost=$0.0586 turns=4 denials=1"
+    line = bot.turn_log_line(42, "S", "new", 1, "Failed to authenticate")
+    assert line == "turn thread=42 session=S mode=new rc=1 (no json)"
+
+
+def test_base_system_prompt_warns_about_stale_earlier_turns():
+    assert "earlier turns" in bot.BASE_SYSTEM_PROMPT
+
+
+def _fake_runner(responses, calls):
+    async def fake(prompt, system_prompt, session_id=None, resume=False, name=None):
+        calls.append((session_id, resume))
+        return responses.pop(0)
+
+    return fake
+
+
+def test_run_claude_resume_falls_back_to_new_session(monkeypatch):
+    import asyncio
+
+    calls = []
+    ok = json.dumps({"result": "answer", "is_error": False})
+    monkeypatch.setattr(
+        bot,
+        "_run_once",
+        _fake_runner([(1, "No conversation found with session ID: S", ""), (0, ok, "")], calls),
+    )
+    text = asyncio.run(bot.run_claude("hi", session_id="S", resume=True, thread_id=9))
+    assert text == "answer"
+    assert calls == [("S", True), ("S", False)]
+
+
+def test_run_claude_resume_success_does_not_create(monkeypatch):
+    import asyncio
+
+    calls = []
+    ok = json.dumps({"result": "again", "is_error": False})
+    monkeypatch.setattr(bot, "_run_once", _fake_runner([(0, ok, "")], calls))
+    text = asyncio.run(bot.run_claude("hi", session_id="S", resume=True, thread_id=9))
+    assert text == "again"
+    assert calls == [("S", True)]
