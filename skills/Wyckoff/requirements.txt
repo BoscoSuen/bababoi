@@ -1,0 +1,2 @@
+# Shared scripts.market_data requires requests for live Polygon HTTP calls.
+requests>=2.31.0

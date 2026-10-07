@@ -10,6 +10,7 @@ import pytest
 import yaml
 
 from scripts.ci_test_matrix import (
+    ID_RE,
     POLICY_GATE_ID,
     CoverageWaiver,
     DatedException,
@@ -30,6 +31,20 @@ from scripts.ci_test_matrix import (
 )
 
 TODAY = date(2026, 8, 10)
+
+
+def test_requested_wyckoff_name_is_discovered_without_lowercasing(tmp_path):
+    _script_file(tmp_path, "Wyckoff")
+    _test_file(tmp_path, "skills/Wyckoff/scripts/tests/test_fetch.py")
+    _write_index(tmp_path, {"Wyckoff": {"status": "experimental"}})
+    _write_policy(tmp_path)
+    assert "Wyckoff" in executable_test_inventory(tmp_path)
+    assert "Wyckoff" in discover(tmp_path)
+
+
+@pytest.mark.parametrize("value", ["../Wyckoff", "Wyckoff/other", "Wyckoff;echo", "Wyckoff x", "WYCKOFF", "OtherSkill"])
+def test_wyckoff_exception_does_not_relax_other_ids(value):
+    assert ID_RE.fullmatch(value) is None
 
 
 def _test_file(root: Path, relative: str) -> None:

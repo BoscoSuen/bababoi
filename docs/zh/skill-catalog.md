@@ -10,7 +10,7 @@ permalink: /zh/skill-catalog/
 # 技能列表
 {: .no_toc }
 
-本页按类别介绍全部75个Claude Trading Skills。每个技能均标有API要求徽章，方便快速确认所需的外部服务。
+本页按类别介绍全部76个Claude Trading Skills。每个技能均标有API要求徽章，方便快速确认所需的外部服务。
 {: .fs-6 .fw-300 }
 
 > 建议使用英语技能名称搜索（如"CANSLIM"、"VCP"、"FinViz"等）。中文部分匹配搜索有所限制。
@@ -45,6 +45,7 @@ permalink: /zh/skill-catalog/
 
 | 技能 | 运营角色 | standalone 原因 |
 |---|---|---|
+| `Wyckoff` | `standalone` | Analyzes supplied charts or timestamped OHLCV directly without a workflow handoff. |
 | `backtest-expert` | `workflow_step` | — |
 | `breadth-chart-analyst` | `standalone` | Directly analyzes user-supplied breadth charts without a workflow handoff. |
 | `breakout-trade-planner` | `workflow_step` | — |
@@ -150,6 +151,7 @@ permalink: /zh/skill-catalog/
 | **Sector Analyst** | Analyzes sector/industry performance charts to assess market positioning and rotation patterns based on market cycle theory (Early/Mid/Late Cycle, Recession) | <span class="badge badge-free">No API</span> |
 | **Breadth Chart Analyst** | Analyzes S&P 500 Breadth Index and Uptrend Stock Ratio charts for market health. Identifies bull market phases: Healthy Breadth, Narrowing, Distribution | <span class="badge badge-free">No API</span> |
 | **Technical Analyst** | Pure technical analysis of weekly price charts. Identifies trends, support/resistance, chart patterns, and momentum indicators. Covers Elliott Wave, Dow Theory, candlesticks | <span class="badge badge-free">No API</span> |
+| **Wyckoff** | 从自带图表／OHLCV 或 Polygon 美股日线构建威科夫主情景与替代情景，记录确认时间、反证和失效条件；未宣称交易优势 | <span class="badge badge-optional">Polygon 可选</span> |
 | **[Market News Analyst]({{ '/zh/skills/market-news-analyst/' | relative_url }})** | Collects and analyzes market-moving news from the past 10 days via WebSearch. Impact scoring: (Price Impact x Breadth) x Forward Significance | <span class="badge badge-free">No API</span> |
 | **Market Environment Analysis** | Comprehensive global macro briefing covering equity indices, FX, commodities, yields, and sentiment with structured reporting templates | <span class="badge badge-free">No API</span> |
 | **[Market Breadth Analyzer]({{ '/zh/skills/market-breadth-analyzer/' | relative_url }})** | Quantifies market breadth health using a data-driven 6-component scoring system (0-100) from publicly available CSV data | <span class="badge badge-free">No API</span> |
@@ -371,6 +373,7 @@ permalink: /zh/skill-catalog/
 | Stockbee Setup Fluency Trainer | 可选 | - | - |
 | Strategy Pivot Designer | - | - | - |
 | Technical Analyst | - | - | - |
+| Wyckoff | - | - | - |
 | Theme Detector | 可选 | 推荐 | - |
 | Trade Hypothesis Ideator | - | - | - |
 | Trade Performance Coach | - | - | - |

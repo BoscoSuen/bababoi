@@ -22,7 +22,9 @@ from yaml.resolver import BaseResolver
 
 ROOT = Path(__file__).resolve().parents[1]
 POLICY_PATH = Path("config/ci-test-policy.yaml")
-ID_RE = re.compile(r"^[a-z0-9][a-z0-9-]*$")
+# Preserve the explicitly named Wyckoff skill directory; all other IDs retain
+# the lowercase convention. Both branches exclude paths and shell metacharacters.
+ID_RE = re.compile(r"^(?:[a-z0-9][a-z0-9-]*|Wyckoff)$")
 POLICY_GATE_ID = "executable-test-policy"
 
 

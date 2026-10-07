@@ -9,6 +9,39 @@ categories:
 - advanced-satellite
 - meta
 skills:
+- id: Wyckoff
+  display_name: Wyckoff
+  category: trade-planning
+  status: experimental
+  operational_role:
+    type: standalone
+    rationale: Analyzes supplied charts or timestamped OHLCV directly without a workflow handoff.
+  summary: Evidence-first Wyckoff structure analysis with competing scenarios, causal confirmation
+    times, explicit invalidation and abstention; no calibrated probability or profitability claim.
+  timeframe: event-driven
+  difficulty: advanced
+  integrations:
+  - id: user_input
+    type: local_file
+    requirement: optional
+    note: Supplied charts or timestamped OHLCV need no API key; alternative to live fetching
+  - id: polygon
+    type: market_data
+    requirement: optional
+    note: US stock/ETF daily OHLCV via shared scripts/market_data; POLYGON_API_KEY required for live fetch
+  - id: fixture
+    type: local_file
+    requirement: optional
+    note: Offline replay from shared DiskCache format; no API key
+  inputs:
+  - chart_or_timestamped_ohlcv
+  - analysis_cutoff
+  - symbol_and_date_range_for_fetch
+  outputs:
+  - wyckoff_ohlcv_input_json
+  - wyckoff_scenario_report_markdown
+  - wyckoff_scenario_report_json
+  workflows: []
 - id: backtest-expert
   display_name: Backtest Expert
   category: strategy-research

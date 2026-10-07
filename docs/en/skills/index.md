@@ -21,6 +21,7 @@ Hand-written guides (marked with ★) follow a detailed 10-section structure. Au
 
 | Skill | Description | API |
 |-------|-------------|-----|
+| [Wyckoff]({{ '/en/skills/Wyckoff/' | relative_url }}) | Analyze charts, supplied OHLCV or Polygon US stock/ETF daily bars using Wyckoff scenarios | <span class="badge badge-optional">Polygon Optional</span> |
 | [Backtest Expert]({{ '/en/skills/backtest-expert/' | relative_url }}) ★ | Expert guidance for systematic backtesting of trading strategies | <span class="badge badge-free">No API</span> |
 | [Breadth Chart Analyst]({{ '/en/skills/breadth-chart-analyst/' | relative_url }}) | This skill should be used when analyzing market breadth charts, specifically the S&P 500 Breadth Index (200-Day MA... | <span class="badge badge-free">No API</span> |
 | [Breakout Trade Planner]({{ '/en/skills/breakout-trade-planner/' | relative_url }}) | Generate Minervini-style breakout trade plans from VCP screener output with worst-case risk calculation, portfolio... | <span class="badge badge-free">No API</span> |

@@ -194,6 +194,7 @@ FMP、FINVIZ Elite、Alpaca等数据/API和经纪商集成是可选的或仅特�
 
 | 技能 | 摘要 | 依赖 | 运营角色 | 状态 |
 |---|---|---|---|---|
+| **Wyckoff** (`Wyckoff`) | Evidence-first Wyckoff structure analysis with competing scenarios, causal confirmation times, explicit invalidation and abstention; no calibrated probability or profitability claim. | `user_input` optional, `polygon` optional, `fixture` optional | standalone | experimental |
 | **Contrarian Setup Gate** (`contrarian-setup-gate`) | Offline synthesis gate that combines COT crowding, news-reaction failure, and weekly price-action confirmation into one actionable setup_status via a fail-closed precedence state machine, implementing the decision center of Jason Shapiro's contrarian methodology. | `local_calculation` — | workflow_step | beta |
 | **Drawdown Circuit Breaker** (`drawdown-circuit-breaker`) | Account-level circuit breaker that reads trader-memory-core state and decides whether new trade risk is allowed today using daily loss limits, losing-streak cooldowns, and weekly/monthly drawdown halts. | `local_calculation` — | workflow_step | beta |
 | **Futures Position Sizer** (`futures-position-sizer`) | Calculate contract-based futures position sizes from a direction, entry, and stop-loss, using a verified 23-market contract-spec table (multiplier, tick size, tick value), implementing step 4 of Jason Shapiro's contrarian pipeline. | `local_calculation` — | workflow_step | beta |

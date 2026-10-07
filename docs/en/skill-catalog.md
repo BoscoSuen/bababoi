@@ -10,7 +10,7 @@ permalink: /en/skill-catalog/
 # Skill Catalog
 {: .no_toc }
 
-A comprehensive catalog of all 75 Claude Trading Skills organized by category. Badge indicators show API requirements at a glance.
+A comprehensive catalog of all 76 Claude Trading Skills organized by category. Badge indicators show API requirements at a glance.
 {: .fs-6 .fw-300 }
 
 > Use English skill names ("CANSLIM", "VCP", "FinViz", etc.) for best search results on this page.
@@ -45,6 +45,7 @@ A comprehensive catalog of all 75 Claude Trading Skills organized by category. B
 
 | Skill | Operational role | Standalone rationale |
 |---|---|---|
+| `Wyckoff` | `standalone` | Analyzes supplied charts or timestamped OHLCV directly without a workflow handoff. |
 | `backtest-expert` | `workflow_step` | — |
 | `breadth-chart-analyst` | `standalone` | Directly analyzes user-supplied breadth charts without a workflow handoff. |
 | `breakout-trade-planner` | `workflow_step` | — |
@@ -150,6 +151,7 @@ A comprehensive catalog of all 75 Claude Trading Skills organized by category. B
 | **Sector Analyst** | Analyzes sector/industry performance charts to assess market positioning and rotation patterns based on market cycle theory (Early/Mid/Late Cycle, Recession) | <span class="badge badge-free">No API</span> |
 | **Breadth Chart Analyst** | Analyzes S&P 500 Breadth Index and Uptrend Stock Ratio charts for market health. Identifies bull market phases: Healthy Breadth, Narrowing, Distribution | <span class="badge badge-free">No API</span> |
 | **Technical Analyst** | Pure technical analysis of weekly price charts. Identifies trends, support/resistance, chart patterns, and momentum indicators. Covers Elliott Wave, Dow Theory, candlesticks | <span class="badge badge-free">No API</span> |
+| **Wyckoff** | Interprets supplied charts/OHLCV or Polygon US equity daily bars with competing scenarios, confirmation times and invalidation; no proven trading edge | <span class="badge badge-optional">Polygon Optional</span> |
 | **[Market News Analyst]({{ '/en/skills/market-news-analyst/' | relative_url }})** | Collects and analyzes market-moving news from the past 10 days via WebSearch. Impact scoring: (Price Impact x Breadth) x Forward Significance | <span class="badge badge-free">No API</span> |
 | **Market Environment Analysis** | Comprehensive global macro briefing covering equity indices, FX, commodities, yields, and sentiment with structured reporting templates | <span class="badge badge-free">No API</span> |
 | **[Market Breadth Analyzer]({{ '/en/skills/market-breadth-analyzer/' | relative_url }})** | Quantifies market breadth health using a data-driven 6-component scoring system (0-100) from publicly available CSV data | <span class="badge badge-free">No API</span> |
@@ -381,5 +383,6 @@ A comprehensive catalog of all 75 Claude Trading Skills organized by category. B
 | VCP Screener | -- | -- | -- |
 | Weekly Performance Digest | -- | -- | -- |
 | Intraday Market Monitor | -- | -- | -- |
+| Wyckoff | -- | -- | -- |
 
 "--" means not required. "Required" means the skill cannot run without that provider; "Recommended" means the provider is the preferred path but a fallback exists; "Optional" means it only enhances functionality.

@@ -23,6 +23,7 @@ permalink: /zh/skills/
 
 | 技能 | 概述 | API |
 |--------|------|-----|
+| [Wyckoff]({{ '/zh/skills/Wyckoff/' | relative_url }}) | Analyze charts, supplied OHLCV or Polygon US stock/ETF daily bars using Wyckoff scenarios | <span class="badge badge-optional">Polygon Optional</span> |
 | [Backtest Expert]({{ '/zh/skills/backtest-expert/' | relative_url }}) ★ | Expert guidance for systematic backtesting of trading strategies | <span class="badge badge-free">无需API</span> |
 | [Breadth Chart Analyst]({{ '/zh/skills/breadth-chart-analyst/' | relative_url }}) | This skill should be used when analyzing market breadth charts, specifically the S&P 500 Breadth Index (200-Day MA... | <span class="badge badge-free">无需API</span> |
 | [Breakout Trade Planner]({{ '/zh/skills/breakout-trade-planner/' | relative_url }}) | Generate Minervini-style breakout trade plans from VCP screener output with worst-case risk calculation, portfolio... | <span class="badge badge-free">无需API</span> |

@@ -304,6 +304,7 @@ The table below is **auto-generated** from `skills-index.yaml` by `scripts/gener
 | **VCP Screener** | ❌ Not used | ❌ Not used | ❌ Not used | S&P 500 quotes/OHLCV via Polygon (scripts/market_data; public CSV constituents); POLYGON_API_KEY |
 | **Value Dividend Screener** | ✅ Required | 🟡 Optional (Recommended) | ❌ Not used | Financial Modeling Prep API |
 | **Weekly Performance Digest** | ❌ Not used | ❌ Not used | ❌ Not used | Pure calculation; works offline |
+| **Wyckoff** | ❌ Not used | ❌ Not used | ❌ Not used | Supplied charts or timestamped OHLCV need no API key; alternative to live fetching; US stock/ETF daily OHLCV via shared scripts/market_data; POLYGON_API_KEY required for live fetch; Offline replay from shared DiskCache format; no API key |
 | **manifoldbt Backtester** | ❌ Not used | ❌ Not used | ❌ Not used | pip install manifoldbt; free tier covers this skill, no API key; CSV or Parquet with timestamp, open, high, low, close, volume |
 <!-- skills-index:end name="api-matrix" -->
 
